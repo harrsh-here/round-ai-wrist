@@ -28,14 +28,14 @@ const FeaturesScreen = ({ onNavigate }: FeaturesScreenProps) => {
   };
 
   return (
-    <div className="relative w-full h-full flex flex-col items-center justify-center p-4">
+    <div className="relative w-full h-full flex flex-col items-center justify-center p-6 bg-gradient-to-br from-slate-900/90 via-blue-950/80 to-slate-900/90">
       {/* Header */}
-      <div className="text-center mb-4 watch-slide-up">
-        <h2 className="text-lg font-semibold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Features</h2>
+      <div className="text-center mb-6 watch-slide-up">
+        <h2 className="text-lg font-semibold text-white">Features</h2>
       </div>
 
       {/* Features Grid */}
-      <div className="grid grid-cols-3 gap-3 mb-6 max-w-52">
+      <div className="grid grid-cols-3 gap-4 mb-8 max-w-60">
         {features.map((feature, index) => {
           const Icon = feature.icon;
           return (
@@ -43,27 +43,27 @@ const FeaturesScreen = ({ onNavigate }: FeaturesScreenProps) => {
               key={feature.label}
               variant="ghost"
               onClick={() => handleFeatureClick(feature)}
-              className={`flex flex-col items-center justify-center w-14 h-14 p-2 rounded-xl bg-gradient-to-br from-secondary/10 to-muted/10 hover:from-secondary/20 hover:to-muted/20 border border-border/20 watch-glow ${
+              className={`flex flex-col items-center justify-center w-16 h-16 p-2 rounded-xl backdrop-blur-md bg-white/10 hover:bg-white/15 border border-white/20 watch-glow transition-all duration-300 ${
                 feature.screen ? 'cursor-pointer' : 'cursor-default'
               }`}
               style={{ animationDelay: `${index * 50}ms` }}
             >
-              <Icon size={18} className={feature.color} />
-              <span className="text-xs mt-1 text-muted-foreground">{feature.label}</span>
+              <Icon size={22} className={`${feature.color} mb-1`} />
+              <span className="text-xs text-white/80">{feature.label}</span>
             </Button>
           );
         })}
       </div>
 
       {/* Back Button */}
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
+      <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2">
         <Button
           variant="ghost"
           size="sm"
           onClick={() => onNavigate('home')}
-          className="rounded-full w-10 h-10 p-0 hover:bg-primary/20"
+          className="rounded-full w-12 h-12 p-0 backdrop-blur-md bg-white/10 hover:bg-white/15 border border-white/20 shadow-lg"
         >
-          <Home size={16} />
+          <Home size={18} className="text-white" />
         </Button>
       </div>
     </div>
