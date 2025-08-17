@@ -83,7 +83,8 @@ export default {
 					call: 'hsl(var(--feature-call))',
 					music: 'hsl(var(--feature-music))',
 					health: 'hsl(var(--feature-health))',
-					weather: 'hsl(var(--feature-weather))'
+					weather: 'hsl(var(--feature-weather))',
+					fitness: 'hsl(var(--feature-fitness))'
 				}
 			},
 			borderRadius: {
