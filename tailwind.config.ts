@@ -26,7 +26,8 @@ export default {
 				foreground: 'hsl(var(--foreground))',
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
-					foreground: 'hsl(var(--primary-foreground))'
+					foreground: 'hsl(var(--primary-foreground))',
+					glow: 'hsl(var(--primary-glow))'
 				},
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
@@ -61,6 +62,28 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				watch: {
+					bezel: 'hsl(var(--watch-bezel))',
+					'bezel-inner': 'hsl(var(--watch-bezel-inner))',
+					strap: 'hsl(var(--watch-strap))',
+					screen: 'hsl(var(--watch-screen))',
+					glass: 'hsl(var(--watch-glass))'
+				},
+				ai: {
+					primary: 'hsl(var(--ai-primary))',
+					secondary: 'hsl(var(--ai-secondary))',
+					glow: 'hsl(var(--ai-glow))'
+				},
+				clock: {
+					primary: 'hsl(var(--clock-primary))',
+					secondary: 'hsl(var(--clock-secondary))'
+				},
+				feature: {
+					call: 'hsl(var(--feature-call))',
+					music: 'hsl(var(--feature-music))',
+					health: 'hsl(var(--feature-health))',
+					weather: 'hsl(var(--feature-weather))'
 				}
 			},
 			borderRadius: {

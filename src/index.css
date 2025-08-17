@@ -2,41 +2,80 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Smartwatch Design System - All colors MUST be HSL */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Watch Display Colors */
+    --background: 220 15% 8%;
+    --foreground: 0 0% 95%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 220 15% 12%;
+    --card-foreground: 0 0% 95%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 220 15% 10%;
+    --popover-foreground: 0 0% 95%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Watch UI Colors */
+    --primary: 210 100% 60%;
+    --primary-foreground: 0 0% 95%;
+    --primary-glow: 210 100% 70%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 220 15% 18%;
+    --secondary-foreground: 0 0% 90%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 220 15% 15%;
+    --muted-foreground: 0 0% 60%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 280 100% 65%;
+    --accent-foreground: 0 0% 95%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 95%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 220 15% 25%;
+    --input: 220 15% 20%;
+    --ring: 210 100% 60%;
+
+    /* Watch Specific Colors */
+    --watch-bezel: 220 10% 20%;
+    --watch-bezel-inner: 220 10% 15%;
+    --watch-strap: 30 8% 25%;
+    --watch-screen: 220 20% 5%;
+    --watch-glass: 210 20% 95%;
+    
+    /* AI Assistant Colors */
+    --ai-primary: 260 100% 65%;
+    --ai-secondary: 310 100% 70%;
+    --ai-glow: 285 100% 75%;
+
+    /* Digital Clock Colors */
+    --clock-primary: 210 100% 60%;
+    --clock-secondary: 280 100% 65%;
+
+    /* Feature Colors */
+    --feature-call: 120 60% 50%;
+    --feature-music: 280 100% 65%;
+    --feature-health: 0 100% 60%;
+    --feature-weather: 200 100% 60%;
 
     --radius: 0.5rem;
+
+    /* Watch Gradients */
+    --gradient-watch: linear-gradient(135deg, hsl(var(--watch-screen)), hsl(var(--background)));
+    --gradient-bezel: linear-gradient(135deg, hsl(var(--watch-bezel)), hsl(var(--watch-bezel-inner)));
+    --gradient-ai: linear-gradient(135deg, hsl(var(--ai-primary)), hsl(var(--ai-secondary)));
+    --gradient-glow: radial-gradient(circle at center, hsl(var(--primary-glow) / 0.3), transparent 70%);
+
+    /* Watch Shadows */
+    --shadow-watch: 0 20px 40px -10px hsl(var(--background) / 0.8);
+    --shadow-bezel: inset 0 2px 8px hsl(var(--watch-bezel-inner) / 0.6);
+    --shadow-screen: inset 0 0 20px hsl(var(--watch-screen) / 0.8);
+    --shadow-glow: 0 0 30px hsl(var(--primary) / 0.4);
+
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-watch: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 
     --sidebar-background: 0 0% 98%;
 
@@ -100,6 +139,127 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground overflow-hidden;
+  }
+}
+
+@layer components {
+  /* Watch Component Styles */
+  .watch-container {
+    @apply relative flex items-center justify-center min-h-screen;
+    background: radial-gradient(circle at center, hsl(var(--background)), hsl(var(--watch-screen)));
+  }
+
+  .watch-bezel {
+    @apply relative rounded-full;
+    width: 340px;
+    height: 340px;
+    background: var(--gradient-bezel);
+    box-shadow: var(--shadow-watch), var(--shadow-bezel);
+    border: 2px solid hsl(var(--watch-bezel-inner));
+  }
+
+  .watch-screen {
+    @apply absolute inset-2 rounded-full overflow-hidden;
+    background: var(--gradient-watch);
+    box-shadow: var(--shadow-screen);
+    border: 1px solid hsl(var(--border));
+  }
+
+  .watch-strap {
+    @apply absolute bg-gradient-to-b;
+    background: linear-gradient(to bottom, 
+      hsl(var(--watch-strap)), 
+      hsl(var(--watch-strap) / 0.8), 
+      hsl(var(--watch-strap))
+    );
+    border-radius: 20px;
+    box-shadow: 0 4px 12px hsl(var(--background) / 0.6);
+  }
+
+  .watch-strap-top {
+    @apply watch-strap;
+    width: 60px;
+    height: 80px;
+    top: -70px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .watch-strap-bottom {
+    @apply watch-strap;
+    width: 60px;
+    height: 80px;
+    bottom: -70px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  /* Watch UI Animations */
+  .watch-fade-in {
+    animation: watchFadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .watch-slide-up {
+    animation: watchSlideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .watch-glow {
+    position: relative;
+  }
+
+  .watch-glow::before {
+    content: '';
+    @apply absolute inset-0 rounded-full pointer-events-none;
+    background: var(--gradient-glow);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .watch-glow:hover::before {
+    opacity: 1;
+  }
+
+  /* Screen Transition */
+  .screen-transition {
+    transition: var(--transition-watch);
+  }
+}
+
+@layer utilities {
+  /* Custom Animations */
+  @keyframes watchFadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes watchSlideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% {
+      box-shadow: 0 0 20px hsl(var(--primary) / 0.3);
+    }
+    50% {
+      box-shadow: 0 0 30px hsl(var(--primary) / 0.6);
+    }
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
   }
 }
