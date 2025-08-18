@@ -75,33 +75,33 @@ const FitnessScreen = ({ onNavigate }: FitnessScreenProps) => {
   ];
 
   return (
-    <div className="relative w-full h-full flex flex-col items-center justify-center p-4">
+    <div className="watch-content-safe flex flex-col items-center justify-center p-3">
       {/* Header */}
-      <div className="text-center mb-4 watch-slide-up">
-        <h2 className="text-lg font-bold bg-gradient-to-r from-feature-fitness to-feature-health bg-clip-text text-transparent">
+      <div className="text-center mb-3 watch-slide-up">
+        <h2 className="text-lg font-bold bg-gradient-to-r from-white via-white/90 to-white/70 bg-clip-text text-transparent">
           Fitness
         </h2>
-        <div className="text-xs text-muted-foreground">Today's Activity</div>
+        <div className="text-xs text-white/60">Today's Activity</div>
       </div>
 
       {/* Main Stats Grid */}
-      <div className="grid grid-cols-2 gap-3 mb-4 w-full max-w-64">
+      <div className="grid grid-cols-2 gap-2 mb-3 w-full max-w-[220px]">
         {fitnessStats.map((stat, index) => {
           const Icon = stat.icon;
           return (
             <div
               key={stat.label}
-              className={`p-3 rounded-xl ${stat.bgColor} border border-border/30 text-center watch-glow`}
+              className={`glass-bg p-2 rounded-xl text-center watch-glow`}
               style={{ animationDelay: `${index * 100}ms` }}
             >
               <Icon 
-                size={16} 
+                size={14} 
                 className={`${stat.color} mx-auto mb-1 ${stat.animate ? 'animate-bpm-pulse' : ''}`} 
               />
-              <div className={`text-sm font-bold ${stat.color}`}>
+              <div className={`text-sm font-bold text-white`}>
                 {stat.value}
               </div>
-              <div className="text-xs text-muted-foreground">
+              <div className="text-xs text-white/60">
                 {stat.unit}
               </div>
             </div>
@@ -110,9 +110,9 @@ const FitnessScreen = ({ onNavigate }: FitnessScreenProps) => {
       </div>
 
       {/* Progress Rings */}
-      <div className="flex justify-center space-x-4 mb-4">
-        <div className="relative w-12 h-12">
-          <svg className="w-12 h-12 transform -rotate-90" viewBox="0 0 36 36">
+      <div className="flex justify-center space-x-3 mb-3">
+        <div className="relative w-10 h-10">
+          <svg className="w-10 h-10 transform -rotate-90" viewBox="0 0 36 36">
             <path
               d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
               fill="none"
@@ -129,12 +129,12 @@ const FitnessScreen = ({ onNavigate }: FitnessScreenProps) => {
             />
           </svg>
           <div className="absolute inset-0 flex items-center justify-center">
-            <Footprints size={10} className="text-primary" />
+            <Footprints size={8} className="text-primary" />
           </div>
         </div>
         
-        <div className="relative w-12 h-12">
-          <svg className="w-12 h-12 transform -rotate-90" viewBox="0 0 36 36">
+        <div className="relative w-10 h-10">
+          <svg className="w-10 h-10 transform -rotate-90" viewBox="0 0 36 36">
             <path
               d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
               fill="none"
@@ -151,13 +151,13 @@ const FitnessScreen = ({ onNavigate }: FitnessScreenProps) => {
             />
           </svg>
           <div className="absolute inset-0 flex items-center justify-center">
-            <Zap size={10} className="text-feature-fitness" />
+            <Zap size={8} className="text-feature-fitness" />
           </div>
         </div>
       </div>
 
       {/* Achievements */}
-      <div className="flex justify-center space-x-2 mb-4">
+      <div className="flex justify-center space-x-2 mb-3">
         {achievements.map((achievement, index) => {
           const Icon = achievement.icon;
           return (
@@ -165,25 +165,25 @@ const FitnessScreen = ({ onNavigate }: FitnessScreenProps) => {
               key={achievement.label}
               className={`p-2 rounded-lg ${
                 achievement.achieved 
-                  ? 'bg-accent/20 text-accent' 
+                  ? 'glass-bg text-accent' 
                   : 'bg-muted/20 text-muted-foreground'
               }`}
             >
-              <Icon size={12} />
+              <Icon size={10} />
             </div>
           );
         })}
       </div>
 
       {/* Back Button */}
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
+      <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2">
         <Button
           variant="ghost"
           size="sm"
           onClick={() => onNavigate('home')}
-          className="rounded-full w-10 h-10 p-0 hover:bg-primary/20"
+          className="rounded-full w-10 h-10 p-0 glass-bg hover:bg-white/15"
         >
-          <Home size={16} />
+          <Home size={14} className="text-white" />
         </Button>
       </div>
     </div>

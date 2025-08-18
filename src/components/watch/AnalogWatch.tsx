@@ -48,7 +48,7 @@ const AnalogWatch = ({ onNavigate }: AnalogWatchProps) => {
   const hourNumbers = [];
   for (let i = 1; i <= 12; i++) {
     const angle = (i * 30) - 90;
-    const radius = 110; // Reduced radius for safe padding
+    const radius = 120; // Adjusted for better positioning
     const x = Math.cos((angle * Math.PI) / 180) * radius;
     const y = Math.sin((angle * Math.PI) / 180) * radius;
     
@@ -66,22 +66,29 @@ const AnalogWatch = ({ onNavigate }: AnalogWatchProps) => {
     );
   }
 
-  // Generate minute markers with safe spacing
+  // Generate minute markers with proper spacing
   const minuteMarkers = [];
   for (let i = 0; i < 60; i++) {
     if (i % 5 !== 0) {
       const angle = i * 6;
-      const isQuarter = i % 15 === 0;
+      const outerRadius = 145;
+      const innerRadius = 135;
+      
+      const x1 = Math.cos((angle - 90) * Math.PI / 180) * outerRadius;
+      const y1 = Math.sin((angle - 90) * Math.PI / 180) * outerRadius;
+      const x2 = Math.cos((angle - 90) * Math.PI / 180) * innerRadius;
+      const y2 = Math.sin((angle - 90) * Math.PI / 180) * innerRadius;
+      
       minuteMarkers.push(
-        <div
+        <line
           key={i}
-          className={`absolute ${isQuarter ? 'w-1 h-3 bg-primary/60' : 'w-0.5 h-2 bg-foreground/30'}`}
-          style={{
-            left: '50%',
-            top: '15px', // Safe padding from bezel
-            transformOrigin: '50% 140px', // Adjusted for safe radius
-            transform: `translateX(-50%) rotate(${angle}deg)`,
-          }}
+          x1={x1 + 150}
+          y1={y1 + 150}
+          x2={x2 + 150}
+          y2={y2 + 150}
+          stroke="hsl(var(--foreground))"
+          strokeWidth="1"
+          opacity="0.3"
         />
       );
     }
@@ -89,44 +96,58 @@ const AnalogWatch = ({ onNavigate }: AnalogWatchProps) => {
 
   return (
     <div 
-      className="relative w-full h-full flex items-center justify-center overflow-hidden cursor-pointer"
+      className="watch-content-safe flex items-center justify-center cursor-pointer"
       onClick={() => onNavigate('home')}
     >
       {/* Analog Clock Face - Full coverage with safe padding */}
       <div className="relative w-full h-full rounded-full bg-gradient-to-br from-card via-background to-muted border-2 border-primary/20 shadow-inner">
-        {/* Outer decorative ring with safe spacing */}
-        <div className="absolute inset-3 rounded-full border-2 border-gradient-to-br from-primary/30 to-secondary/30" />
+        {/* Outer decorative ring */}
+        <div className="absolute inset-2 rounded-full border-2 border-gradient-to-br from-primary/30 to-secondary/30" />
         
         {/* Inner ring */}
-        <div className="absolute inset-6 rounded-full border border-border/20" />
+        <div className="absolute inset-4 rounded-full border border-border/20" />
         
-        {/* Hour Markers with safe positioning */}
-        {[...Array(12)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-1.5 h-8 bg-gradient-to-b from-primary via-secondary to-primary rounded-full shadow-md"
-            style={{
-              left: '50%',
-              top: '10px', // Safe padding from bezel
-              transformOrigin: '50% 145px', // Adjusted for safe coverage
-              transform: `translateX(-50%) rotate(${i * 30}deg)`,
-            }}
-          />
-        ))}
+        {/* Hour Markers */}
+        {[...Array(12)].map((_, i) => {
+          const angle = i * 30;
+          const outerRadius = 145;
+          const innerRadius = 125;
+          
+          const x1 = Math.cos((angle - 90) * Math.PI / 180) * outerRadius;
+          const y1 = Math.sin((angle - 90) * Math.PI / 180) * outerRadius;
+          const x2 = Math.cos((angle - 90) * Math.PI / 180) * innerRadius;
+          const y2 = Math.sin((angle - 90) * Math.PI / 180) * innerRadius;
+          
+          return (
+            <svg key={i} className="absolute inset-0 w-full h-full">
+              <line
+                x1={x1 + 150}
+                y1={y1 + 150}
+                x2={x2 + 150}
+                y2={y2 + 150}
+                stroke="hsl(var(--primary))"
+                strokeWidth="3"
+                className="drop-shadow-sm"
+              />
+            </svg>
+          );
+        })}
 
         {/* Minute Markers */}
-        {minuteMarkers}
+        <svg className="absolute inset-0 w-full h-full">
+          {minuteMarkers}
+        </svg>
 
         {/* Hour Numbers */}
         {hourNumbers}
 
         {/* Brand Position - FuzNex */}
-        <div className="absolute top-20 left-1/2 transform -translate-x-1/2">
+        <div className="absolute top-16 left-1/2 transform -translate-x-1/2">
           <div className="text-sm text-primary font-bold tracking-wider drop-shadow-md">FuzNex</div>
         </div>
 
         {/* Subsidiary seconds dial */}
-        <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2">
+        <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2">
           <div className="w-8 h-8 rounded-full border border-border/30 bg-muted/20 flex items-center justify-center">
             <div className="text-xs text-muted-foreground font-mono">{time.getSeconds()}</div>
           </div>
@@ -159,14 +180,14 @@ const AnalogWatch = ({ onNavigate }: AnalogWatchProps) => {
         <div className="absolute w-5 h-5 bg-gradient-to-br from-primary to-secondary rounded-full top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-40 border-2 border-background shadow-xl" />
         <div className="absolute w-2 h-2 bg-background rounded-full top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50" />
         
-        {/* Decorative screws with safe positioning */}
+        {/* Decorative screws */}
         {[45, 135, 225, 315].map((angle, i) => (
           <div
             key={i}
             className="absolute w-1.5 h-1.5 bg-muted rounded-full border border-border/50"
             style={{
-              left: `calc(50% + ${Math.cos((angle * Math.PI) / 180) * 125}px)`,
-              top: `calc(50% + ${Math.sin((angle * Math.PI) / 180) * 125}px)`,
+              left: `calc(50% + ${Math.cos((angle * Math.PI) / 180) * 130}px)`,
+              top: `calc(50% + ${Math.sin((angle * Math.PI) / 180) * 130}px)`,
               transform: 'translate(-50%, -50%)',
             }}
           />
