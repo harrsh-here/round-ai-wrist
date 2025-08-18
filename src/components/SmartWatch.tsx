@@ -11,8 +11,9 @@ import FitnessScreen from './watch/FitnessScreen';
 import LoginScreen from './watch/LoginScreen';
 import DialerScreen from './watch/DialerScreen';
 import MusicScreen from './watch/MusicScreen';
+import WeatherScreen from './watch/WeatherScreen';
 
-export type WatchScreen = 'login' | 'analog' | 'home' | 'features' | 'chat' | 'settings' | 'fitness' | 'dialer' | 'music';
+export type WatchScreen = 'login' | 'analog' | 'home' | 'features' | 'chat' | 'settings' | 'fitness' | 'dialer' | 'music' | 'weather';
 
 const SmartWatch = () => {
   const [currentScreen, setCurrentScreen] = useState<WatchScreen>('login');
@@ -123,6 +124,8 @@ const SmartWatch = () => {
         return <DialerScreen {...screenProps} />;
       case 'music':
         return <MusicScreen {...screenProps} />;
+      case 'weather':
+        return <WeatherScreen {...screenProps} />;
       default:
         return <HomeScreen {...screenProps} />;
     }
@@ -135,10 +138,8 @@ const SmartWatch = () => {
         <div className="watch-strap-top" />
         <div className="watch-strap-bottom" />
         
-        {/* Inner Bezel - Only visible when watch is on */}
-        {isWatchOn && (
-          <div className="absolute inset-2 rounded-full bg-gradient-to-br from-watch-bezel-inner/30 to-transparent border border-primary/10 animate-fade-in" />
-        )}
+        {/* Inner Bezel with glow effect */}
+        <div className={`watch-bezel-inner-glow animate-fade-in ${isWatchOn ? 'watch-on' : 'watch-off'}`} />
         
         {/* Watch Screen */}
         <div className="watch-screen">
