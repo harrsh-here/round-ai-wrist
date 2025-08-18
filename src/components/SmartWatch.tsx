@@ -9,8 +9,10 @@ import AIChat from './watch/AIChat';
 import SettingsScreen from './watch/SettingsScreen';
 import FitnessScreen from './watch/FitnessScreen';
 import LoginScreen from './watch/LoginScreen';
+import DialerScreen from './watch/DialerScreen';
+import MusicScreen from './watch/MusicScreen';
 
-export type WatchScreen = 'login' | 'analog' | 'home' | 'features' | 'chat' | 'settings' | 'fitness';
+export type WatchScreen = 'login' | 'analog' | 'home' | 'features' | 'chat' | 'settings' | 'fitness' | 'dialer' | 'music';
 
 const SmartWatch = () => {
   const [currentScreen, setCurrentScreen] = useState<WatchScreen>('login');
@@ -117,6 +119,10 @@ const SmartWatch = () => {
         return <SettingsScreen {...screenProps} />;
       case 'fitness':
         return <FitnessScreen {...screenProps} />;
+      case 'dialer':
+        return <DialerScreen {...screenProps} />;
+      case 'music':
+        return <MusicScreen {...screenProps} />;
       default:
         return <HomeScreen {...screenProps} />;
     }

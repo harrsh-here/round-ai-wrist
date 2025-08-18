@@ -63,12 +63,12 @@
     --radius: 0.5rem;
 
     /* Enhanced Watch Gradients - Two shades of black */
-    --gradient-watch: linear-gradient(135deg, hsl(0 0% 8%), hsl(0 0% 3%));
+    --gradient-watch: linear-gradient(135deg, hsl(0 0% 10%), hsl(0 0% 5%));
     --gradient-bezel: linear-gradient(135deg, hsl(var(--watch-bezel)), hsl(var(--watch-bezel-inner)), hsl(var(--watch-bezel)));
     --gradient-ai: linear-gradient(135deg, hsl(var(--ai-primary)), hsl(var(--ai-secondary)));
     --gradient-glow: radial-gradient(circle at center, hsl(var(--primary-glow) / 0.4), transparent 70%);
     --gradient-fitness: linear-gradient(135deg, hsl(var(--feature-fitness)), hsl(var(--feature-health)));
-    --gradient-black: linear-gradient(135deg, hsl(0 0% 12%), hsl(0 0% 6%));
+    --gradient-black: linear-gradient(135deg, hsl(0 0% 15%), hsl(0 0% 8%));
 
     /* Enhanced Watch Shadows */
     --shadow-watch: 0 25px 50px -15px hsl(var(--background) / 0.9);
@@ -157,7 +157,8 @@
 
   /* Safe padding class for watch content */
   .watch-content-safe {
-    @apply absolute inset-8 rounded-full overflow-hidden;
+    @apply absolute inset-8 rounded-full overflow-hidden flex flex-col;
+    background: var(--gradient-watch);
   }
 
   .watch-strap {

@@ -24,18 +24,22 @@ const FeaturesScreen = ({ onNavigate }: FeaturesScreenProps) => {
   const handleFeatureClick = (feature: typeof features[0]) => {
     if (feature.screen) {
       onNavigate(feature.screen);
+    } else if (feature.label === 'Calls') {
+      onNavigate('dialer' as WatchScreen);
+    } else if (feature.label === 'Music') {
+      onNavigate('music' as WatchScreen);
     }
   };
 
   return (
-    <div className="relative w-full h-full flex flex-col items-center justify-center p-6 bg-gradient-to-br from-slate-900/90 via-blue-950/80 to-slate-900/90">
+    <div className="watch-content-safe flex flex-col items-center justify-center h-full">
       {/* Header */}
-      <div className="text-center mb-6 watch-slide-up">
-        <h2 className="text-lg font-semibold text-white">Features</h2>
+      <div className="text-center mb-4 watch-slide-up">
+        <h2 className="text-sm font-semibold text-white">Features</h2>
       </div>
 
       {/* Features Grid */}
-      <div className="grid grid-cols-3 gap-4 mb-8 max-w-60">
+      <div className="grid grid-cols-3 gap-3 mb-6 max-w-[200px]">
         {features.map((feature, index) => {
           const Icon = feature.icon;
           return (
@@ -43,12 +47,10 @@ const FeaturesScreen = ({ onNavigate }: FeaturesScreenProps) => {
               key={feature.label}
               variant="ghost"
               onClick={() => handleFeatureClick(feature)}
-              className={`flex flex-col items-center justify-center w-16 h-16 p-2 rounded-xl backdrop-blur-md bg-white/10 hover:bg-white/15 border border-white/20 watch-glow transition-all duration-300 ${
-                feature.screen ? 'cursor-pointer' : 'cursor-default'
-              }`}
+              className="flex flex-col items-center justify-center w-14 h-14 p-2 rounded-xl glass-bg hover:bg-white/15 watch-glow transition-all duration-300 cursor-pointer"
               style={{ animationDelay: `${index * 50}ms` }}
             >
-              <Icon size={22} className={`${feature.color} mb-1`} />
+              <Icon size={20} className={`${feature.color} mb-1`} />
               <span className="text-xs text-white/80">{feature.label}</span>
             </Button>
           );
@@ -56,14 +58,14 @@ const FeaturesScreen = ({ onNavigate }: FeaturesScreenProps) => {
       </div>
 
       {/* Back Button */}
-      <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2">
+      <div className="flex justify-center">
         <Button
           variant="ghost"
           size="sm"
           onClick={() => onNavigate('home')}
-          className="rounded-full w-12 h-12 p-0 backdrop-blur-md bg-white/10 hover:bg-white/15 border border-white/20 shadow-lg"
+          className="rounded-full w-10 h-10 p-0 glass-bg hover:bg-white/15"
         >
-          <Home size={18} className="text-white" />
+          <Home size={16} className="text-white" />
         </Button>
       </div>
     </div>
