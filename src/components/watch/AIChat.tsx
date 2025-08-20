@@ -1,7 +1,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Home, Square } from 'lucide-react';
+import { Home, Mic } from 'lucide-react';
 import { WatchScreen } from '../SmartWatch';
 
 interface AIChatProps {
@@ -86,27 +86,8 @@ const AIChat = ({ onNavigate }: AIChatProps) => {
     return responses[Math.floor(Math.random() * responses.length)];
   };
 
-  // Digital Voice Recorder Icon Component
-  const VoiceRecorderIcon = ({ size = 24, className = "" }) => (
-    <svg 
-      width={size} 
-      height={size} 
-      viewBox="0 0 24 24" 
-      fill="none" 
-      className={className}
-    >
-      <rect x="9" y="2" width="6" height="12" rx="3" stroke="currentColor" strokeWidth="2" fill="none"/>
-      <path d="M5 10v2a7 7 0 0 0 14 0v-2" stroke="currentColor" strokeWidth="2" fill="none"/>
-      <line x1="12" y1="19" x2="12" y2="23" stroke="currentColor" strokeWidth="2"/>
-      <line x1="8" y1="23" x2="16" y2="23" stroke="currentColor" strokeWidth="2"/>
-      <circle cx="12" cy="8" r="1" fill="currentColor"/>
-      <circle cx="12" cy="6" r="0.5" fill="currentColor"/>
-      <circle cx="12" cy="10" r="0.5" fill="currentColor"/>
-    </svg>
-  );
-
   return (
-    <div className="watch-content-safe watch-safe-area">
+    <div className="watch-content-safe">
       {/* Header */}
       <div className="flex items-center justify-center mb-3">
         <div className="flex items-center space-x-2">
@@ -115,8 +96,8 @@ const AIChat = ({ onNavigate }: AIChatProps) => {
         </div>
       </div>
 
-      {/* Messages - Scrollable area */}
-      <div className="flex-1 overflow-y-auto watch-scroll space-y-3 mb-4 max-h-[120px]">
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto watch-scroll space-y-3 mb-4">
         {messages.map((message) => (
           <div
             key={message.id}
@@ -136,9 +117,9 @@ const AIChat = ({ onNavigate }: AIChatProps) => {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Voice Input - Centered digital recorder with glow */}
+      {/* Voice Input - Centered mic with glow */}
       <div className="flex flex-col items-center space-y-4 mb-4">
-        {/* Digital Voice Recorder Button */}
+        {/* Mic Button */}
         <Button
           onMouseDown={handleMicPress}
           onTouchStart={handleMicPress}
@@ -148,13 +129,13 @@ const AIChat = ({ onNavigate }: AIChatProps) => {
               : 'bg-gradient-to-r from-ai-primary to-purple-500 hover:from-ai-primary/80 hover:to-purple-500/80 pulse-ring'
           }`}
         >
-          <VoiceRecorderIcon size={24} className="text-white" />
+          <Mic size={24} className="text-white" />
         </Button>
         
         {/* Instructions */}
         <div className="text-center">
           <div className="text-xs text-white/70">
-            {isListening ? 'Recording...' : 'Hold to record'}
+            {isListening ? 'Listening...' : 'Hold mic to speak'}
           </div>
         </div>
 
