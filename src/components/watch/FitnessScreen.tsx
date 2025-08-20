@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Home, Heart, Footprints, Zap, Target, Trophy, TrendingUp } from 'lucide-react';
@@ -36,7 +35,7 @@ const FitnessScreen = ({ onNavigate }: FitnessScreenProps) => {
       value: `${bpm}`,
       unit: 'BPM',
       color: 'text-feature-health',
-      animate: bmp > 80
+      animate: bpm > 80
     },
     {
       icon: Footprints,
