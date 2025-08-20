@@ -36,8 +36,7 @@ const FitnessScreen = ({ onNavigate }: FitnessScreenProps) => {
       value: `${bpm}`,
       unit: 'BPM',
       color: 'text-feature-health',
-      bgColor: 'bg-feature-health/10',
-      animate: true
+      animate: bmp > 80
     },
     {
       icon: Footprints,
@@ -45,7 +44,6 @@ const FitnessScreen = ({ onNavigate }: FitnessScreenProps) => {
       value: steps.toLocaleString(),
       unit: 'steps',
       color: 'text-primary',
-      bgColor: 'bg-primary/10',
       animate: false
     },
     {
@@ -54,7 +52,6 @@ const FitnessScreen = ({ onNavigate }: FitnessScreenProps) => {
       value: calories.toString(),
       unit: 'kcal',
       color: 'text-feature-fitness',
-      bgColor: 'bg-feature-fitness/10',
       animate: false
     },
     {
@@ -63,7 +60,6 @@ const FitnessScreen = ({ onNavigate }: FitnessScreenProps) => {
       value: '2h 34m',
       unit: 'today',
       color: 'text-accent',
-      bgColor: 'bg-accent/10',
       animate: false
     }
   ];
@@ -75,7 +71,7 @@ const FitnessScreen = ({ onNavigate }: FitnessScreenProps) => {
   ];
 
   return (
-    <div className="watch-content-safe flex flex-col items-center justify-center p-4">
+    <div className="watch-content-safe">
       {/* Header */}
       <div className="text-center mb-4 watch-slide-up">
         <h2 className="text-lg font-bold bg-gradient-to-r from-white via-white/90 to-white/70 bg-clip-text text-transparent">
@@ -84,107 +80,110 @@ const FitnessScreen = ({ onNavigate }: FitnessScreenProps) => {
         <div className="text-xs text-white/60">Today's Activity</div>
       </div>
 
-      {/* Main Stats Grid - Better spacing */}
-      <div className="grid grid-cols-2 gap-3 mb-4 w-full max-w-[200px]">
-        {fitnessStats.map((stat, index) => {
-          const Icon = stat.icon;
-          return (
-            <div
-              key={stat.label}
-              className={`glass-bg p-3 rounded-xl text-center watch-glow`}
-              style={{ animationDelay: `${index * 100}ms` }}
-            >
-              <Icon 
-                size={16} 
-                className={`${stat.color} mx-auto mb-2 ${stat.animate ? 'animate-bmp-pulse' : ''}`} 
+      {/* Scrollable Content */}
+      <div className="flex-1 overflow-y-auto watch-scroll">
+        {/* Main Stats Grid */}
+        <div className="grid grid-cols-2 gap-3 mb-4">
+          {fitnessStats.map((stat, index) => {
+            const Icon = stat.icon;
+            return (
+              <div
+                key={stat.label}
+                className="glass-bg p-3 rounded-xl text-center watch-glow"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <Icon 
+                  size={16} 
+                  className={`${stat.color} mx-auto mb-2 ${stat.animate ? 'animate-bmp-pulse' : ''}`} 
+                />
+                <div className="text-sm font-bold text-white">
+                  {stat.value}
+                </div>
+                <div className="text-xs text-white/60">
+                  {stat.unit}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Progress Rings */}
+        <div className="flex justify-center space-x-4 mb-4">
+          <div className="relative w-12 h-12">
+            <svg className="w-12 h-12 transform -rotate-90" viewBox="0 0 36 36">
+              <path
+                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                fill="none"
+                stroke="hsl(var(--border))"
+                strokeWidth="2"
               />
-              <div className={`text-sm font-bold text-white`}>
-                {stat.value}
-              </div>
-              <div className="text-xs text-white/60">
-                {stat.unit}
-              </div>
+              <path
+                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                fill="none"
+                stroke="hsl(var(--feature-health))"
+                strokeWidth="2"
+                strokeDasharray={`${(steps / 12000) * 100}, 100`}
+                className="transition-all duration-500"
+              />
+            </svg>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Footprints size={10} className="text-primary" />
             </div>
-          );
-        })}
-      </div>
-
-      {/* Progress Rings - Better positioning */}
-      <div className="flex justify-center space-x-4 mb-4">
-        <div className="relative w-12 h-12">
-          <svg className="w-12 h-12 transform -rotate-90" viewBox="0 0 36 36">
-            <path
-              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-              fill="none"
-              stroke="hsl(var(--border))"
-              strokeWidth="2"
-            />
-            <path
-              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-              fill="none"
-              stroke="hsl(var(--feature-health))"
-              strokeWidth="2"
-              strokeDasharray={`${(steps / 12000) * 100}, 100`}
-              className="transition-all duration-500"
-            />
-          </svg>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <Footprints size={10} className="text-primary" />
+          </div>
+          
+          <div className="relative w-12 h-12">
+            <svg className="w-12 h-12 transform -rotate-90" viewBox="0 0 36 36">
+              <path
+                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                fill="none"
+                stroke="hsl(var(--border))"
+                strokeWidth="2"
+              />
+              <path
+                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                fill="none"
+                stroke="hsl(var(--feature-fitness))"
+                strokeWidth="2"
+                strokeDasharray={`${(calories / 500) * 100}, 100`}
+                className="transition-all duration-500"
+              />
+            </svg>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Zap size={10} className="text-feature-fitness" />
+            </div>
           </div>
         </div>
-        
-        <div className="relative w-12 h-12">
-          <svg className="w-12 h-12 transform -rotate-90" viewBox="0 0 36 36">
-            <path
-              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-              fill="none"
-              stroke="hsl(var(--border))"
-              strokeWidth="2"
-            />
-            <path
-              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-              fill="none"
-              stroke="hsl(var(--feature-fitness))"
-              strokeWidth="2"
-              strokeDasharray={`${(calories / 500) * 100}, 100`}
-              className="transition-all duration-500"
-            />
-          </svg>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <Zap size={10} className="text-feature-fitness" />
-          </div>
+
+        {/* Achievements */}
+        <div className="flex justify-center space-x-3 mb-4">
+          {achievements.map((achievement, index) => {
+            const Icon = achievement.icon;
+            return (
+              <div
+                key={achievement.label}
+                className={`p-2.5 rounded-lg ${
+                  achievement.achieved 
+                    ? 'glass-bg text-accent' 
+                    : 'bg-muted/20 text-muted-foreground'
+                }`}
+              >
+                <Icon size={12} />
+              </div>
+            );
+          })}
         </div>
-      </div>
 
-      {/* Achievements - Better spacing */}
-      <div className="flex justify-center space-x-3 mb-4">
-        {achievements.map((achievement, index) => {
-          const Icon = achievement.icon;
-          return (
-            <div
-              key={achievement.label}
-              className={`p-2.5 rounded-lg ${
-                achievement.achieved 
-                  ? 'glass-bg text-accent' 
-                  : 'bg-muted/20 text-muted-foreground'
-              }`}
-            >
-              <Icon size={12} />
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Back Button */}
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => onNavigate('home')}
-          className="rounded-full w-10 h-10 p-0 glass-bg hover:bg-white/15"
-        >
-          <Home size={14} className="text-white" />
-        </Button>
+        {/* Back Button */}
+        <div className="flex justify-center pb-4">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => onNavigate('home')}
+            className="rounded-full w-10 h-10 p-0 glass-bg hover:bg-white/15"
+          >
+            <Home size={14} className="text-white" />
+          </Button>
+        </div>
       </div>
     </div>
   );
