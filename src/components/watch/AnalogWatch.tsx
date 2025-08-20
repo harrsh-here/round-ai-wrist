@@ -44,97 +44,48 @@ const AnalogWatch = ({ onNavigate }: AnalogWatchProps) => {
     />
   );
 
-  // Generate hour numbers positions with safe padding
-  const hourNumbers = [];
-  for (let i = 1; i <= 12; i++) {
-    const angle = (i * 30) - 90;
-    const radius = 120; // Adjusted for better positioning
-    const x = Math.cos((angle * Math.PI) / 180) * radius;
-    const y = Math.sin((angle * Math.PI) / 180) * radius;
-    
-    hourNumbers.push(
-      <div
-        key={i}
-        className="analog-number text-foreground font-bold text-lg drop-shadow-lg"
-        style={{
-          left: `calc(50% + ${x}px)`,
-          top: `calc(50% + ${y}px)`,
-        }}
-      >
-        {i}
-      </div>
-    );
-  }
-
-  // Generate minute markers with proper spacing
-  const minuteMarkers = [];
-  for (let i = 0; i < 60; i++) {
-    if (i % 5 !== 0) {
-      const angle = i * 6;
-      const outerRadius = 145;
-      const innerRadius = 135;
-      
-      const x1 = Math.cos((angle - 90) * Math.PI / 180) * outerRadius;
-      const y1 = Math.sin((angle - 90) * Math.PI / 180) * outerRadius;
-      const x2 = Math.cos((angle - 90) * Math.PI / 180) * innerRadius;
-      const y2 = Math.sin((angle - 90) * Math.PI / 180) * innerRadius;
-      
-      minuteMarkers.push(
-        <line
-          key={i}
-          x1={x1 + 150}
-          y1={y1 + 150}
-          x2={x2 + 150}
-          y2={y2 + 150}
-          stroke="hsl(var(--foreground))"
-          strokeWidth="1"
-          opacity="0.3"
-        />
-      );
-    }
-  }
-
   return (
     <div 
-      className="watch-content-safe flex items-center justify-center cursor-pointer p-2"
+      className="watch-content-safe flex items-center justify-center cursor-pointer"
       onClick={() => onNavigate('home')}
     >
-      {/* Analog Clock Face - Properly sized and centered */}
-      <div className="relative w-full h-full max-w-[280px] max-h-[280px] rounded-full bg-gradient-to-br from-card via-background to-muted border-2 border-primary/30 shadow-inner">
+      {/* Analog Clock Face - Full area coverage */}
+      <div className="relative w-full h-full rounded-full bg-gradient-to-br from-card via-background to-muted border-2 border-primary/30 shadow-inner">
         
-        {/* Hour Markers - Properly positioned */}
-        {[...Array(12)].map((_, i) => {
-          const angle = i * 30;
-          const outerRadius = 125;
-          const innerRadius = 105;
-          
-          const x1 = Math.cos((angle - 90) * Math.PI / 180) * outerRadius;
-          const y1 = Math.sin((angle - 90) * Math.PI / 180) * outerRadius;
-          const x2 = Math.cos((angle - 90) * Math.PI / 180) * innerRadius;
-          const y2 = Math.sin((angle - 90) * Math.PI / 180) * innerRadius;
-          
-          return (
-            <svg key={i} className="absolute inset-0 w-full h-full">
+        {/* Hour Markers - Better positioned with perfect dashes */}
+        <svg className="absolute inset-0 w-full h-full">
+          {[...Array(12)].map((_, i) => {
+            const angle = i * 30;
+            const outerRadius = 145;
+            const innerRadius = 125;
+            
+            const x1 = Math.cos((angle - 90) * Math.PI / 180) * outerRadius;
+            const y1 = Math.sin((angle - 90) * Math.PI / 180) * outerRadius;
+            const x2 = Math.cos((angle - 90) * Math.PI / 180) * innerRadius;
+            const y2 = Math.sin((angle - 90) * Math.PI / 180) * innerRadius;
+            
+            return (
               <line
-                x1={x1 + 140}
-                y1={y1 + 140}
-                x2={x2 + 140}
-                y2={y2 + 140}
+                key={i}
+                x1={x1 + 155}
+                y1={y1 + 155}
+                x2={x2 + 155}
+                y2={y2 + 155}
                 stroke="hsl(var(--primary))"
                 strokeWidth="4"
                 className="drop-shadow-sm"
               />
-            </svg>
-          );
-        })}
+            );
+          })}
+        </svg>
 
-        {/* Minute Markers - Better spacing */}
+        {/* Minute Markers - Perfect spacing and positioning */}
         <svg className="absolute inset-0 w-full h-full">
           {[...Array(60)].map((_, i) => {
             if (i % 5 !== 0) {
               const angle = i * 6;
-              const outerRadius = 130;
-              const innerRadius = 120;
+              const outerRadius = 147;
+              const innerRadius = 137;
               
               const x1 = Math.cos((angle - 90) * Math.PI / 180) * outerRadius;
               const y1 = Math.sin((angle - 90) * Math.PI / 180) * outerRadius;
@@ -144,10 +95,10 @@ const AnalogWatch = ({ onNavigate }: AnalogWatchProps) => {
               return (
                 <line
                   key={i}
-                  x1={x1 + 140}
-                  y1={y1 + 140}
-                  x2={x2 + 140}
-                  y2={y2 + 140}
+                  x1={x1 + 155}
+                  y1={y1 + 155}
+                  x2={x2 + 155}
+                  y2={y2 + 155}
                   stroke="hsl(var(--foreground))"
                   strokeWidth="1.5"
                   opacity="0.4"
@@ -158,11 +109,11 @@ const AnalogWatch = ({ onNavigate }: AnalogWatchProps) => {
           })}
         </svg>
 
-        {/* Hour Numbers - Properly positioned with safe padding */}
+        {/* Hour Numbers - Perfect positioning with proper padding */}
         {[...Array(12)].map((_, i) => {
           const hour = i === 0 ? 12 : i;
           const angle = (i * 30) - 90;
-          const radius = 85; // Safe distance from edge
+          const radius = 100; // Optimal distance from center
           
           const x = Math.cos((angle * Math.PI) / 180) * radius;
           const y = Math.sin((angle * Math.PI) / 180) * radius;
@@ -170,7 +121,7 @@ const AnalogWatch = ({ onNavigate }: AnalogWatchProps) => {
           return (
             <div
               key={hour}
-              className="absolute text-white font-bold text-lg"
+              className="absolute text-white font-bold text-xl"
               style={{
                 left: `calc(50% + ${x}px)`,
                 top: `calc(50% + ${y}px)`,
@@ -183,53 +134,53 @@ const AnalogWatch = ({ onNavigate }: AnalogWatchProps) => {
           );
         })}
 
-        {/* Brand Position - FuzNex */}
-        <div className="absolute top-[25%] left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          <div className="text-sm text-primary font-bold tracking-wider drop-shadow-md">FuzNex</div>
+        {/* Brand Position - FuzNex - Now visible */}
+        <div className="absolute top-[30%] left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          <div className="text-base text-primary font-bold tracking-wider drop-shadow-md">FuzNex</div>
         </div>
 
-        {/* Subsidiary seconds dial */}
-        <div className="absolute bottom-[20%] left-1/2 transform -translate-x-1/2 translate-y-1/2">
-          <div className="w-12 h-12 rounded-full border-2 border-border/40 bg-muted/30 flex items-center justify-center">
-            <div className="text-xs text-muted-foreground font-mono font-bold">{time.getSeconds().toString().padStart(2, '0')}</div>
+        {/* Subsidiary seconds dial - Better positioned */}
+        <div className="absolute bottom-[25%] left-1/2 transform -translate-x-1/2 translate-y-1/2">
+          <div className="w-14 h-14 rounded-full border-2 border-border/40 bg-muted/30 flex items-center justify-center">
+            <div className="text-sm text-muted-foreground font-mono font-bold">{time.getSeconds().toString().padStart(2, '0')}</div>
           </div>
         </div>
 
-        {/* Clock Hands - Properly sized */}
+        {/* Clock Hands - Perfect sizes */}
         <WatchHand 
           angle={hourAngle} 
-          length={50} 
-          width={5} 
+          length={60} 
+          width={6} 
           color="hsl(var(--foreground))" 
           className="z-30 shadow-lg"
         />
         <WatchHand 
           angle={minuteAngle} 
-          length={75} 
-          width={3} 
+          length={85} 
+          width={4} 
           color="hsl(var(--foreground))" 
           className="z-20 shadow-lg"
         />
         <WatchHand 
           angle={secondAngle} 
-          length={85} 
-          width={1} 
+          length={95} 
+          width={2} 
           color="hsl(var(--primary))" 
           className="z-10 shadow-md"
         />
 
-        {/* Center assembly */}
-        <div className="absolute w-5 h-5 bg-gradient-to-br from-primary to-secondary rounded-full top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-40 border-2 border-background shadow-xl" />
-        <div className="absolute w-2 h-2 bg-background rounded-full top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50" />
+        {/* Center assembly - Perfect positioning */}
+        <div className="absolute w-6 h-6 bg-gradient-to-br from-primary to-secondary rounded-full top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-40 border-2 border-background shadow-xl" />
+        <div className="absolute w-3 h-3 bg-background rounded-full top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50" />
         
         {/* Decorative screws - Better positioned */}
         {[45, 135, 225, 315].map((angle, i) => (
           <div
             key={i}
-            className="absolute w-2 h-2 bg-muted rounded-full border border-border/60"
+            className="absolute w-3 h-3 bg-muted rounded-full border border-border/60"
             style={{
-              left: `calc(50% + ${Math.cos((angle * Math.PI) / 180) * 110}px)`,
-              top: `calc(50% + ${Math.sin((angle * Math.PI) / 180) * 110}px)`,
+              left: `calc(50% + ${Math.cos((angle * Math.PI) / 180) * 120}px)`,
+              top: `calc(50% + ${Math.sin((angle * Math.PI) / 180) * 120}px)`,
               transform: 'translate(-50%, -50%)',
             }}
           />
