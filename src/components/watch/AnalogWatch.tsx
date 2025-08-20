@@ -40,40 +40,42 @@ const AnalogWatch = ({ onNavigate }: AnalogWatchProps) => {
         top: '50%',
         transform: `translateX(-50%) translateY(-${length}px) rotate(${angle}deg)`,
         borderRadius: '2px',
-        boxShadow: '0 0 10px rgba(0,0,0,0.8), 0 0 5px rgba(255,255,255,0.1)',
+        boxShadow: '0 0 10px rgba(0,0,0,0.5)',
       }}
     />
   );
 
   return (
     <div 
-      className="watch-content-safe cursor-pointer"
+      className="watch-content-safe flex items-center justify-center cursor-pointer relative"
       onClick={() => onNavigate('home')}
     >
       {/* Status Bar */}
-      <div className="watch-status-bar">
-        <div className="flex items-center space-x-2">
-          <div className="status-icon battery">
-            <Battery size={10} />
-            <span className="text-xs">85%</span>
+      <div className="absolute top-2 left-0 right-0 z-50">
+        <div className="flex items-center justify-between px-6 py-1 text-xs">
+          <div className="flex items-center space-x-2">
+            <div className="status-icon battery">
+              <Battery size={10} />
+              <span className="text-xs">85%</span>
+            </div>
           </div>
-        </div>
-        <div className="flex items-center space-x-2">
-          <Wifi size={8} className="text-primary" />
-          <Bluetooth size={8} className="text-primary" />
-          <Phone size={8} className="text-feature-call" />
+          <div className="flex items-center space-x-2">
+            <Wifi size={10} className="text-primary" />
+            <Bluetooth size={10} className="text-primary" />
+            <Phone size={10} className="text-feature-call" />
+          </div>
         </div>
       </div>
 
-      {/* Analog Clock Face - Full size with proper padding */}
-      <div className="flex-1 relative rounded-full bg-gradient-to-br from-card via-background to-muted border border-primary/20 shadow-inner mx-4 my-2">
+      {/* Analog Clock Face */}
+      <div className="relative w-full h-full rounded-full bg-gradient-to-br from-card via-background to-muted border border-primary/20 shadow-inner">
         
-        {/* Hour Markers - Improved positioning and sizing */}
+        {/* Hour Markers */}
         <svg className="absolute inset-0 w-full h-full">
           {[...Array(12)].map((_, i) => {
             const angle = i * 30;
-            const outerRadius = 48;
-            const innerRadius = 42;
+            const outerRadius = 135;
+            const innerRadius = 118;
             
             const x1 = Math.cos((angle - 90) * Math.PI / 180) * outerRadius;
             const y1 = Math.sin((angle - 90) * Math.PI / 180) * outerRadius;
@@ -83,26 +85,25 @@ const AnalogWatch = ({ onNavigate }: AnalogWatchProps) => {
             return (
               <line
                 key={i}
-                x1={x1 + 50}
-                y1={y1 + 50}
-                x2={x2 + 50}
-                y2={y2 + 50}
+                x1={x1 + 165}
+                y1={y1 + 165}
+                x2={x2 + 165}
+                y2={y2 + 165}
                 stroke="hsl(var(--primary))"
-                strokeWidth="2.5"
+                strokeWidth="3"
                 className="drop-shadow-sm"
-                style={{ transformOrigin: '50% 50%' }}
               />
             );
           })}
         </svg>
 
-        {/* Minute Markers - Better distributed */}
+        {/* Minute Markers */}
         <svg className="absolute inset-0 w-full h-full">
           {[...Array(60)].map((_, i) => {
             if (i % 5 !== 0) {
               const angle = i * 6;
-              const outerRadius = 49;
-              const innerRadius = 46;
+              const outerRadius = 137;
+              const innerRadius = 130;
               
               const x1 = Math.cos((angle - 90) * Math.PI / 180) * outerRadius;
               const y1 = Math.sin((angle - 90) * Math.PI / 180) * outerRadius;
@@ -112,10 +113,10 @@ const AnalogWatch = ({ onNavigate }: AnalogWatchProps) => {
               return (
                 <line
                   key={i}
-                  x1={x1 + 50}
-                  y1={y1 + 50}
-                  x2={x2 + 50}
-                  y2={y2 + 50}
+                  x1={x1 + 165}
+                  y1={y1 + 165}
+                  x2={x2 + 165}
+                  y2={y2 + 165}
                   stroke="hsl(var(--foreground))"
                   strokeWidth="1"
                   opacity="0.6"
@@ -126,11 +127,11 @@ const AnalogWatch = ({ onNavigate }: AnalogWatchProps) => {
           })}
         </svg>
 
-        {/* Hour Numbers - Perfect positioning */}
+        {/* Hour Numbers */}
         {[...Array(12)].map((_, i) => {
           const hour = i === 0 ? 12 : i;
           const angle = (i * 30) - 90;
-          const radius = 35;
+          const radius = 95;
           
           const x = Math.cos((angle * Math.PI) / 180) * radius;
           const y = Math.sin((angle * Math.PI) / 180) * radius;
@@ -138,10 +139,10 @@ const AnalogWatch = ({ onNavigate }: AnalogWatchProps) => {
           return (
             <div
               key={hour}
-              className="absolute text-white font-bold text-base"
+              className="absolute text-white font-bold text-lg"
               style={{
-                left: `calc(50% + ${x * 2}px)`,
-                top: `calc(50% + ${y * 2}px)`,
+                left: `calc(50% + ${x}px)`,
+                top: `calc(50% + ${y}px)`,
                 transform: 'translate(-50%, -50%)',
                 textShadow: '0 2px 4px rgba(0,0,0,0.8)',
               }}
@@ -152,21 +153,21 @@ const AnalogWatch = ({ onNavigate }: AnalogWatchProps) => {
         })}
 
         {/* Brand Position */}
-        <div className="absolute top-[25%] left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+        <div className="absolute top-[28%] left-1/2 transform -translate-x-1/2 -translate-y-1/2">
           <div className="text-sm text-primary font-bold tracking-wider drop-shadow-md">FuzNex</div>
         </div>
 
         {/* Date Display */}
-        <div className="absolute top-[45%] right-[20%] transform translate-x-1/2 -translate-y-1/2">
-          <div className="bg-white text-black px-2 py-1 rounded text-xs font-bold border border-primary/30 shadow-lg">
+        <div className="absolute top-[45%] right-[25%] transform translate-x-1/2 -translate-y-1/2">
+          <div className="bg-white text-black px-2 py-1 rounded text-xs font-bold border border-primary/30">
             {time.getDate().toString().padStart(2, '0')}
           </div>
         </div>
 
         {/* Digital Time at Bottom */}
-        <div className="absolute bottom-[15%] left-1/2 transform -translate-x-1/2 translate-y-1/2">
+        <div className="absolute bottom-[20%] left-1/2 transform -translate-x-1/2 translate-y-1/2">
           <div className="text-center">
-            <div className="text-base font-mono font-bold text-primary">
+            <div className="text-lg font-mono font-bold text-primary">
               {time.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' })}
             </div>
             <div className="text-xs text-primary/70">
@@ -175,32 +176,32 @@ const AnalogWatch = ({ onNavigate }: AnalogWatchProps) => {
           </div>
         </div>
 
-        {/* Clock Hands - Properly sized and positioned */}
+        {/* Clock Hands */}
         <WatchHand 
           angle={hourAngle} 
-          length={25} 
-          width={4} 
+          length={55} 
+          width={5} 
           color="hsl(var(--foreground))" 
           className="z-30 shadow-lg"
         />
         <WatchHand 
           angle={minuteAngle} 
-          length={35} 
-          width={2.5} 
+          length={75} 
+          width={3} 
           color="hsl(var(--foreground))" 
           className="z-20 shadow-lg"
         />
         <WatchHand 
           angle={secondAngle} 
-          length={38} 
+          length={85} 
           width={1} 
           color="hsl(0 85% 60%)" 
           className="z-10 shadow-md"
         />
 
-        {/* Center assembly - Enhanced design */}
-        <div className="absolute w-4 h-4 bg-gradient-to-br from-primary to-secondary rounded-full top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-40 border-2 border-background shadow-xl" />
-        <div className="absolute w-1.5 h-1.5 bg-background rounded-full top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50" />
+        {/* Center assembly */}
+        <div className="absolute w-5 h-5 bg-gradient-to-br from-primary to-secondary rounded-full top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-40 border-2 border-background shadow-xl" />
+        <div className="absolute w-2 h-2 bg-background rounded-full top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50" />
       </div>
     </div>
   );

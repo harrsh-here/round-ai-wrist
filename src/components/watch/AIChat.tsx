@@ -20,7 +20,7 @@ const AIChat = ({ onNavigate }: AIChatProps) => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: 'Hello! I\'m your AI assistant. Hold the mic to speak.',
+      text: 'Hello! I\'m your AI assistant. Hold the mic to speak or tap to listen.',
       isUser: false,
       timestamp: new Date(),
     },
@@ -87,9 +87,9 @@ const AIChat = ({ onNavigate }: AIChatProps) => {
   };
 
   return (
-    <div className="watch-content-safe">
+    <div className="watch-content-safe flex flex-col h-full">
       {/* Header */}
-      <div className="flex items-center justify-center mb-3">
+      <div className="flex items-center justify-center mb-3 pt-4">
         <div className="flex items-center space-x-2">
           <h2 className="text-sm font-semibold text-primary">AI Assistant</h2>
           <div className="w-2 h-2 bg-ai-primary rounded-full animate-pulse" />
@@ -97,17 +97,17 @@ const AIChat = ({ onNavigate }: AIChatProps) => {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto watch-scroll space-y-3 mb-4">
+      <div className="flex-1 overflow-y-auto watch-scroll space-y-3 mb-4 px-4">
         {messages.map((message) => (
           <div
             key={message.id}
             className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}
           >
             <div
-              className={`max-w-[75%] p-3 rounded-2xl text-xs shadow-lg ${
+              className={`max-w-[80%] p-3 rounded-2xl text-xs shadow-lg ${
                 message.isUser
-                  ? 'dark-glass-bg text-white bg-gradient-to-r from-primary/20 to-primary/10 border border-primary/30'
-                  : 'dark-glass-bg text-white bg-gradient-to-r from-ai-primary/20 to-purple-500/20 border border-ai-primary/30'
+                  ? 'dark-glass-bg text-white ml-2 bg-gradient-to-r from-primary/20 to-primary/10 border border-primary/30'
+                  : 'dark-glass-bg text-white mr-2 bg-gradient-to-r from-ai-primary/20 to-purple-500/20 border border-ai-primary/30'
               }`}
             >
               {message.text}
@@ -117,17 +117,17 @@ const AIChat = ({ onNavigate }: AIChatProps) => {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Voice Input - Centered mic with glow */}
-      <div className="flex flex-col items-center space-y-4 mb-4">
+      {/* Voice Input */}
+      <div className="flex flex-col items-center space-y-4 mb-4 px-4">
         {/* Mic Button */}
         <Button
           onMouseDown={handleMicPress}
           onTouchStart={handleMicPress}
-          className={`rounded-full w-16 h-16 p-0 transition-all duration-300 shadow-lg ${
+          className={`rounded-full w-16 h-16 p-0 transition-all duration-300 ${
             isListening 
               ? 'bg-gradient-to-r from-accent to-accent/80 animate-voice-pulse' 
-              : 'bg-gradient-to-r from-ai-primary to-purple-500 hover:from-ai-primary/80 hover:to-purple-500/80 pulse-ring'
-          }`}
+              : 'bg-gradient-to-r from-ai-primary to-purple-500 hover:from-ai-primary/80 hover:to-purple-500/80'
+          } shadow-lg`}
         >
           <Mic size={24} className="text-white" />
         </Button>
