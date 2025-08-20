@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Clock, Heart, Activity, Settings, MessageSquare, Grid3X3, Footprints, Zap } from 'lucide-react';
+import { Clock, Heart, Activity, Settings, MessageSquare, Grid3X3, Footprints, Zap, Battery, Wifi, Bluetooth, Phone } from 'lucide-react';
 import { WatchScreen } from '../SmartWatch';
 
 interface HomeScreenProps {
@@ -47,41 +47,61 @@ const HomeScreen = ({ onNavigate }: HomeScreenProps) => {
   ];
 
   return (
-    <div className="watch-content-safe flex flex-col">
-      <div className="watch-scroll-content flex flex-col items-center justify-start">
-        {/* Time Display - Now at top and always visible */}
-        <div className="text-center mb-6 watch-slide-up pt-4">
-          <div className="text-3xl font-bold mb-2 bg-gradient-to-r from-white via-white/95 to-white/85 bg-clip-text text-transparent">
+    <div className="watch-content-safe flex flex-col h-full">
+      {/* Status Bar */}
+      <div className="watch-status-bar">
+        <div className="flex items-center space-x-3">
+          <div className="status-icon battery">
+            <Battery size={12} />
+            <span>85%</span>
+          </div>
+          <div className="status-icon wifi">
+            <Wifi size={10} />
+          </div>
+          <div className="status-icon bluetooth">
+            <Bluetooth size={10} />
+          </div>
+          <div className="status-icon">
+            <Phone size={10} className="text-feature-call" />
+          </div>
+        </div>
+      </div>
+
+      {/* Scrollable Content */}
+      <div className="flex-1 overflow-y-auto watch-scroll px-4 pb-4">
+        {/* Time Display - Fixed at top */}
+        <div className="text-center mb-6 watch-slide-up pt-2">
+          <div className="text-3xl font-bold mb-2 bg-gradient-to-r from-primary via-white to-primary bg-clip-text text-transparent">
             {formatTime(time)}
           </div>
-          <div className="text-sm text-white/70">
+          <div className="text-sm text-primary/80">
             {formatDate(time)}
           </div>
         </div>
 
-        {/* Quick Stats - Better spacing */}
+        {/* Quick Stats */}
         <div className="flex justify-center space-x-3 mb-6">
-          <div className="glass-bg p-3 rounded-xl text-center min-w-[65px] watch-glow">
-            <Heart size={18} className={`text-feature-health mx-auto mb-1 ${bpm > 80 ? 'animate-bmp-pulse' : ''}`} />
+          <div className="dark-glass-bg p-3 rounded-xl text-center min-w-[60px] watch-glow">
+            <Heart size={16} className={`text-feature-health mx-auto mb-1 ${bpm > 80 ? 'animate-bmp-pulse' : ''}`} />
             <div className="text-sm font-bold text-white">{bpm}</div>
             <div className="text-xs text-white/60">BPM</div>
           </div>
           
-          <div className="glass-bg p-3 rounded-xl text-center min-w-[65px] watch-glow">
-            <Footprints size={18} className="text-primary mx-auto mb-1" />
+          <div className="dark-glass-bg p-3 rounded-xl text-center min-w-[60px] watch-glow">
+            <Footprints size={16} className="text-primary mx-auto mb-1" />
             <div className="text-sm font-bold text-white">8.2K</div>
             <div className="text-xs text-white/60">Steps</div>
           </div>
           
-          <div className="glass-bg p-3 rounded-xl text-center min-w-[65px] watch-glow">
-            <Zap size={18} className="text-feature-fitness mx-auto mb-1" />
+          <div className="dark-glass-bg p-3 rounded-xl text-center min-w-[60px] watch-glow">
+            <Zap size={16} className="text-feature-fitness mx-auto mb-1" />
             <div className="text-sm font-bold text-white">387</div>
             <div className="text-xs text-white/60">Cal</div>
           </div>
         </div>
 
-        {/* Quick Actions - Better layout */}
-        <div className="grid grid-cols-2 gap-3 mb-6 max-w-[200px]">
+        {/* Quick Actions */}
+        <div className="grid grid-cols-2 gap-3 mb-6 max-w-[180px] mx-auto">
           {quickActions.map((action, index) => {
             const Icon = action.icon;
             return (
@@ -89,10 +109,10 @@ const HomeScreen = ({ onNavigate }: HomeScreenProps) => {
                 key={action.label}
                 variant="ghost"
                 onClick={() => onNavigate(action.screen)}
-                className="flex flex-col items-center justify-center h-16 glass-bg hover:bg-white/15 transition-all duration-300 watch-glow rounded-xl p-2"
+                className="flex flex-col items-center justify-center h-14 dark-glass-bg hover:bg-white/15 transition-all duration-300 watch-glow rounded-xl p-2"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <Icon size={22} className={`${action.color} mb-1`} />
+                <Icon size={20} className={`${action.color} mb-1`} />
                 <span className="text-xs text-white/90">{action.label}</span>
               </Button>
             );
@@ -100,14 +120,14 @@ const HomeScreen = ({ onNavigate }: HomeScreenProps) => {
         </div>
 
         {/* Analog Watch Access */}
-        <div className="flex justify-center pb-4">
+        <div className="flex justify-center">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => onNavigate('analog')}
-            className="rounded-full w-12 h-12 p-0 glass-bg hover:bg-white/15"
+            className="rounded-full w-12 h-12 p-0 dark-glass-bg hover:bg-white/15"
           >
-            <Clock size={18} className="text-white" />
+            <Clock size={18} className="text-primary" />
           </Button>
         </div>
       </div>
