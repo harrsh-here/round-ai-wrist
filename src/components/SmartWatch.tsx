@@ -138,7 +138,7 @@ const SmartWatch = () => {
         <div className="watch-strap-top" />
         <div className="watch-strap-bottom" />
         
-        {/* Inner Bezel with glow effect - Limited to bezel area */}
+        {/* Inner Bezel with glow effect */}
         <div className={`watch-bezel-inner-glow animate-fade-in ${isWatchOn ? 'watch-on' : 'watch-off'}`} />
         
         {/* Watch Screen */}
@@ -176,14 +176,14 @@ const SmartWatch = () => {
           </div>
         </div>
 
-        {/* Power Button - Now bottom button with blue glow when on */}
+        {/* Power Button */}
         <button
           className={`watch-power-button ${isWatchOn ? 'active' : ''} ${!isWatchOn ? 'opacity-60' : 'opacity-100'}`}
           onClick={handlePowerButton}
           title="Power Button"
         />
 
-        {/* Voice Button - Now top button with yellow glow when active */}
+        {/* Voice Button */}
         <button
           className={`watch-voice-button ${isListening ? 'active' : ''} ${!isWatchOn || !isLoggedIn ? 'opacity-60' : 'opacity-100'}`}
           onMouseDown={handleVoiceButtonPress}
