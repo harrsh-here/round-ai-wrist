@@ -15,12 +15,6 @@ const LoginScreen = ({ onLogin }: LoginScreenProps) => {
 
   return (
     <div className="relative w-full h-full rounded-full overflow-hidden">
-      {/* Scroll Indicator */}
-      <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-10 flex flex-col items-center">
-        <div className="text-xs text-white/60 mb-1">Scroll down</div>
-        <ChevronDown size={16} className="text-primary animate-bounce" />
-      </div>
-
       {/* Scrollable Content */}
       <div className="h-full overflow-y-auto watch-scroll rounded-full" style={{ clipPath: 'circle(50%)' }}>
         <div className="flex flex-col items-center justify-start p-6 pt-16 min-h-full">
@@ -49,6 +43,11 @@ const LoginScreen = ({ onLogin }: LoginScreenProps) => {
             <div className="text-xs text-white/60">
               Use this code to login
             </div>
+          </div>
+
+          {/* Scroll Indicator - After content */}
+          <div className="flex flex-col items-center mb-8">
+            <ChevronDown size={20} className="text-primary/60 animate-bounce" />
           </div>
 
           {/* Login Button */}
