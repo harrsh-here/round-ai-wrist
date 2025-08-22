@@ -293,13 +293,13 @@
     color: white;
   }
 
-  /* Voice/Mic Button - Physical button design attached to rim */
+  /* Voice/Mic Button - Physical button design attached to rim - RIGHT SIDE ABOVE POWER */
   .watch-voice-button {
     @apply absolute flex items-center justify-center cursor-pointer;
     width: 28px;
     height: 35px;
     right: -16px;
-    top: 25%;
+    top: 30%;
     background: linear-gradient(135deg, 
       hsl(220 15% 45%), 
       hsl(220 20% 35%), 
@@ -315,36 +315,8 @@
     transition: var(--transition-smooth);
   }
 
-  /* Microphone icon using CSS */
+  /* Microphone icon using CSS - proper microphone shape */
   .watch-voice-button::before {
-    content: '';
-    width: 8px;
-    height: 12px;
-    background: hsl(var(--muted-foreground) / 0.8);
-    border-radius: 4px 4px 0 0;
-    position: relative;
-    z-index: 1;
-  }
-
-  .watch-voice-button::after {
-    content: '';
-    position: absolute;
-    width: 12px;
-    height: 8px;
-    border: 2px solid hsl(var(--muted-foreground) / 0.8);
-    border-top: none;
-    border-radius: 0 0 6px 6px;
-    top: 18px;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-
-  /* Add the mic stand */
-  .watch-voice-button {
-    position: relative;
-  }
-
-  .watch-voice-button:before {
     content: '';
     width: 8px;
     height: 12px;
@@ -354,10 +326,10 @@
     top: 6px;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 1;
+    z-index: 2;
   }
 
-  .watch-voice-button:after {
+  .watch-voice-button::after {
     content: '';
     position: absolute;
     width: 12px;
@@ -366,37 +338,6 @@
     border-top: none;
     border-radius: 0 0 6px 6px;
     top: 16px;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-
-  /* Add microphone base */
-  .watch-voice-button {
-    overflow: visible;
-  }
-
-  .watch-voice-button::before {
-    content: '';
-    width: 6px;
-    height: 10px;
-    background: hsl(var(--muted-foreground) / 0.8);
-    border-radius: 3px 3px 0 0;
-    position: absolute;
-    top: 7px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 2;
-  }
-
-  .watch-voice-button::after {
-    content: '';
-    position: absolute;
-    width: 10px;
-    height: 5px;
-    border: 1.5px solid hsl(var(--muted-foreground) / 0.8);
-    border-top: none;
-    border-radius: 0 0 5px 5px;
-    top: 15px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 2;
@@ -409,30 +350,14 @@
 
   .watch-voice-button:before {
     content: '';
-    width: 6px;
-    height: 8px;
-    background: hsl(var(--muted-foreground) / 0.8);
-    border-radius: 3px 3px 0 0;
-    position: absolute;
-    top: 8px;
-    left: 50%;
-    transform: translateX(-50%);
-    box-shadow: 
-      0 8px 0 -6px hsl(var(--muted-foreground) / 0.8),
-      0 10px 0 -5px hsl(var(--muted-foreground) / 0.8);
-  }
-
-  .watch-voice-button:after {
-    content: '';
-    position: absolute;
-    width: 8px;
+    width: 1px;
     height: 4px;
-    border: 1px solid hsl(var(--muted-foreground) / 0.8);
-    border-top: none;
-    border-radius: 0 0 4px 4px;
-    top: 14px;
+    background: hsl(var(--muted-foreground) / 0.8);
+    position: absolute;
+    top: 22px;
     left: 50%;
     transform: translateX(-50%);
+    z-index: 2;
   }
 
   .watch-voice-button:hover {
@@ -452,9 +377,6 @@
 
   .watch-voice-button:hover:before {
     background: hsl(var(--accent-foreground));
-    box-shadow: 
-      0 8px 0 -6px hsl(var(--accent-foreground)),
-      0 10px 0 -5px hsl(var(--accent-foreground));
   }
 
   .watch-voice-button:hover:after {
@@ -479,9 +401,6 @@
 
   .watch-voice-button.active:before {
     background: white;
-    box-shadow: 
-      0 8px 0 -6px white,
-      0 10px 0 -5px white;
   }
 
   .watch-voice-button.active:after {
