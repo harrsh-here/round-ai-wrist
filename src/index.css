@@ -297,12 +297,12 @@
     color: white;
   }
 
-  /* Voice/Mic Button - Digital recorder style microphone, directly above power button */
+  /* Voice/Mic Button - Digital recorder style microphone, on left side */
   .watch-voice-button {
     @apply absolute flex items-center justify-center cursor-pointer;
     width: 28px;
     height: 35px;
-    right: -16px;
+    left: -16px;
     top: 25%;
     background: linear-gradient(135deg, 
       hsl(var(--accent)), 
@@ -311,7 +311,7 @@
       hsl(var(--accent) / 0.5)
     );
     border: 2px solid hsl(var(--accent) / 0.8);
-    border-radius: 6px 12px 12px 6px;
+    border-radius: 12px 6px 6px 12px;
     box-shadow: 
       0 8px 20px rgba(0, 0, 0, 0.6),
       0 0 20px hsl(var(--accent) / 0.4),
@@ -356,26 +356,26 @@
     position: relative;
   }
 
-  .watch-voice-button:hover {
+  .watch-voice-button:active {
     background: linear-gradient(135deg, 
-      hsl(var(--accent) / 0.8), 
       hsl(var(--accent) / 0.6), 
+      hsl(var(--accent) / 0.5), 
       hsl(var(--accent) / 0.4), 
-      hsl(var(--accent) / 0.2)
+      hsl(var(--accent) / 0.3)
     );
-    border-color: hsl(var(--accent) / 0.8);
+    border-color: hsl(var(--accent) / 0.9);
     box-shadow: 
-      0 6px 16px rgba(0, 0, 0, 0.5),
-      0 0 20px hsl(var(--accent) / 0.4),
-      inset 0 2px 4px rgba(255, 255, 255, 0.15),
-      inset 0 -2px 4px rgba(0, 0, 0, 0.3);
+      inset 0 4px 8px rgba(0, 0, 0, 0.6),
+      inset 0 0 15px rgba(0, 0, 0, 0.4),
+      0 2px 6px rgba(0, 0, 0, 0.3);
+    transform: translateY(1px);
   }
 
-  .watch-voice-button:hover::before {
+  .watch-voice-button:active::before {
     background: rgba(255, 255, 255, 0.9);
   }
 
-  .watch-voice-button:hover::after {
+  .watch-voice-button:active::after {
     border-color: rgba(255, 255, 255, 0.9);
   }
 
