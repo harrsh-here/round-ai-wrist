@@ -334,7 +334,7 @@
   .watch-voice-button::after {
     content: '';
     position: absolute;
-    width: 14px;
+    width: 140px;
     height: 8px;
     border: 2px solid hsl(var(--accent-foreground) / 0.9);
     border-top: none;
@@ -354,7 +354,7 @@
     content: '';
     width: 2px;
     height: 6px;
-    background: hsl(var(--accent-foreground) / 0.9);
+    background: hsl(var(--muted-foreground) / 0.9);
     position: absolute;
     top: 25px;
     left: 50%;
