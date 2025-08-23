@@ -36,7 +36,7 @@ const FeaturesScreen = ({ onNavigate }: FeaturesScreenProps) => {
       </div>
 
       {/* Features Grid - Better spacing and sizing */}
-      <div className="grid grid-cols-3 gap-3 mb-6 max-w-[180px]">
+      <div className="grid grid-cols-3 gap-3 mb-6 max-w-[230px]">
         {features.map((feature, index) => {
           const Icon = feature.icon;
           return (
@@ -44,7 +44,7 @@ const FeaturesScreen = ({ onNavigate }: FeaturesScreenProps) => {
               key={feature.label}
               variant="ghost"
               onClick={() => handleFeatureClick(feature)}
-              className="flex flex-col items-center justify-center w-12 h-12 p-2 rounded-xl glass-bg hover:bg-white/15 watch-glow transition-all duration-300 cursor-pointer"
+              className="flex flex-col items-center justify-center w-15 h-15 p-3 rounded-xl glass-bg hover:bg-white/15 watch-glow transition-all duration-300 cursor-pointer"
               style={{ animationDelay: `${index * 50}ms` }}
             >
               <Icon size={18} className={`${feature.color} mb-1`} />
@@ -55,7 +55,7 @@ const FeaturesScreen = ({ onNavigate }: FeaturesScreenProps) => {
       </div>
 
       {/* Back Button */}
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
+      <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2">
         <Button
           variant="ghost"
           size="sm"

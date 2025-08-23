@@ -1,125 +1,131 @@
-
 import React, { useState, useEffect } from 'react';
 import { Battery, Wifi, Bluetooth, Phone } from 'lucide-react';
-import { WatchScreen } from '../SmartWatch';
 
-interface AnalogWatchProps {
-  onNavigate: (screen: WatchScreen) => void;
-  currentScreen: WatchScreen;
-}
-
-const AnalogWatch = ({ onNavigate }: AnalogWatchProps) => {
+const AnalogWatch = ({ onNavigate }) => {
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
     const timer = setInterval(() => {
       setTime(new Date());
     }, 1000);
-
     return () => clearInterval(timer);
   }, []);
 
-  const secondAngle = (time.getSeconds() * 6) - 90;
-  const minuteAngle = (time.getMinutes() * 6) - 90;
-  const hourAngle = ((time.getHours() % 12) * 30 + time.getMinutes() * 0.5) - 90;
+  // Calculate rotation angles for watch hands
+  const secondAngle = time.getSeconds() * 6;
+  const minuteAngle = time.getMinutes() * 6 + time.getSeconds() * 0.1;
+  const hourAngle = (time.getHours() % 12) * 30 + time.getMinutes() * 0.5;
 
-  const WatchHand = ({ angle, length, width, color, className = '' }: { 
-    angle: number; 
-    length: number; 
-    width: number; 
-    color: string;
-    className?: string;
-  }) => (
+  // Watch hand component
+  const WatchHand = ({ angle, length, width, color, className = "" }) => (
     <div
       className={`absolute origin-bottom ${className}`}
       style={{
         width: `${width}px`,
         height: `${length}px`,
         backgroundColor: color,
-        left: '50%',
-        top: '50%',
+        left: "50%",
+        top: "50%",
         transform: `translateX(-50%) translateY(-${length}px) rotate(${angle}deg)`,
-        borderRadius: '2px',
-        boxShadow: '0 0 10px rgba(0,0,0,0.5)',
+        borderRadius: width > 2 ? "3px" : "1px",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
+        transition: "transform 0.1s ease-out",
       }}
     />
   );
 
+  // Use inner watch-content-safe size 350x350 for calculations
+  const size = 350;
+  const center = size / 2;
+  const outerRadius = 140;
+  const innerRadius = 120;
+
   return (
-    <div 
-      className="watch-content-safe flex items-center justify-center cursor-pointer relative"
-      onClick={() => onNavigate('home')}
+    <div
+      className=" flex items-center justify-center cursor-pointer"
+
+      onClick={() => onNavigate && onNavigate("home")}
+      role="button"
+      tabIndex={0}
+      onKeyPress={(e) => { if (e.key === "Enter") onNavigate && onNavigate("home"); }}
+      style={{ width: `${size}px`, height: `${size}px`, margin: "0 auto" }}
     >
-      {/* Status Bar */}
-      <div className="absolute top-2 left-0 right-0 z-50">
-        <div className="flex items-center justify-between px-6 py-1 text-xs">
-          <div className="flex items-center space-x-2">
-            <div className="status-icon battery">
-              <Battery size={10} />
-              <span className="text-xs">85%</span>
-            </div>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Wifi size={10} className="text-primary" />
-            <Bluetooth size={10} className="text-primary" />
-            <Phone size={10} className="text-feature-call" />
-          </div>
+      {/* Status Bar
+      <div className="watch-status-bar absolute top-8 left-4 right-4 z-50 flex justify-between">
+        <div className="status-icon battery flex items-center space-x-1 text-green-400 select-none">
+          <Battery size={14} />
+          <span className="font-medium">85%</span>
+        </div>
+        <div className="flex items-center space-x-3 text-xs text-white/90 select-none">
+          <Wifi size={14} />
+          <Bluetooth size={14} />
+          <Phone size={14} />
+        </div>
+      </div> */}
+
+      {/* Background Text */}
+      <div className=" mix-blend-screen absolute inset-0 flex flex-col top-[-110px] items-center justify-center pointer-events-none z-10 select-none">
+        <div className=" text-3xl md:text-sm font-Bold text-grey tracking-9 transform -rotate-0">
+          Harrsh's
+        </div>
+        <div className="text-4xl md:text-2xl font-bold text-cyan-400 tracking-4 transform rotate-0 -mt-2 ">
+          FuzNex
         </div>
       </div>
 
       {/* Analog Clock Face */}
-      <div className="relative w-full h-full rounded-full bg-gradient-to-br from-card via-background to-muted border border-primary/20 shadow-inner">
-        
-        {/* Hour Markers */}
-        <svg className="absolute inset-0 w-full h-full">
+      <div
+        className="relative rounded-full bg-gradient-to-br from-gray-800 via-gray-900 to-black border border-white/10 shadow-2xl  backdrop-blur-sm "
+        style={{ width: size, height: size }}
+      >
+        {/* Outer border ring */}
+        <div className="absolute inset-2 rounded-full border border-white/5" />
+
+        {/* Hour markers */}
+        <svg className="absolute inset-0 w-full h-full opacity-2%" width={size} height={size}>
           {[...Array(12)].map((_, i) => {
             const angle = i * 30;
-            const outerRadius = 135;
-            const innerRadius = 118;
-            
-            const x1 = Math.cos((angle - 90) * Math.PI / 180) * outerRadius;
-            const y1 = Math.sin((angle - 90) * Math.PI / 180) * outerRadius;
-            const x2 = Math.cos((angle - 90) * Math.PI / 180) * innerRadius;
-            const y2 = Math.sin((angle - 90) * Math.PI / 180) * innerRadius;
-            
+            const x1 = center + Math.cos(((angle - 90) * Math.PI) / 180) * outerRadius;
+            const y1 = center + Math.sin(((angle - 90) * Math.PI) / 180) * outerRadius;
+            const x2 = center + Math.cos(((angle - 90) * Math.PI) / 180) * innerRadius;
+            const y2 = center + Math.sin(((angle - 90) * Math.PI) / 180) * innerRadius;
             return (
               <line
                 key={i}
-                x1={x1 + 165}
-                y1={y1 + 165}
-                x2={x2 + 165}
-                y2={y2 + 165}
-                stroke="hsl(var(--primary))"
-                strokeWidth="3"
+                x1={x1}
+                y1={y1}
+                x2={x2}
+                y2={y2}
+                stroke="hsl(var(--foreground))"
+                strokeWidth={i % 3 === 0 ? 4 : 3}
                 className="drop-shadow-sm"
+                opacity={i % 3 === 0 ? 0.9 : 0.7}
               />
             );
           })}
         </svg>
 
-        {/* Minute Markers */}
-        <svg className="absolute inset-0 w-full h-full">
+        {/* Minute markers */}
+        <svg className="absolute inset-0 w-full h-full" width={size} height={size}>
           {[...Array(60)].map((_, i) => {
             if (i % 5 !== 0) {
               const angle = i * 6;
-              const outerRadius = 137;
-              const innerRadius = 130;
-              
-              const x1 = Math.cos((angle - 90) * Math.PI / 180) * outerRadius;
-              const y1 = Math.sin((angle - 90) * Math.PI / 180) * outerRadius;
-              const x2 = Math.cos((angle - 90) * Math.PI / 180) * innerRadius;
-              const y2 = Math.sin((angle - 90) * Math.PI / 180) * innerRadius;
-              
+              const outer = 142;
+              const inner = 135;
+              const x1 = center + Math.cos(((angle - 90) * Math.PI) / 180) * outer;
+              const y1 = center + Math.sin(((angle - 90) * Math.PI) / 180) * outer;
+              const x2 = center + Math.cos(((angle - 90) * Math.PI) / 180) * inner;
+              const y2 = center + Math.sin(((angle - 90) * Math.PI) / 180) * inner;
               return (
                 <line
                   key={i}
-                  x1={x1 + 165}
-                  y1={y1 + 165}
-                  x2={x2 + 165}
-                  y2={y2 + 165}
+                  x1={x1}
+                  y1={y1}
+                  x2={x2}
+                  y2={y2}
                   stroke="hsl(var(--foreground))"
-                  strokeWidth="1"
-                  opacity="0.6"
+                  strokeWidth={1}
+                  opacity={0.3}
                 />
               );
             }
@@ -127,24 +133,21 @@ const AnalogWatch = ({ onNavigate }: AnalogWatchProps) => {
           })}
         </svg>
 
-        {/* Hour Numbers */}
-        {[...Array(12)].map((_, i) => {
-          const hour = i === 0 ? 12 : i;
-          const angle = (i * 30) - 90;
-          const radius = 95;
-          
-          const x = Math.cos((angle * Math.PI) / 180) * radius;
-          const y = Math.sin((angle * Math.PI) / 180) * radius;
-          
+        {/* Hour numbers */}
+        {[12, 3, 6, 9].map((hour, i) => {
+          const angle = i * 90 - 90;
+          const radius = 100;
+          const x = center + Math.cos((angle * Math.PI) / 180) * radius;
+          const y = center + Math.sin((angle * Math.PI) / 180) * radius;
           return (
             <div
               key={hour}
-              className="absolute text-white font-bold text-lg"
+              className="absolute text-white font-light text-2xl select-none"
               style={{
-                left: `calc(50% + ${x}px)`,
-                top: `calc(50% + ${y}px)`,
-                transform: 'translate(-50%, -50%)',
-                textShadow: '0 2px 4px rgba(0,0,0,0.8)',
+                left: `${x}px`,
+                top: `${y}px`,
+                transform: "translate(-50%, -50%)",
+                textShadow: "0 0 10px rgba(255,255,255,0.5)",
               }}
             >
               {hour}
@@ -152,56 +155,33 @@ const AnalogWatch = ({ onNavigate }: AnalogWatchProps) => {
           );
         })}
 
-        {/* Brand Position */}
-        <div className="absolute top-[28%] left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          <div className="text-sm text-primary font-bold tracking-wider drop-shadow-md">FuzNex</div>
-        </div>
-
-        {/* Date Display */}
-        <div className="absolute top-[45%] right-[25%] transform translate-x-1/2 -translate-y-1/2">
-          <div className="bg-white text-black px-2 py-1 rounded text-xs font-bold border border-primary/30">
-            {time.getDate().toString().padStart(2, '0')}
-          </div>
-        </div>
-
-        {/* Digital Time at Bottom */}
-        <div className="absolute bottom-[20%] left-1/2 transform -translate-x-1/2 translate-y-1/2">
-          <div className="text-center">
-            <div className="text-lg font-mono font-bold text-primary">
-              {time.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' })}
-            </div>
-            <div className="text-xs text-primary/70">
-              {time.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
-            </div>
-          </div>
-        </div>
-
-        {/* Clock Hands */}
-        <WatchHand 
-          angle={hourAngle} 
-          length={55} 
-          width={5} 
-          color="hsl(var(--foreground))" 
-          className="z-30 shadow-lg"
+        {/* Clock hands */}
+        <WatchHand
+          angle={hourAngle}
+          length={70}
+          width={6}
+          color="hsl(var(--foreground))"
+          className="z-30"
         />
-        <WatchHand 
-          angle={minuteAngle} 
-          length={75} 
-          width={3} 
-          color="hsl(var(--foreground))" 
-          className="z-20 shadow-lg"
+        <WatchHand
+          angle={minuteAngle}
+          length={95}
+          width={4}
+          color="hsl(var(--foreground))"
+          className="z-20"
         />
-        <WatchHand 
-          angle={secondAngle} 
-          length={85} 
-          width={1} 
-          color="hsl(0 85% 60%)" 
-          className="z-10 shadow-md"
+        <WatchHand
+          angle={secondAngle}
+          length={110}
+          width={2}
+          color="hsl(var(--destructive))"
+          className="z-10"
         />
 
-        {/* Center assembly */}
-        <div className="absolute w-5 h-5 bg-gradient-to-br from-primary to-secondary rounded-full top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-40 border-2 border-background shadow-xl" />
-        <div className="absolute w-2 h-2 bg-background rounded-full top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50" />
+        {/* Center assemblies */}
+        <div className="absolute w-6 h-6 bg-gradient-to-br from-white to-gray-300 rounded-full top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-40 shadow-lg border border-white/20" />
+        <div className="absolute w-3 h-3 bg-gray-800 rounded-full top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50" />
+        <div className="absolute w-4 h-4 bg-red-500 rounded-full top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-45 opacity-80" />
       </div>
     </div>
   );

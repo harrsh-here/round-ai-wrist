@@ -47,10 +47,10 @@ const HomeScreen = ({ onNavigate }: HomeScreenProps) => {
   ];
 
   return (
-    <div className="watch-content-safe flex flex-col h-full">
+    <div className="watch-content-safe flex flex-col h-full select-none">
       {/* Status Bar */}
-      <div className="watch-status-bar">
-        <div className="flex items-center space-x-3">
+      <div className="watch-status-bar bg-transparent">
+        <div className="flex items-center space-x-3 backdrop-blur-xs rounded-lg px-2 py-1">
           <div className="status-icon battery">
             <Battery size={12} />
             <span>85%</span>
@@ -78,8 +78,19 @@ const HomeScreen = ({ onNavigate }: HomeScreenProps) => {
             {formatDate(time)}
           </div>
         </div>
+{/* Analog Watch Access */}
+        <div className="flex justify-center mb-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => onNavigate('analog')}
+            className="rounded-full w-12 h-12 p-0 dark-glass-bg hover:bg-white/15"
+          >
+            <Clock size={18} className="text-primary" />
+          </Button>
+        </div>
 
-        {/* Quick Stats */}
+        {/* Quick Stats
         <div className="flex justify-center space-x-3 mb-6">
           <div className="dark-glass-bg p-3 rounded-xl text-center min-w-[60px] watch-glow">
             <Heart size={16} className={`text-feature-health mx-auto mb-1 ${bpm > 80 ? 'animate-bmp-pulse' : ''}`} />
@@ -98,10 +109,11 @@ const HomeScreen = ({ onNavigate }: HomeScreenProps) => {
             <div className="text-sm font-bold text-white">387</div>
             <div className="text-xs text-white/60">Cal</div>
           </div>
-        </div>
+        </div> */}
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-2 gap-3 mb-6 max-w-[180px] mx-auto">
+
+        <div className="grid grid-cols-2 gap-3 mb-2 max-w-[180px] mx-auto">
           {quickActions.map((action, index) => {
             const Icon = action.icon;
             return (
@@ -119,17 +131,7 @@ const HomeScreen = ({ onNavigate }: HomeScreenProps) => {
           })}
         </div>
 
-        {/* Analog Watch Access */}
-        <div className="flex justify-center">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => onNavigate('analog')}
-            className="rounded-full w-12 h-12 p-0 dark-glass-bg hover:bg-white/15"
-          >
-            <Clock size={18} className="text-primary" />
-          </Button>
-        </div>
+        
       </div>
     </div>
   );

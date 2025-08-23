@@ -132,7 +132,7 @@ const SmartWatch = () => {
   };
 
   return (
-    <div className="watch-container">
+    <div className="watch-container select-none">
       <div className="watch-bezel watch-fade-in">
         {/* Watch Straps */}
         <div className="watch-strap-top" />
@@ -188,7 +188,7 @@ const SmartWatch = () => {
           className={`watch-voice-button ${isListening ? 'active' : ''} ${!isWatchOn || !isLoggedIn ? 'opacity-60' : 'opacity-100'}`}
           onMouseDown={handleVoiceButtonPress}
           onMouseUp={handleVoiceButtonRelease}
-          onMouseLeave={handleVoiceButtonRelease}
+          // onMouseLeave={handleVoiceButtonRelease}
           onTouchStart={handleVoiceButtonPress}
           onTouchEnd={handleVoiceButtonRelease}
           title="Voice Button (Hold to speak)"

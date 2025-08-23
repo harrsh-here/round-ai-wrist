@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Home, Heart, Footprints, Zap, Target, Trophy, TrendingUp } from 'lucide-react';
+import { Home, Heart, Footprints, Zap, Target, Trophy, TrendingUp, ArrowLeft } from 'lucide-react';
+
 import { WatchScreen } from '../SmartWatch';
 
 interface FitnessScreenProps {
@@ -75,9 +76,17 @@ const FitnessScreen = ({ onNavigate }: FitnessScreenProps) => {
   ];
 
   return (
-    <div className="watch-content-safe flex flex-col items-center justify-center p-4">
-      {/* Header */}
-      <div className="text-center mb-4 watch-slide-up">
+    <div className="watch-content-safe flex flex-col items-center justify-center p-4 select-none mb-[-70px] overflow-hidden">
+      {/* Header */}  
+      <div className="relative w-full text-center mb-4 watch-slide-up">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => onNavigate('features')}
+          className="absolute left-[78px] top-1/2 -translate-y-1/2 rounded-full w-8 h-8 p-0 glass-bg hover:bg-white/15"
+        >
+          <ArrowLeft size={14} className="text-white" />
+        </Button>
         <h2 className="text-lg font-bold bg-gradient-to-r from-white via-white/90 to-white/70 bg-clip-text text-transparent">
           Fitness
         </h2>
@@ -110,7 +119,7 @@ const FitnessScreen = ({ onNavigate }: FitnessScreenProps) => {
       </div>
 
       {/* Progress Rings - Better positioning */}
-      <div className="flex justify-center space-x-4 mb-4">
+      <div className="flex justify-center space-x-4 mb-8">
         <div className="relative w-12 h-12">
           <svg className="w-12 h-12 transform -rotate-90" viewBox="0 0 36 36">
             <path

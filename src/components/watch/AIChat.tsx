@@ -1,13 +1,6 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Home, Mic } from 'lucide-react';
-import { WatchScreen } from '../SmartWatch';
-
-interface AIChatProps {
-  onNavigate: (screen: WatchScreen) => void;
-  currentScreen: WatchScreen;
-}
+import { Home } from 'lucide-react';
 
 interface Message {
   id: string;
@@ -16,17 +9,18 @@ interface Message {
   timestamp: Date;
 }
 
-const AIChat = ({ onNavigate }: AIChatProps) => {
-  const [messages, setMessages] = useState<Message[]>([
+const AIChat = ({ onNavigate }) => {
+  const [messages, setMessages] = useState([
     {
       id: '1',
-      text: 'Hello! I\'m your AI assistant. Hold the mic to speak or tap to listen.',
+      text: 'Hi! Press the mic button to speak.',
       isUser: false,
       timestamp: new Date(),
     },
   ]);
   const [isListening, setIsListening] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -36,22 +30,38 @@ const AIChat = ({ onNavigate }: AIChatProps) => {
     scrollToBottom();
   }, [messages]);
 
-  const handleMicPress = () => {
+  // Simulate hardware mic button activation
+  useEffect(() => {
+    const handleKeyPress = (e) => {
+      if (e.key === 'm' || e.key === 'M') { // Simulate hardware mic button
+        handleMicActivation();
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [isListening, isProcessing]);
+
+  const handleMicActivation = () => {
+    if (isListening || isProcessing) return;
+    
     setIsListening(true);
     
-    // Simulate voice input after 2 seconds
     setTimeout(() => {
       const voiceInputs = [
-        "What's my heart rate today?",
-        "Show me the weather",
-        "Set a timer for 5 minutes",
-        "Call my mom",
-        "Play my workout playlist"
+        "What's my heart rate?",
+        "Show weather",
+        "Set timer 5 minutes",
+        "Call mom",
+        "Play music",
+        "Steps today?",
+        "Battery level?",
+        "Time in Tokyo?"
       ];
       
       const randomInput = voiceInputs[Math.floor(Math.random() * voiceInputs.length)];
       
-      const userMessage: Message = {
+      const userMessage = {
         id: Date.now().toString(),
         text: randomInput,
         isUser: true,
@@ -60,95 +70,133 @@ const AIChat = ({ onNavigate }: AIChatProps) => {
 
       setMessages(prev => [...prev, userMessage]);
       setIsListening(false);
+      setIsProcessing(true);
 
-      // AI response
       setTimeout(() => {
-        const aiResponse: Message = {
+        const aiResponse = {
           id: (Date.now() + 1).toString(),
           text: getAIResponse(userMessage.text),
           isUser: false,
           timestamp: new Date(),
         };
         setMessages(prev => [...prev, aiResponse]);
-      }, 1000);
+        setIsProcessing(false);
+      }, 1200);
     }, 2000);
   };
 
-  const getAIResponse = (userText: string): string => {
-    const responses = [
-      'I understand! Let me help you with that.',
-      'That\'s a great question. Here\'s what I found...',
-      'I can assist you with that right away.',
-      'Based on your smartwatch data, I recommend...',
-      'Sure! I\'ll take care of that for you.',
-      'Let me check your health metrics for that information.',
-    ];
-    return responses[Math.floor(Math.random() * responses.length)];
+  const getAIResponse = (userText) => {
+    const responses = {
+      "heart": "Heart rate: 72 BPM",
+      "weather": "24°C, sunny in Jaipur",
+      "timer": "5min timer started",
+      "call": "Calling mom...",
+      "music": "Playing workout mix",
+      "steps": "8,247 steps today",
+      "battery": "Watch: 85% battery",
+      "time": "Tokyo: 2:30 PM"
+    };
+
+    for (const [key, response] of Object.entries(responses)) {
+      if (userText.toLowerCase().includes(key)) {
+        return response;
+      }
+    }
+    return "Processing your request...";
   };
 
   return (
-    <div className="watch-content-safe flex flex-col h-full">
-      {/* Header */}
-      <div className="flex items-center justify-center mb-3 pt-4">
-        <div className="flex items-center space-x-2">
-          <h2 className="text-sm font-semibold text-primary">AI Assistant</h2>
-          <div className="w-2 h-2 bg-ai-primary rounded-full animate-pulse" />
+    <div className="watch-content-safe flex flex-col h-full relative">
+      
+      {/* Minimal Header */}
+      <div className="text-center pt-4 pb-2">
+        <div className="flex items-center justify-center space-x-2">
+          <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse" />
+          <h2 className="text-sm font-light text-cyan-400 tracking-widest">AI</h2>
+          <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse" />
         </div>
       </div>
 
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto watch-scroll space-y-3 mb-4 px-4">
-        {messages.map((message) => (
-          <div
-            key={message.id}
-            className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}
-          >
-            <div
-              className={`max-w-[80%] p-3 rounded-2xl text-xs shadow-lg ${
-                message.isUser
-                  ? 'dark-glass-bg text-white ml-2 bg-gradient-to-r from-primary/20 to-primary/10 border border-primary/30'
-                  : 'dark-glass-bg text-white mr-2 bg-gradient-to-r from-ai-primary/20 to-purple-500/20 border border-ai-primary/30'
-              }`}
-            >
-              {message.text}
+      {/* Messages - Only last 3 for minimal UI */}
+      <div className="flex-1 overflow-hidden">
+        <div className="h-full overflow-y-auto watch-scroll px-4">
+          <div className="space-y-3 min-h-full flex flex-col justify-end pb-2">
+            {messages.slice(-3).map((message) => (
+              <div
+                key={message.id}
+                className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}
+              >
+                <div
+                  className={`max-w-[80%] px-3 py-2 rounded-xl text-xs transition-all duration-300 ${
+                    message.isUser
+                      ? 'bg-gradient-to-r from-cyan-500/20 to-cyan-400/10 text-white border border-cyan-400/30 rounded-br-sm'
+                      : 'bg-gradient-to-r from-white/10 to-gray-500/10 text-white border border-white/20 rounded-bl-sm'
+                  }`}
+                >
+                  {message.text}
+                </div>
+              </div>
+            ))}
+            
+            {/* Processing indicator */}
+            {isProcessing && (
+              <div className="flex justify-start">
+                <div className="bg-gradient-to-r from-white/10 to-gray-500/10 text-white border border-white/20 px-3 py-2 rounded-xl rounded-bl-sm text-xs">
+                  <div className="flex items-center space-x-2">
+                    <div className="flex space-x-1">
+                      <div className="w-1 h-1 bg-cyan-400 rounded-full animate-pulse" />
+                      <div className="w-1 h-1 bg-cyan-400 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }} />
+                      <div className="w-1 h-1 bg-cyan-400 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            <div ref={messagesEndRef} />
+          </div>
+        </div>
+      </div>
+
+      {/* Minimal Status & Controls */}
+      <div className="text-center pb-6">
+        {/* Status */}
+        <div className="mb-4">
+          {isListening ? (
+            <div className="text-cyan-400 text-xs font-light animate-pulse">
+              ● LISTENING
             </div>
-          </div>
-        ))}
-        <div ref={messagesEndRef} />
-      </div>
-
-      {/* Voice Input */}
-      <div className="flex flex-col items-center space-y-4 mb-4 px-4">
-        {/* Mic Button */}
-        <Button
-          onMouseDown={handleMicPress}
-          onTouchStart={handleMicPress}
-          className={`rounded-full w-16 h-16 p-0 transition-all duration-300 ${
-            isListening 
-              ? 'bg-gradient-to-r from-accent to-accent/80 animate-voice-pulse' 
-              : 'bg-gradient-to-r from-ai-primary to-purple-500 hover:from-ai-primary/80 hover:to-purple-500/80'
-          } shadow-lg`}
-        >
-          <Mic size={24} className="text-white" />
-        </Button>
-        
-        {/* Instructions */}
-        <div className="text-center">
-          <div className="text-xs text-white/70">
-            {isListening ? 'Listening...' : 'Hold mic to speak'}
-          </div>
+          ) : isProcessing ? (
+            <div className="text-white/60 text-xs font-light">
+              ● PROCESSING
+            </div>
+          ) : (
+            <div className="text-white/40 text-xs font-light">
+              Press mic button
+            </div>
+          )}
         </div>
 
-        {/* Back Button */}
+        {/* Home Button Only */}
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => onNavigate('home')}
-          className="rounded-full w-10 h-10 p-0 dark-glass-bg hover:bg-white/15"
+          onClick={() => onNavigate && onNavigate('home')}
+          className="rounded-full w-10 h-10 p-0 border border-white/20 bg-gradient-to-r from-white/5 to-gray-500/5 hover:from-white/10 hover:to-gray-500/10 transition-all duration-300"
         >
-          <Home size={16} className="text-white" />
+          <Home size={16} className="text-white/70" />
         </Button>
       </div>
+
+      {/* Subtle listening indicator overlay */}
+      {isListening && (
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/5 to-cyan-600/5 rounded-full animate-pulse" />
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            <div className="w-20 h-20 border-2 border-cyan-400/30 rounded-full animate-ping" />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

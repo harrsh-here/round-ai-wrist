@@ -1,610 +1,617 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+  @tailwind base;
+  @tailwind components;
+  @tailwind utilities;
 
-/* Enhanced Smartwatch Design System - All colors MUST be HSL */
+  /* Enhanced Smartwatch Design System - All colors MUST be HSL */
 
-@layer base {
-  :root {
-    /* Watch Display Colors - Enhanced with vibrant gradients */
-    --background: 220 25% 4%;
-    --foreground: 0 0% 95%;
+  @layer base {
+    :root {
+      /* Watch Display Colors - Enhanced with vibrant gradients */
+      --background: 220 25% 4%;
+      --foreground: 0 0% 95%;
 
-    --card: 220 20% 8%;
-    --card-foreground: 0 0% 95%;
+      --card: 220 20% 8%;
+      --card-foreground: 0 0% 95%;
 
-    --popover: 220 20% 6%;
-    --popover-foreground: 0 0% 95%;
+      --popover: 220 20% 6%;
+      --popover-foreground: 0 0% 95%;
 
-    /* Watch UI Colors - More vibrant */
-    --primary: 180 100% 50%;
-    --primary-foreground: 0 0% 98%;
-    --primary-glow: 180 100% 65%;
+      /* Watch UI Colors - More vibrant */
+      --primary: 180 100% 50%;
+      --primary-foreground: 0 0% 98%;
+      --primary-glow: 180 100% 65%;
 
-    --secondary: 280 100% 60%;
-    --secondary-foreground: 0 0% 95%;
+      --secondary: 280 100% 60%;
+      --secondary-foreground: 0 0% 95%;
 
-    --muted: 220 20% 12%;
-    --muted-foreground: 0 0% 65%;
+      --muted: 220 20% 12%;
+      --muted-foreground: 0 0% 65%;
 
-    --accent: 45 100% 60%;
-    --accent-foreground: 0 0% 10%;
+      --accent: 45 100% 60%;
+      --accent-foreground: 0 0% 10%;
 
-    --destructive: 0 84% 55%;
-    --destructive-foreground: 0 0% 95%;
+      --destructive: 0 84% 55%;
+      --destructive-foreground: 0 0% 95%;
 
-    --border: 220 25% 20%;
-    --input: 220 20% 15%;
-    --ring: 180 100% 50%;
+      --border: 220 25% 20%;
+      --input: 220 20% 15%;
+      --ring: 180 100% 50%;
 
-    /* Watch Specific Colors - Enhanced */
-    --watch-bezel: 220 15% 25%;
-    --watch-bezel-inner: 220 20% 35%;
-    --watch-bezel-outer: 220 10% 15%;
-    --watch-strap: 25 40% 30%;
-    --watch-screen: 220 30% 3%;
-    --watch-glass: 210 30% 98%;
-    
-    /* AI Assistant Colors - More vibrant */
-    --ai-primary: 280 100% 65%;
-    --ai-secondary: 320 100% 70%;
-    --ai-glow: 300 100% 75%;
+      /* Watch Specific Colors - Enhanced */
+      --watch-bezel: 220 15% 25%;
+      --watch-bezel-inner: 220 20% 35%;
+      --watch-bezel-outer: 220 10% 15%;
+      --watch-strap: 25 40% 30%;
+      --watch-screen: 220 30% 3%;
+      --watch-glass: 210 30% 98%;
+      
+      /* AI Assistant Colors - More vibrant */
+      --ai-primary: 280 100% 65%;
+      --ai-secondary: 320 100% 70%;
+      --ai-glow: 300 100% 75%;
 
-    /* Digital Clock Colors */
-    --clock-primary: 180 100% 60%;
-    --clock-secondary: 280 100% 65%;
+      /* Digital Clock Colors */
+      --clock-primary: 180 100% 60%;
+      --clock-secondary: 280 100% 65%;
 
-    /* Feature Colors - Enhanced */
-    --feature-call: 120 70% 50%;
-    --feature-music: 280 100% 65%;
-    --feature-health: 0 85% 60%;
-    --feature-weather: 200 100% 55%;
-    --feature-fitness: 45 100% 55%;
+      /* Feature Colors - Enhanced */
+      --feature-call: 120 70% 50%;
+      --feature-music: 280 100% 65%;
+      --feature-health: 0 85% 60%;
+      --feature-weather: 200 100% 55%;
+      --feature-fitness: 45 100% 55%;
 
-    --radius: 0.5rem;
+      --radius: 0.5rem;
 
-    /* Enhanced Watch Gradients */
-    --gradient-watch-bg: radial-gradient(circle at center, hsl(220 30% 8%), hsl(220 40% 3%));
-    --gradient-bezel: linear-gradient(135deg, hsl(var(--watch-bezel-outer)), hsl(var(--watch-bezel)), hsl(var(--watch-bezel-inner)));
-    --gradient-bezel-inner: linear-gradient(135deg, hsl(var(--watch-bezel-inner)), hsl(var(--watch-bezel)), hsl(var(--watch-bezel-outer)));
-    --gradient-ai: linear-gradient(135deg, hsl(var(--ai-primary)), hsl(var(--ai-secondary)));
-    --gradient-glow: radial-gradient(circle at center, hsl(var(--primary-glow) / 0.4), transparent 70%);
-    --gradient-fitness: linear-gradient(135deg, hsl(var(--feature-fitness)), hsl(var(--feature-health)));
+      /* Enhanced Watch Gradients */
+      --gradient-watch-bg: radial-gradient(circle at center, hsl(220 30% 8%), hsl(220 40% 3%));
+      --gradient-bezel: linear-gradient(135deg, hsl(var(--watch-bezel-outer)), hsl(var(--watch-bezel)), hsl(var(--watch-bezel-inner)));
+      --gradient-bezel-inner: linear-gradient(135deg, hsl(var(--watch-bezel-inner)), hsl(var(--watch-bezel)), hsl(var(--watch-bezel-outer)));
+      --gradient-ai: linear-gradient(135deg, hsl(var(--ai-primary)), hsl(var(--ai-secondary)));
+      --gradient-glow: radial-gradient(circle at center, hsl(var(--primary-glow) / 0.1), transparent 100%);
+      --gradient-fitness: linear-gradient(135deg, hsl(var(--feature-fitness)), hsl(var(--feature-health)));
 
-    /* Enhanced Watch Shadows */
-    --shadow-watch: 0 25px 50px -15px hsl(220 30% 2% / 0.9);
-    --shadow-bezel: inset 0 2px 8px hsl(var(--watch-bezel-inner) / 0.6), 0 0 20px hsl(var(--primary) / 0.1);
-    --shadow-screen: inset 0 0 20px hsl(var(--watch-screen) / 0.8);
-    --shadow-glow: 0 0 30px hsl(var(--primary) / 0.6);
-    --shadow-button: 0 4px 15px hsl(var(--background) / 0.6);
+      /* Enhanced Watch Shadows */
+      --shadow-watch: 0 25px 50px -15px hsl(220 30% 2% / 0.9);
+      --shadow-bezel: inset 0 2px 8px hsl(var(--watch-bezel-inner) / 0.6), 0 0 20px hsl(var(--primary) / 0.1);
+      --shadow-screen: inset 0 0 20px hsl(var(--watch-screen) / 0.8);
+      --shadow-glow: 0 0 30px hsl(var(--primary) / 0.6);
+      --shadow-button: 0 4px 15px hsl(var(--background) / 0.6);
 
-    /* Animations */
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-watch: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      /* Animations */
+      --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-watch: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+      --sidebar-background: 0 0% 98%;
+      --sidebar-foreground: 240 5.3% 26.1%;
+      --sidebar-primary: 240 5.9% 10%;
+      --sidebar-primary-foreground: 0 0% 98%;
+      --sidebar-accent: 240 4.8% 95.9%;
+      --sidebar-accent-foreground: 240 5.9% 10%;
+      --sidebar-border: 220 13% 91%;
+      --sidebar-ring: 217.2 91.2% 59.8%;
+    }
+
+    .dark {
+      --background: 222.2 84% 4.9%;
+      --foreground: 210 40% 98%;
+      --card: 222.2 84% 4.9%;
+      --card-foreground: 210 40% 98%;
+      --popover: 222.2 84% 4.9%;
+      --popover-foreground: 210 40% 98%;
+      --primary: 210 40% 98%;
+      --primary-foreground: 222.2 47.4% 11.2%;
+      --secondary: 217.2 32.6% 17.5%;
+      --secondary-foreground: 210 40% 98%;
+      --muted: 217.2 32.6% 17.5%;
+      --muted-foreground: 215 20.2% 65.1%;
+      --accent: 217.2 32.6% 17.5%;
+      --accent-foreground: 210 40% 98%;
+      --destructive: 0 62.8% 30.6%;
+      --destructive-foreground: 210 40% 98%;
+      --border: 217.2 32.6% 17.5%;
+      --input: 217.2 32.6% 17.5%;
+      --ring: 212.7 26.8% 83.9%;
+      --sidebar-background: 240 5.9% 10%;
+      --sidebar-foreground: 240 4.8% 95.9%;
+      --sidebar-primary: 224.3 76.3% 48%;
+      --sidebar-primary-foreground: 0 0% 100%;
+      --sidebar-accent: 240 3.7% 15.9%;
+      --sidebar-accent-foreground: 240 4.8% 95.9%;
+      --sidebar-border: 240 3.7% 15.9%;
+      --sidebar-ring: 217.2 91.2% 59.8%;
+    }
   }
 
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-}
+  @layer base {
+    * {
+      @apply border-border;
+    }
 
-@layer base {
-  * {
-    @apply border-border;
+    body {
+      @apply bg-gradient-to-br from-background via-muted to-background text-foreground overflow-hidden;
+      background: radial-gradient(circle at 30% 20%, hsl(220 30% 8%), hsl(220 40% 3%));
+    }
   }
 
-  body {
-    @apply bg-gradient-to-br from-background via-muted to-background text-foreground overflow-hidden;
-    background: radial-gradient(circle at 30% 20%, hsl(220 30% 8%), hsl(220 40% 3%));
-  }
-}
+  @layer components {
+    /* Enhanced Watch Component Styles */
+    .watch-container {
+      @apply relative flex items-center justify-center min-h-screen;
+      background: var(--gradient-watch-bg);
+    }
 
-@layer components {
-  /* Enhanced Watch Component Styles */
-  .watch-container {
-    @apply relative flex items-center justify-center min-h-screen;
-    background: var(--gradient-watch-bg);
-  }
+    .watch-bezel {
+      @apply relative rounded-full;
+      width: 400px;
+      height: 400px;
+      background: var(--gradient-bezel);
+      box-shadow: 
+        var(--shadow-watch), 
+        var(--shadow-bezel),
+        inset 0 0 30px hsl(var(--watch-bezel-inner) / 0.8),
+        0 0 50px hsl(220 30% 2% / 0.9);
+      border: 3px solid hsl(var(--watch-bezel-inner));
+    }
 
-  .watch-bezel {
-    @apply relative rounded-full;
-    width: 400px;
-    height: 400px;
-    background: var(--gradient-bezel);
-    box-shadow: 
-      var(--shadow-watch), 
-      var(--shadow-bezel),
-      inset 0 0 30px hsl(var(--watch-bezel-inner) / 0.8),
-      0 0 50px hsl(220 30% 2% / 0.9);
-    border: 3px solid hsl(var(--watch-bezel-inner));
-  }
+    /* Layered bezel effect - Modern sleek design */
+    .watch-bezel::before {
+      content: '';
+      @apply absolute rounded-full;
+      top: -8px;
+      left: -8px;
+      right: -8px;
+      bottom: -8px;
+      background: var(--gradient-bezel-inner);
+      border: 2px solid hsl(var(--watch-bezel-outer));
+      box-shadow: 0 0 30px hsl(220 30% 2% / 0.8);
+      z-index: -1;
+    }
 
-  /* Layered bezel effect - Modern sleek design */
-  .watch-bezel::before {
-    content: '';
-    @apply absolute rounded-full;
-    top: -8px;
-    left: -8px;
-    right: -8px;
-    bottom: -8px;
-    background: var(--gradient-bezel-inner);
-    border: 2px solid hsl(var(--watch-bezel-outer));
-    box-shadow: 0 0 30px hsl(220 30% 2% / 0.8);
-    z-index: -1;
-  }
+    /* Inner bezel glow effect */
+    .watch-bezel-inner-glow {
+      @apply absolute rounded-full transition-all duration-500;
+      top: 12px;
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+      border: 2px solid transparent;
+      background: rgba(255, 255, 255, 0.02);
+    }
 
-  /* Inner bezel glow effect */
-  .watch-bezel-inner-glow {
-    @apply absolute rounded-full transition-all duration-500;
-    top: 12px;
-    left: 12px;
-    right: 12px;
-    bottom: 12px;
-    border: 2px solid transparent;
-    background: rgba(255, 255, 255, 0.02);
-  }
+    .watch-bezel-inner-glow.watch-on {
+      border-color: hsl(180 100% 50%);
+      box-shadow: 
+        inset 0 0 15px hsl(180 100% 50% / 0.4),
+        0 0 25px hsl(180 100% 50% / 0.3);
+      background: rgba(0, 255, 255, 0.05);
+    }
 
-  .watch-bezel-inner-glow.watch-on {
-    border-color: hsl(180 100% 50%);
-    box-shadow: 
-      inset 0 0 15px hsl(180 100% 50% / 0.4),
-      0 0 25px hsl(180 100% 50% / 0.3);
-    background: rgba(0, 255, 255, 0.05);
-  }
+    .watch-bezel-inner-glow.watch-off {
+      border-color: hsl(220 15% 30%);
+      box-shadow: inset 0 0 8px rgba(128, 128, 128, 0.1);
+      background: rgba(128, 128, 128, 0.02);
+    }
 
-  .watch-bezel-inner-glow.watch-off {
-    border-color: hsl(220 15% 30%);
-    box-shadow: inset 0 0 8px rgba(128, 128, 128, 0.1);
-    background: rgba(128, 128, 128, 0.02);
-  }
+    .watch-screen {
+      @apply absolute rounded-full overflow-hidden;
+      top: 20px;
+      left: 20px;
+      right: 20px;
+      bottom: 20px;
+      background: var(--gradient-watch-bg);
+      box-shadow: var(--shadow-screen);
+      border: 1px solid hsl(var(--border) / 0.3);
+    }
 
-  .watch-screen {
-    @apply absolute rounded-full overflow-hidden;
-    top: 20px;
-    left: 20px;
-    right: 20px;
-    bottom: 20px;
-    background: var(--gradient-watch-bg);
-    box-shadow: var(--shadow-screen);
-    border: 1px solid hsl(var(--border) / 0.3);
-  }
+    /* Safe padding class for watch content */
+    .watch-content-safe {
+      @apply absolute rounded-full overflow-hidden;
+      top: 2px;
+      left: 2px;
+      right: 2px;
+      bottom: 2px;
+      background: var(--gradient-watch-bg);
+    }
 
-  /* Safe padding class for watch content */
-  .watch-content-safe {
-    @apply absolute rounded-full overflow-hidden;
-    top: 25px;
-    left: 25px;
-    right: 25px;
-    bottom: 25px;
-    background: var(--gradient-watch-bg);
-  }
+    /* Classic Watch Crown/Power Button Design */
+    .watch-power-button {
+      @apply absolute rounded-full border-2 flex items-center justify-center cursor-pointer;
+      width:42px;
+      height: 45px;
+      right: -35px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: linear-gradient(135deg, 
+        hsl(220 15% 45%), 
+        hsl(220 20% 35%), 
+        hsl(220 15% 25%), 
+        hsl(220 10% 15%)
+      );
+      border-color: hsl(220 20% 30%);
+      box-shadow: 
+        0 4px 12px rgba(0, 0, 0, 0.4),
+        inset 0 2px 4px rgba(255, 255, 255, 0.1),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.3);
+      transition: var(--transition-smooth);
+      border-radius: 8px 16px 16px 8px;
+    }
 
-  /* Classic Watch Crown/Power Button Design */
-  .watch-power-button {
-    @apply absolute rounded-full border-2 flex items-center justify-center cursor-pointer;
-    width: 32px;
-    height: 45px;
-    right: -20px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: linear-gradient(135deg, 
-      hsl(220 15% 45%), 
-      hsl(220 20% 35%), 
-      hsl(220 15% 25%), 
-      hsl(220 10% 15%)
-    );
-    border-color: hsl(220 20% 30%);
-    box-shadow: 
-      0 4px 12px rgba(0, 0, 0, 0.4),
-      inset 0 2px 4px rgba(255, 255, 255, 0.1),
-      inset 0 -2px 4px rgba(0, 0, 0, 0.3);
-    transition: var(--transition-smooth);
-    border-radius: 8px 16px 16px 8px;
-  }
+    /* Crown ridges effect */
+    .watch-power-button::before {
+      content: '';
+      @apply absolute;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 2px,
+        rgba(255, 255, 255, 0.1) 2px,
+        rgba(255, 255, 255, 0.1) 3px
+      );
+      z-index: 3;
+      border-radius: inherit;
+    }
 
-  /* Crown ridges effect */
-  .watch-power-button::before {
-    content: '';
-    @apply absolute;
-    width: 100%;
-    height: 100%;
-    background: repeating-linear-gradient(
-      90deg,
-      transparent,
-      transparent 2px,
-      rgba(255, 255, 255, 0.1) 2px,
-      rgba(255, 255, 255, 0.1) 3px
-    );
-    border-radius: inherit;
-  }
+    /* Power icon */
+    .watch-power-button::after {
+      content: '⏻';
+      font-size: 14px;
+      color: hsl(var(--primary) / 0.8);
+      font-weight: bold;
+      z-index: 1;
+      position: relative;
+    }
 
-  /* Power icon */
-  .watch-power-button::after {
-    content: '⏻';
-    font-size: 14px;
-    color: hsl(var(--primary) / 0.8);
-    font-weight: bold;
-    z-index: 1;
-    position: relative;
-  }
+    .watch-power-button:hover {
+      background: linear-gradient(135deg, 
+        hsl(220 20% 50%), 
+        hsl(220 25% 40%), 
+        hsl(220 20% 30%), 
+        hsl(220 15% 20%)
+      );
+      border-color: hsl(var(--primary) / 0.6);
+      box-shadow: 
+        0 6px 16px rgba(0, 0, 0, 0.5),
+        0 0 20px hsl(var(--primary) / 0.3),
+        inset 0 2px 4px rgba(255, 255, 255, 0.15),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.3);
+    }
 
-  .watch-power-button:hover {
-    background: linear-gradient(135deg, 
-      hsl(220 20% 50%), 
-      hsl(220 25% 40%), 
-      hsl(220 20% 30%), 
-      hsl(220 15% 20%)
-    );
-    border-color: hsl(var(--primary) / 0.6);
-    box-shadow: 
-      0 6px 16px rgba(0, 0, 0, 0.5),
-      0 0 20px hsl(var(--primary) / 0.3),
-      inset 0 2px 4px rgba(255, 255, 255, 0.15),
-      inset 0 -2px 4px rgba(0, 0, 0, 0.3);
-  }
+    .watch-power-button.active {
+      background: linear-gradient(135deg, 
+        hsl(var(--primary) / 0.8), 
+        hsl(var(--primary) / 0.6), 
+        hsl(var(--primary) / 0.4), 
+        hsl(var(--primary) / 0.2)
+      );
+      border-color: hsl(var(--primary));
+      box-shadow: 
+        0 8px 20px rgba(0, 0, 0, 0.6),
+        0 0 30px hsl(var(--primary) / 0.6),
+        inset 0 2px 4px rgba(255, 255, 255, 0.2),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.4);
+    }
 
-  .watch-power-button.active {
-    background: linear-gradient(135deg, 
-      hsl(var(--primary) / 0.8), 
-      hsl(var(--primary) / 0.6), 
-      hsl(var(--primary) / 0.4), 
-      hsl(var(--primary) / 0.2)
-    );
-    border-color: hsl(var(--primary));
-    box-shadow: 
-      0 8px 20px rgba(0, 0, 0, 0.6),
-      0 0 30px hsl(var(--primary) / 0.6),
-      inset 0 2px 4px rgba(255, 255, 255, 0.2),
-      inset 0 -2px 4px rgba(0, 0, 0, 0.4);
-  }
+    .watch-power-button.active::after {
+      color: white;
+    }
 
-  .watch-power-button.active::after {
-    color: white;
-  }
+    /* Voice/Mic Button - Digital recorder style microphone, on same side as power button */
+    .watch-voice-button {
+      @apply absolute flex items-center justify-center cursor-pointer;
+      width: 41px;
+      height: 35px;
+      left: 373px;
+      top: 25%;
+      background: linear-gradient(135deg, 
+        hsl(var(--accent)), 
+        hsl(var(--accent) / 0.9), 
+        hsl(var(--accent) / 0.7), 
+        hsl(var(--accent) / 0.5)
+      );
+      border: 2px solid hsl(var(--accent) / 0.8);
+      border-radius: 2px 12px 12px 8px;
+      box-shadow: 
+        0 8px 20px rgba(0, 0, 0, 0.6),
+        0 0 20px hsl(var(--accent) / 0.4),
+        inset 0 3px 8px rgba(255, 255, 255, 0.2),
+        inset 0 -3px 8px rgba(0, 0, 0, 0.5);
+      transition: var(--transition-smooth);
+    }
 
-  /* Voice/Mic Button - Digital recorder style microphone, on same side as power button */
-  .watch-voice-button {
-    @apply absolute flex items-center justify-center cursor-pointer;
-    width: 28px;
-    height: 35px;
-    right: -16px;
-    top: 25%;
-    background: linear-gradient(135deg, 
-      hsl(var(--accent)), 
-      hsl(var(--accent) / 0.9), 
-      hsl(var(--accent) / 0.7), 
-      hsl(var(--accent) / 0.5)
-    );
-    border: 2px solid hsl(var(--accent) / 0.8);
-    border-radius: 12px 6px 6px 12px;
-    box-shadow: 
-      0 8px 20px rgba(0, 0, 0, 0.6),
-      0 0 20px hsl(var(--accent) / 0.4),
-      inset 0 3px 8px rgba(255, 255, 255, 0.2),
-      inset 0 -3px 8px rgba(0, 0, 0, 0.5);
-    transition: var(--transition-smooth);
-  }
+    /* Digital recorder style microphone icon */
+    .watch-voice-button::before {
+      content: '';
+      width: 8px;
+      height: 12px;
+      background: white;
+      border-radius: 4px 4px 0 0;
+      position: absolute;
+      top: 4px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 0;
+      box-shadow: 
+        inset 0 1px 2px rgba(255, 255, 255, 0.4),
+        0 1px 3px rgba(0, 0, 0, 0.3);
+    }
 
-  /* Digital recorder style microphone icon */
-  .watch-voice-button::before {
-    content: '';
-    width: 8px;
-    height: 12px;
-    background: white;
-    border-radius: 4px 4px 0 0;
-    position: absolute;
-    top: 4px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 2;
-    box-shadow: 
-      inset 0 1px 2px rgba(255, 255, 255, 0.4),
-      0 1px 3px rgba(0, 0, 0, 0.3);
-  }
+    .watch-voice-button::after {
+      content: '';
+      position: absolute;
+      width: 12px;
+      height: 6px;
+      border: 2px solid white;
+      border-top: none;
+      border-radius: 0 0 6px 6px;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 0;
+    }
 
-  .watch-voice-button::after {
-    content: '';
-    position: absolute;
-    width: 12px;
-    height: 6px;
-    border: 2px solid white;
-    border-top: none;
-    border-radius: 0 0 6px 6px;
-    top: 14px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 2;
-  }
+    /* Microphone stand - hidden behind main elements */
+    .watch-voice-button {
+      position: relative;
+    }
 
-  /* Microphone stand - hidden behind main elements */
-  .watch-voice-button {
-    position: relative;
-  }
+    .watch-voice-button:active {
+      background: linear-gradient(135deg, 
+        hsl(var(--accent) / 0.6), 
+        hsl(var(--accent) / 0.5), 
+        hsl(var(--accent) / 0.4), 
+        hsl(var(--accent) / 0.3)
+      );
+      border-color: hsl(var(--accent) / 0.9);
+      box-shadow: 
+        inset 0 4px 8px rgba(0, 0, 0, 0.6),
+        inset 0 0 15px rgba(0, 0, 0, 0.4),
+        0 2px 6px rgba(0, 0, 0, 0.3);
+      transform: translateY(1px);
+    }
 
-  .watch-voice-button:active {
-    background: linear-gradient(135deg, 
-      hsl(var(--accent) / 0.6), 
-      hsl(var(--accent) / 0.5), 
-      hsl(var(--accent) / 0.4), 
-      hsl(var(--accent) / 0.3)
-    );
-    border-color: hsl(var(--accent) / 0.9);
-    box-shadow: 
-      inset 0 4px 8px rgba(0, 0, 0, 0.6),
-      inset 0 0 15px rgba(0, 0, 0, 0.4),
-      0 2px 6px rgba(0, 0, 0, 0.3);
-    transform: translateY(1px);
-  }
+    .watch-voice-button:active::before {
+      background: rgba(255, 255, 255, 0.9);
+    }
 
-  .watch-voice-button:active::before {
-    background: rgba(255, 255, 255, 0.9);
-  }
+    .watch-voice-button:active::after {
+      border-color: rgba(255, 255, 255, 0.9);
+    }
 
-  .watch-voice-button:active::after {
-    border-color: rgba(255, 255, 255, 0.9);
-  }
+    .watch-voice-button.active {
+      background: linear-gradient(135deg, 
+        hsl(var(--accent)), 
+        hsl(var(--accent) / 0.8), 
+        hsl(var(--accent) / 0.6), 
+        hsl(var(--accent) / 0.4)
+      );
+      border-color: hsl(var(--accent));
+      box-shadow: 
+        0 8px 20px rgba(0, 0, 0, 0.6),
+        0 0 30px hsl(var(--accent) / 0.8),
+        inset 0 2px 4px rgba(255, 255, 255, 0.2),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.4);
+      animation: pulse-glow-yellow 1s ease-in-out infinite;
+    }
 
-  .watch-voice-button.active {
-    background: linear-gradient(135deg, 
-      hsl(var(--accent)), 
-      hsl(var(--accent) / 0.8), 
-      hsl(var(--accent) / 0.6), 
-      hsl(var(--accent) / 0.4)
-    );
-    border-color: hsl(var(--accent));
-    box-shadow: 
-      0 8px 20px rgba(0, 0, 0, 0.6),
-      0 0 30px hsl(var(--accent) / 0.8),
-      inset 0 2px 4px rgba(255, 255, 255, 0.2),
-      inset 0 -2px 4px rgba(0, 0, 0, 0.4);
-    animation: pulse-glow-yellow 1s ease-in-out infinite;
-  }
+    .watch-voice-button.active::before {
+      background: white;
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+    }
 
-  .watch-voice-button.active::before {
-    background: white;
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
-  }
+    .watch-voice-button.active::after {
+      border-color: white;
+      box-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
+    }
 
-  .watch-voice-button.active::after {
-    border-color: white;
-    box-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
-  }
+    /* Improved Strap Design - Longer and wider with fade */
+    .watch-strap {
+      @apply absolute;
+      background: linear-gradient(to bottom, 
+        hsl(var(--watch-strap)), 
+        hsl(var(--watch-strap) / 0.9), 
+        hsl(var(--watch-strap) / 0.7),
+        hsl(var(--watch-strap) / 0.4),
+        hsl(var(--watch-strap) / 0.2),
+        transparent
+      );
+      border-radius: 50px;
+      box-shadow: var(--shadow-button);
+      border: 2px solid hsl(var(--watch-strap) / 0.4);
+    }
 
-  /* Improved Strap Design - Longer and wider with fade */
-  .watch-strap {
-    @apply absolute;
-    background: linear-gradient(to bottom, 
-      hsl(var(--watch-strap)), 
-      hsl(var(--watch-strap) / 0.9), 
-      hsl(var(--watch-strap) / 0.7),
-      hsl(var(--watch-strap) / 0.4),
-      hsl(var(--watch-strap) / 0.2),
-      transparent
-    );
-    border-radius: 50px;
-    box-shadow: var(--shadow-button);
-    border: 2px solid hsl(var(--watch-strap) / 0.4);
-  }
+    .watch-strap-top {
+      @apply watch-strap;
+      width: 180px;
+      height: 180px;
+      top: -160px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
 
-  .watch-strap-top {
-    @apply watch-strap;
-    width: 180px;
-    height: 180px;
-    top: -160px;
-    left: 50%;
-    transform: translateX(-50%);
-  }
+    .watch-strap-bottom {
+      @apply watch-strap;
+      width: 180px;
+      height: 180px;
+      bottom: -160px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(to top, 
+        hsl(var(--watch-strap)), 
+        hsl(var(--watch-strap) / 0.9), 
+        hsl(var(--watch-strap) / 0.7),
+        hsl(var(--watch-strap) / 0.4),
+        hsl(var(--watch-strap) / 0.2),
+        transparent
+      );
+    }
 
-  .watch-strap-bottom {
-    @apply watch-strap;
-    width: 180px;
-    height: 180px;
-    bottom: -160px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: linear-gradient(to top, 
-      hsl(var(--watch-strap)), 
-      hsl(var(--watch-strap) / 0.9), 
-      hsl(var(--watch-strap) / 0.7),
-      hsl(var(--watch-strap) / 0.4),
-      hsl(var(--watch-strap) / 0.2),
-      transparent
-    );
-  }
+    /* Status bar for watch screens */
+    .watch-status-bar {
+      @apply flex items-center justify-center px-20 py-1 text-xs;
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(0px);
+      border-radius: 20px;
+      margin: 6px;
+    }
 
-  /* Status bar for watch screens */
-  .watch-status-bar {
-    @apply flex items-center justify-between px-4 py-2 text-xs;
-    background: rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    margin: 8px;
-  }
+    /* Status icons */
+    .status-icon {
+      @apply flex items-center space-x-1;
+    }
 
-  /* Status icons */
-  .status-icon {
-    @apply flex items-center space-x-1;
-  }
+    .status-icon.battery {
+      color: hsl(120 70% 50%);
+    }
 
-  .status-icon.battery {
-    color: hsl(120 70% 50%);
-  }
+    .status-icon.wifi {
+      color: hsl(var(--primary));
+    }
 
-  .status-icon.wifi {
-    color: hsl(var(--primary));
-  }
+    .status-icon.bluetooth {
+      color: hsl(var(--primary));
+    }
 
-  .status-icon.bluetooth {
-    color: hsl(var(--primary));
-  }
+    /* Enhanced Watch UI Animations */
+    .watch-fade-in {
+      animation: watchFadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
 
-  /* Enhanced Watch UI Animations */
-  .watch-fade-in {
-    animation: watchFadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-  }
+    .watch-slide-up {
+      animation: watchSlideUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
 
-  .watch-slide-up {
-    animation: watchSlideUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
+    .watch-glow {
+      position: relative;
+      transition: var(--transition-smooth);
+    }
 
-  .watch-glow {
-    position: relative;
-    transition: var(--transition-smooth);
-  }
-
-  .watch-glow::before {
-    content: '';
-    @apply absolute inset-0 rounded-xl pointer-events-none;
-    background: var(--gradient-glow);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-
-  .watch-glow:hover::before {
-    opacity: 1;
-  }
-
-  .watch-glow:hover {
-    transform: scale(1.05);
-  }
-
-  /* Custom scrollbar for watch */
-  .watch-scroll::-webkit-scrollbar {
-    width: 4px;
-  }
-
-  .watch-scroll::-webkit-scrollbar-track {
-    background: transparent;
-    border-radius: 10px;
-  }
-
-  .watch-scroll::-webkit-scrollbar-thumb {
-    background: hsl(var(--primary));
-    border-radius: 10px;
-    box-shadow: 0 0 5px hsl(var(--primary) / 0.5);
-  }
-
-  /* Glassomorphic background */
-  .glass-bg {
-    @apply backdrop-blur-md border border-white/20;
-    background: rgba(255, 255, 255, 0.1);
-  }
-
-  /* Modern dark glass effect */
-  .dark-glass-bg {
-    @apply backdrop-blur-md border border-white/10;
-    background: rgba(0, 0, 0, 0.4);
-  }
-}
-
-@layer utilities {
-  /* Enhanced Custom Animations */
-  @keyframes watchFadeIn {
-    from {
+    .watch-glow::before {
+      content: '';
+      @apply absolute inset-0 rounded-xl pointer-events-none;
+      background: var(--gradient-glow);
       opacity: 0;
-      transform: scale(0.85) rotate(-5deg);
+      transition: opacity 0.3s ease;
     }
-    to {
+
+    .watch-glow:hover::before {
       opacity: 1;
-      transform: scale(1) rotate(0deg);
+    }
+
+    .watch-glow:hover {
+      transform: scale(1.05);
+    }
+
+    /* Custom scrollbar for watch */
+    .watch-scroll::-webkit-scrollbar {
+      width: 0px;
+      right: -100px;
+      margin-left: -100px;
+      position: relative;
+      border-radius: 200px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 5px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .watch-scroll::-webkit-scrollbar-track {
+      background: transparent;
+      border-radius: 10px;
+    }
+
+    .watch-scroll::-webkit-scrollbar-thumb {
+      background: hsl(var(--primary));
+      border-radius: 10px;
+      box-shadow: 0 0 5px hsl(var(--primary) / 0.5);
+    }
+
+    /* Glassomorphic background */
+    .glass-bg {
+      @apply backdrop-blur-md border border-white/20;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Modern dark glass effect */
+    .dark-glass-bg {
+      @apply backdrop-blur-md border border-white/10;
+      background: rgba(0, 0, 0, 0.4);
     }
   }
 
-  @keyframes watchSlideUp {
-    from {
-      opacity: 0;
-      transform: translateY(30px) scale(0.95);
+  @layer utilities {
+    /* Enhanced Custom Animations */
+    @keyframes watchFadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.85) rotate(-5deg);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+      }
     }
-    to {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-  }
 
-  @keyframes pulse-glow {
-    0%, 100% {
-      box-shadow: 0 0 20px hsl(var(--primary) / 0.4);
+    @keyframes watchSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
-    50% {
-      box-shadow: 0 0 35px hsl(var(--primary) / 0.8);
-    }
-  }
 
-  @keyframes pulse-glow-yellow {
-    0%, 100% {
-      box-shadow: 0 0 20px hsl(var(--accent) / 0.6);
+    @keyframes pulse-glow {
+      0%, 100% {
+        box-shadow: 0 0 20px hsl(var(--primary) / 0.4);
+      }
+      50% {
+        box-shadow: 0 0 35px hsl(var(--primary) / 0.8);
+      }
     }
-    50% {
-      box-shadow: 0 0 35px hsl(var(--accent) / 1);
-    }
-  }
 
-  @keyframes bmpPulse {
-    0%, 100% {
-      transform: scale(1);
-      color: hsl(var(--feature-health));
+    @keyframes pulse-glow-yellow {
+      0%, 100% {
+        box-shadow: 0 0 20px hsl(var(--accent) / 0.6);
+      }
+      50% {
+        box-shadow: 0 0 35px hsl(var(--accent) / 1);
+      }
     }
-    50% {
-      transform: scale(1.1);
-      color: hsl(var(--feature-health) / 0.8);
+
+    @keyframes bmpPulse {
+      0%, 100% {
+        transform: scale(1);
+        color: hsl(var(--feature-health));
+      }
+      50% {
+        transform: scale(1.1);
+        color: hsl(var(--feature-health) / 0.8);
+      }
+    }
+
+    @keyframes voicePulse {
+      0%, 100% {
+        opacity: 0.3;
+        transform: scale(1);
+      }
+      50% {
+        opacity: 0.7;
+        transform: scale(1.2);
+      }
+    }
+
+    .animate-pulse-glow {
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+
+    .animate-bmp-pulse {
+      animation: bmpPulse 1s ease-in-out infinite;
+    }
+
+    .animate-voice-pulse {
+      animation: voicePulse 2s ease-in-out infinite;
     }
   }
-
-  @keyframes voicePulse {
-    0%, 100% {
-      opacity: 0.3;
-      transform: scale(1);
-    }
-    50% {
-      opacity: 0.7;
-      transform: scale(1.2);
-    }
-  }
-
-  .animate-pulse-glow {
-    animation: pulse-glow 2s ease-in-out infinite;
-  }
-
-  .animate-bmp-pulse {
-    animation: bmpPulse 1s ease-in-out infinite;
-  }
-
-  .animate-voice-pulse {
-    animation: voicePulse 2s ease-in-out infinite;
-  }
-}
