@@ -346,7 +346,7 @@
     border-top: none;
     border-radius: 0 0 6px 6px;
     top: 14px;
-    left: 50%;
+    left: -50%;
     transform: translateX(-50%);
     z-index: 2;
   }
