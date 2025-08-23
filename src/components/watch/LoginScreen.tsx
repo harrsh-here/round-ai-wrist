@@ -32,7 +32,7 @@ const LoginScreen = ({ onLogin }: LoginScreenProps) => {
           </div>
 
           {/* Generated Code Display */}
-          <div className="mb-8 text-center watch-slide-up dark-glass-bg rounded-2xl p-6 w-full max-w-[200px]" style={{ animationDelay: '200ms' }}>
+          <div className="mb-6 text-center watch-slide-up dark-glass-bg rounded-2xl p-6 w-full max-w-[200px]" style={{ animationDelay: '200ms' }}>
             <div className="flex items-center justify-center space-x-2 mb-4">
               <Lock size={16} className="text-accent" />
               <span className="text-sm text-white/80">Auth Code</span>
@@ -45,9 +45,15 @@ const LoginScreen = ({ onLogin }: LoginScreenProps) => {
             </div>
           </div>
 
-          {/* Scroll Indicator - After content */}
-          <div className="flex flex-col items-center mb-8">
-            <ChevronDown size={20} className="text-primary/60 animate-bounce" />
+          {/* Scroll Indicator - Animated downward chevron */}
+          <div className="flex flex-col items-center mb-8 watch-slide-up" style={{ animationDelay: '300ms' }}>
+            <ChevronDown 
+              size={24} 
+              className="text-primary/70 animate-bounce" 
+              style={{ 
+                animation: 'bounce 2s infinite, pulse 2s ease-in-out infinite' 
+              }} 
+            />
           </div>
 
           {/* Login Button */}
