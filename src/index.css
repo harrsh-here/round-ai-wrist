@@ -297,12 +297,12 @@
     color: white;
   }
 
-  /* Voice/Mic Button - Digital recorder style microphone, on same side as power button */
+  /* Voice/Mic Button - Digital recorder style microphone, on left side */
   .watch-voice-button {
     @apply absolute flex items-center justify-center cursor-pointer;
     width: 28px;
     height: 35px;
-    right: -16px;
+    left: -16px;
     top: 25%;
     background: linear-gradient(135deg, 
       hsl(var(--accent)), 
