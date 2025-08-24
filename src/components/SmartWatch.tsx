@@ -1,7 +1,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight  ,Home } from 'lucide-react';
+
+
 import AnalogWatch from './watch/AnalogWatch';
 import HomeScreen from './watch/HomeScreen';
 import FeaturesScreen from './watch/FeaturesScreen';
@@ -186,6 +188,7 @@ const SmartWatch = () => {
         {/* Voice Button - Now top button with yellow glow when active */}
         <button
           className={`watch-voice-button ${isListening ? 'active' : ''} ${!isWatchOn || !isLoggedIn ? 'opacity-60' : 'opacity-100'}`}
+          
           onMouseDown={handleVoiceButtonPress}
           onMouseUp={handleVoiceButtonRelease}
           // onMouseLeave={handleVoiceButtonRelease}
@@ -194,7 +197,20 @@ const SmartWatch = () => {
           title="Voice Button (Hold to speak)"
         />
       </div>
+          
+           {/* Back Button
+      <div className="fixed bottom-[110px] left-1/2 transform -translate-x-1/2 pb-8 mb-10 z-50">
 
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => onNavigate('home')}
+          className="rounded-full w-10 h-10 p-0 glass-bg hover:bg-white/15 p-18 shadow-lg hover:shadow-xl transition-all duration-300 animate-bounce-slow"
+        >
+          <Home size={14} className="text-white" />
+        </Button>
+      </div> */}
+      
       {/* Navigation Controls */}
       {(isWatchOn && isLoggedIn) && (
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-4 animate-fade-in">

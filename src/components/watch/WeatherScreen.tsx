@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Home, Cloud, Sun, CloudRain, Wind, Thermometer, Droplets, Eye } from 'lucide-react';
+import { Home, Cloud, Sun, CloudRain, Wind, Thermometer, Droplets, Eye, ArrowLeft } from 'lucide-react';
 import { WatchScreen } from '../SmartWatch';
 
 interface WeatherScreenProps {
@@ -47,17 +47,29 @@ const WeatherScreen = ({ onNavigate }: WeatherScreenProps) => {
   const WeatherIcon = getWeatherIcon();
 
   return (
-    <div className="watch-content-safe flex flex-col items-center justify-center p-4">
-      {/* Header */}
-      <div className="text-center mb-4 watch-slide-up">
-        <h2 className="text-lg font-bold bg-gradient-to-r from-white via-white/90 to-white/70 bg-clip-text text-transparent">
-          Weather
-        </h2>
-        <div className="text-xs text-white/60">Current Conditions</div>
+    <div className="relative flex flex-col items-center justify-start h-full">
+      {/* Fixed Header */}
+      <div className="absolute top-0 left-0 right-0 z-10 bg-transparent backdrop-blur-sm">
+        <div className="text-center py-5 watch-slide-up">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => onNavigate('features')}
+            className="absolute left-[78px] top-1/2 -translate-y-1/2 rounded-full w-8 h-8 p-0 glass-bg hover:bg-white/15 z-20 "
+          >
+            <ArrowLeft size={14} className="text-white" />
+          </Button>
+          <h2 className="text-lg font-bold bg-gradient-to-r from-white via-white/90 to-white/70 bg-clip-text text-transparent">
+            Weather
+          </h2>
+          <div className="text-xs text-white/60">Current Conditions</div>
+        </div>
       </div>
 
+      {/* Scrollable Content */}
+      <div className="watch-content-safe flex flex-col items-center w-full watch-scroll overflow-y-auto pt-24 pb-4 px-4">
       {/* Current Weather */}
-      <div className="glass-bg p-4 rounded-2xl text-center mb-4 w-full max-w-[200px] watch-glow">
+      <div className="glass-bg p-4 rounded-2xl text-center mb-4 w-full max-w-[200px] watch-glow ">
         <WeatherIcon size={32} className="text-feature-weather mx-auto mb-2" />
         <div className="text-2xl font-bold text-white mb-1">
           {Math.round(currentWeather.temp)}°C
@@ -88,7 +100,7 @@ const WeatherScreen = ({ onNavigate }: WeatherScreenProps) => {
       </div>
 
       {/* Hourly Forecast */}
-      <div className="w-full max-w-[220px] mb-4">
+      <div className="w-full max-w-[220px] mb-4 pb-8">
         <div className="text-sm text-white/80 mb-2 text-center">Today's Forecast</div>
         <div className="flex justify-between space-x-1">
           {forecast.map((item, index) => {
@@ -110,17 +122,7 @@ const WeatherScreen = ({ onNavigate }: WeatherScreenProps) => {
         </div>
       </div>
 
-      {/* Back Button */}
-      <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => onNavigate('home')}
-          className="rounded-full w-10 h-10 p-0 glass-bg hover:bg-white/15"
-        >
-          <Home size={14} className="text-white" />
-        </Button>
-      </div>
+     </div>
     </div>
   );
 };

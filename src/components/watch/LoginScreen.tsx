@@ -17,22 +17,22 @@ const LoginScreen = ({ onLogin }: LoginScreenProps) => {
     <div className="relative w-full h-full rounded-full overflow-hidden">
       {/* Scrollable Content */}
       <div className="h-full overflow-y-auto watch-scroll rounded-full" style={{ clipPath: 'circle(50%)' }}>
-        <div className="flex flex-col items-center justify-start p-6 pt-16 min-h-full">
+        <div className="flex flex-col items-center justify-start p-2 pt-3 min-h-full">
           {/* Login Icon */}
-          <div className="mb-8 text-center watch-slide-up">
-            <div className="w-16 h-16 rounded-full dark-glass-bg border-2 border-primary/40 flex items-center justify-center mb-4 mx-auto">
+          <div className="mb-3 text-center watch-slide-up">
+            <div className="w-16 h-16 rounded-full dark-glass-bg border-2 border-primary/40 flex items-center justify-center mb-2 mx-auto">
               <LogIn size={28} className="text-primary" />
             </div>
-            <h1 className="text-xl font-bold text-white mb-2">
+            <h1 className="text-xl font-bold text-white mb-1">
               FuzNex
             </h1>
-            <h2 className="text-sm text-white/70">
+            <h2 className="text-sm text-white/70 mb-1">
               Verify authentication code
             </h2>
           </div>
 
           {/* Generated Code Display */}
-          <div className="mb-6 text-center watch-slide-up dark-glass-bg rounded-2xl p-6 w-full max-w-[200px]" style={{ animationDelay: '200ms' }}>
+          <div className="mb-5 text-center watch-slide-up dark-glass-bg rounded-2xl p-6 w-full max-w-[200px]" style={{ animationDelay: '200ms' }}>
             <div className="flex items-center justify-center space-x-2 mb-4">
               <Lock size={16} className="text-accent" />
               <span className="text-sm text-white/80">Auth Code</span>
@@ -46,7 +46,7 @@ const LoginScreen = ({ onLogin }: LoginScreenProps) => {
           </div>
 
           {/* Scroll Indicator - Animated downward chevron */}
-          <div className="flex flex-col items-center mb-8 watch-slide-up" style={{ animationDelay: '300ms' }}>
+          <div className="flex flex-col items-center mb-4 watch-slide-up" style={{ animationDelay: '300ms' }}>
             <ChevronDown 
               size={24} 
               className="text-primary/70 animate-bounce" 
@@ -57,7 +57,7 @@ const LoginScreen = ({ onLogin }: LoginScreenProps) => {
           </div>
 
           {/* Login Button */}
-          <div className="watch-slide-up mb-8" style={{ animationDelay: '400ms' }}>
+          <div className="watch-slide-up mb-3" style={{ animationDelay: '400ms' }}>
             <Button
               onClick={onLogin}
               className="rounded-full px-10 py-4 bg-gradient-to-r from-primary to-secondary hover:from-primary/80 hover:to-secondary/80 text-white text-sm font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
@@ -67,8 +67,8 @@ const LoginScreen = ({ onLogin }: LoginScreenProps) => {
           </div>
 
           {/* Footer */}
-          <div className="text-center pb-8">
-            <div className="text-xs text-white/40">FuzNex AI SmartWatch v2.1</div>
+          <div className="text-center pb-6">
+            <div className="text-xs text-white/40 transform:scale-80">FuzNex AI SmartWatch v0.1</div>
           </div>
         </div>
       </div>
