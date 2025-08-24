@@ -14,7 +14,7 @@ const FeaturesScreen = ({ onNavigate }: FeaturesScreenProps) => {
     { icon: Phone, label: 'Calls', color: 'text-feature-call', screen: 'dialer' as WatchScreen },
     { icon: Music, label: 'Music', color: 'text-feature-music', screen: 'music' as WatchScreen },
     { icon: Activity, label: 'Fitness', color: 'text-feature-fitness', screen: 'fitness' as WatchScreen },
-    { icon: Heart, label: 'Health', color: 'text-feature-health', screen: 'fitness' as WatchScreen },
+    { icon: Heart, label: 'Health', color: 'text-feature-health', screen: 'health' as WatchScreen },
     { icon: Cloud, label: 'Weather', color: 'text-feature-weather', screen: 'weather' as WatchScreen },
     { icon: Camera, label: 'Camera', color: 'text-primary', screen: 'chat' as WatchScreen },
     { icon: Mail, label: 'Messages', color: 'text-accent', screen: 'chat' as WatchScreen },
