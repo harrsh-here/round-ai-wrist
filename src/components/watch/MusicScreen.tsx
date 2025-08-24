@@ -224,21 +224,61 @@ const MusicScreen = ({ onNavigate }: MusicScreenProps) => {
     setLikedSongs(newLikedSongs);
   };
 
-  const selectSong = (index) => {
-    if (index !== currentSong) {
-      setCurrentSong(index);
-      setCurrentTime(0);
-      setProgress(0);
-      if (isPlaying) {
-        // Will auto-play new song due to isPlaying state
+const selectSong = (index) => {
+  if (index !== currentSong) {
+    setCurrentSong(index);
+    setCurrentTime(0);
+    setProgress(0);
+    setIsPlaying(true);
+    
+    // Play the selected song after a short delay
+    setTimeout(() => {
+      if (audioRef.current) {
+        audioRef.current.play().catch(error => {
+          console.log('Error auto-playing song:', error);
+          setIsPlaying(false);
+        });
+      }
+      
+      // Set up handler for when song ends
+      audioRef.current.onended = () => {
+        // If it's the last song, play the first song
+        const nextIndex = index === playlist.length - 1 ? 0 : index + 1;
+        setCurrentSong(nextIndex);
+        setCurrentTime(0);
+        setProgress(0);
+        
         setTimeout(() => {
           if (audioRef.current) {
-            audioRef.current.play().catch(console.log);
+            audioRef.current.play().catch(error => {
+              console.log('Error playing next song:', error);
+              setIsPlaying(false);
+            });
           }
         }, 100);
-      }
+      };
+    }, 100);
+
+    // Set up auto-play for next song when current one ends
+    if (audioRef.current) {
+      audioRef.current.onended = () => {
+        const nextIndex = (index + 1) % playlist.length;
+        setCurrentSong(nextIndex);
+        setCurrentTime(0);
+        setProgress(0);
+        
+        setTimeout(() => {
+          if (audioRef.current) {
+            audioRef.current.play().catch(error => {
+              console.log('Error playing next song:', error);
+              setIsPlaying(false);
+            });
+          }
+        }, 100);
+      };
     }
-  };
+  }
+};
 
   const currentSongData = playlist[currentSong];
 
@@ -256,8 +296,29 @@ const MusicScreen = ({ onNavigate }: MusicScreenProps) => {
         <h2 className="text-lg font-semibold text-white py-2">Music</h2>
       </div>
       {/* Current Song */}
-      <div className="glass-bg rounded-lg p-2.5 mb-2 text-center w-3/4 mx-auto">
-        <div className="w-8 h-8 bg-gradient-to-br from-purple-500/30 to-pink-500/30 rounded-lg flex items-center justify-center mx-auto mb-1 relative overflow-hidden">
+      <div className={`glass-bg rounded-lg p-4 mb-3 text-center w-3/4 mx-auto relative overflow-hidden min-h-[120px] ${
+        isPlaying ? `
+          before:absolute before:inset-0
+          before:bg-gradient-to-r before:from-[#4158D0]/30 before:via-[#C850C0]/30 before:to-[#FFCC70]/30
+          before:opacity-70
+          before:blur-sm
+          [&>*]:relative
+          hover:before:opacity-80
+          opacity-100
+          transition-opacity duration-500 ease-in-out
+          scale-[1.02]
+        ` : `
+          before:absolute before:inset-0
+          before:bg-gradient-to-r before:from-indigo-900/30 before:via-blue-900/30 before:to-cyan-900/30
+          before:opacity-50
+          before:blur-sm
+          [&>*]:relative
+          opacity-80
+          transition-opacity duration-500 ease-in-out
+          scale-100
+        `
+      }`}>
+        <div className="w-8 h-8 bg-gradient-to-br from-gray-300/30 to-gray-900/30 rounded-lg flex items-center justify-center mx-auto mb-1 relative overflow-hidden">
           <Volume2 size={20} className="text-purple-400" />
           {isPlaying && (
             <div className="absolute inset-0 bg-gradient-to-r from-purple-400/20 to-pink-400/20 animate-pulse rounded-lg" />
@@ -273,24 +334,9 @@ const MusicScreen = ({ onNavigate }: MusicScreenProps) => {
           )}
         </div>
         <div className="relative w-full overflow-hidden px-1">
-          <div className="mx-auto relative" style={{ width: '150px', overflow: 'hidden' }}>
-            {isPlaying && (
-              <div className="absolute inset-0 flex justify-center items-center space-x-1 opacity-20">
-                {[...Array(8)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="w-1 bg-purple-400"
-                    style={{
-                      height: `${Math.random() * 20 + 10}px`,
-                      animation: `visualizer ${0.5 + Math.random() * 0.5}s ease-in-out infinite alternate`,
-                      animationDelay: `${i * 0.1}s`
-                    }}
-                  />
-                ))}
-              </div>
-            )}
+          <div className="mx-auto" style={{ width: '150px', overflow: 'hidden' }}>
             <div 
-              className={`text-sm font-semibold text-white mb-1 whitespace-nowrap relative z-10 ${
+              className={`text-sm font-semibold text-white mb-1 whitespace-nowrap ${
                 currentSongData.title.length > 25 ? 'animate-marquee' : ''
               }`}
               style={{
@@ -317,14 +363,6 @@ const MusicScreen = ({ onNavigate }: MusicScreenProps) => {
         }
         .animate-marquee {
           animation: marquee 10s linear infinite;
-        }
-        @keyframes visualizer {
-          0% {
-            transform: scaleY(0.3);
-          }
-          100% {
-            transform: scaleY(1);
-          }
         }
       `}</style>
 
@@ -449,7 +487,23 @@ const MusicScreen = ({ onNavigate }: MusicScreenProps) => {
         <Button
           variant="ghost"
           size="sm"
-          onClick={handlePrevious}
+          onClick={() => {
+            handlePrevious();
+            if (!isPlaying) {
+              // If not currently playing, just change song without starting playback
+              setIsPlaying(false);
+              if (audioRef.current) {
+                audioRef.current.pause();
+              }
+            } else {
+              // If currently playing, play the new song
+              setTimeout(() => {
+                if (audioRef.current) {
+                  audioRef.current.play().catch(console.log);
+                }
+              }, 100);
+            }
+          }}
           disabled={isLoading}
           className="w-10 h-10 glass-bg hover:bg-white/20 rounded-full p-0 transition-all"
         >
@@ -473,7 +527,23 @@ const MusicScreen = ({ onNavigate }: MusicScreenProps) => {
         <Button
           variant="ghost"
           size="sm"
-          onClick={handleNext}
+          onClick={() => {
+            handleNext();
+            if (!isPlaying) {
+              // If not currently playing, just change song without starting playback
+              setIsPlaying(false);
+              if (audioRef.current) {
+                audioRef.current.pause();
+              }
+            } else {
+              // If currently playing, play the new song
+              setTimeout(() => {
+                if (audioRef.current) {
+                  audioRef.current.play().catch(console.log);
+                }
+              }, 100);
+            }
+          }}
           disabled={isLoading}
           className="w-10 h-10 glass-bg hover:bg-white/20 rounded-full p-0 transition-all"
         >

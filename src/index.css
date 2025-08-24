@@ -605,6 +605,29 @@
         opacity: 0.7;
         transform: scale(1.2);
       }
+
+      @keyframes colorChange {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.color-change {
+  animation: colorChange 8s linear infinite;
+  background-size: 200% 200%;
+}
+
+.color-change-slow {
+  animation: colorChange 10s linear infinite;
+  background-size: 200% 200%;
+}
+
     }
 
     .animate-pulse-glow {
