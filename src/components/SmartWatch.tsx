@@ -10,12 +10,13 @@ import FeaturesScreen from './watch/FeaturesScreen';
 import AIChat from './watch/AIChat';
 import SettingsScreen from './watch/SettingsScreen';
 import FitnessScreen from './watch/FitnessScreen';
+import HealthScreen from './watch/HealthScreen';
 import LoginScreen from './watch/LoginScreen';
 import DialerScreen from './watch/DialerScreen';
 import MusicScreen from './watch/MusicScreen';
 import WeatherScreen from './watch/WeatherScreen';
 
-export type WatchScreen = 'login' | 'analog' | 'home' | 'features' | 'chat' | 'settings' | 'fitness' | 'dialer' | 'music' | 'weather';
+export type WatchScreen = 'login' | 'analog' | 'home' | 'features' | 'chat' | 'settings' | 'fitness' | 'health' | 'dialer' | 'music' | 'weather';
 
 const SmartWatch = () => {
   const [currentScreen, setCurrentScreen] = useState<WatchScreen>('login');
@@ -25,7 +26,7 @@ const SmartWatch = () => {
   const [voiceQuery, setVoiceQuery] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const screens: WatchScreen[] = ['home', 'analog', 'features', 'fitness', 'chat', 'settings'];
+  const screens: WatchScreen[] = ['home', 'analog', 'features', 'fitness', 'health', 'chat', 'settings'];
 
   const navigateToScreen = (screen: WatchScreen) => {
     if (screen === currentScreen || !isWatchOn) return;
@@ -122,6 +123,8 @@ const SmartWatch = () => {
         return <SettingsScreen {...screenProps} />;
       case 'fitness':
         return <FitnessScreen {...screenProps} />;
+      case 'health':
+        return <HealthScreen {...screenProps} />;
       case 'dialer':
         return <DialerScreen {...screenProps} />;
       case 'music':
