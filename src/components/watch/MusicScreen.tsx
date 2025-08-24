@@ -253,7 +253,7 @@ const MusicScreen = ({ onNavigate }: MusicScreenProps) => {
       
       {/* Header */}
       <div className="py-4 flex items-center justify-center mb-3 sticky top-0 z-10 backdrop-blur-xs bg-black/200">
-        <h2 className="text-sm font-semibold text-white py-2">Music</h2>
+        <h2 className="text-lg font-semibold text-white py-2">Music</h2>
       </div>
       {/* Current Song */}
       <div className="glass-bg rounded-lg p-2.5 mb-2 text-center w-3/4 mx-auto">
@@ -273,9 +273,24 @@ const MusicScreen = ({ onNavigate }: MusicScreenProps) => {
           )}
         </div>
         <div className="relative w-full overflow-hidden px-1">
-          <div className="mx-auto" style={{ width: '150px', overflow: 'hidden' }}>
+          <div className="mx-auto relative" style={{ width: '150px', overflow: 'hidden' }}>
+            {isPlaying && (
+              <div className="absolute inset-0 flex justify-center items-center space-x-1 opacity-20">
+                {[...Array(8)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="w-1 bg-purple-400"
+                    style={{
+                      height: `${Math.random() * 20 + 10}px`,
+                      animation: `visualizer ${0.5 + Math.random() * 0.5}s ease-in-out infinite alternate`,
+                      animationDelay: `${i * 0.1}s`
+                    }}
+                  />
+                ))}
+              </div>
+            )}
             <div 
-              className={`text-sm font-semibold text-white mb-1 whitespace-nowrap ${
+              className={`text-sm font-semibold text-white mb-1 whitespace-nowrap relative z-10 ${
                 currentSongData.title.length > 25 ? 'animate-marquee' : ''
               }`}
               style={{
@@ -302,6 +317,14 @@ const MusicScreen = ({ onNavigate }: MusicScreenProps) => {
         }
         .animate-marquee {
           animation: marquee 10s linear infinite;
+        }
+        @keyframes visualizer {
+          0% {
+            transform: scaleY(0.3);
+          }
+          100% {
+            transform: scaleY(1);
+          }
         }
       `}</style>
 
@@ -367,28 +390,52 @@ const MusicScreen = ({ onNavigate }: MusicScreenProps) => {
 {/* Volume Control */}
 <div className="flex items-center justify-center space-x-2 mb-1 w-3/4 mx-auto">
   <Volume2 size={14} className="text-white/70" />
-  <div className="relative w-24 h-6 flex items-center">
-    <input
-      type="range"
-      min="0"
-      max="1" 
-      step="0.01"
-      value={volume}
-      onChange={(e) => setVolume(parseFloat(e.target.value))}
-      className="absolute w-full h-1 bg-white/20 rounded-full cursor-pointer appearance-none"
-      style={{
-        background: `linear-gradient(to right, 
-          rgba(255,255,255,0.4) 0%,
-          rgba(255,255,255,0.4) ${volume * 100}%,
-          rgba(255,255,255,0.2) ${volume * 100}%, 
-          rgba(255,255,255,0.2) 100%)`
-      }}
-    />
+  <div 
+    className="relative w-24 h-6 flex items-center cursor-pointer"
+    onMouseDown={(e) => {
+      const volumeBar = e.currentTarget;
+      
+      const updateVolumeFromMouse = (moveEvent) => {
+        const rect = volumeBar.getBoundingClientRect();
+        const clickX = Math.min(Math.max(0, moveEvent.clientX - rect.left), rect.width);
+        const newVolume = Math.min(Math.max(0, clickX / rect.width), 1);
+        setVolume(newVolume);
+      };
+
+      updateVolumeFromMouse(e);
+
+      const handleMouseMove = (moveEvent) => {
+        moveEvent.preventDefault();
+        updateVolumeFromMouse(moveEvent);
+      };
+
+      const handleMouseUp = () => {
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+      };
+
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    }}
+  >
+    <div className="absolute w-full h-1.5 bg-black/30 rounded-full overflow-hidden backdrop-blur-sm">
+      <div 
+        className="h-full rounded-full"
+        style={{ 
+          width: `${volume * 100}%`, 
+          transition: 'width 0.1s',
+          background: 'linear-gradient(90deg, rgba(255,255,255,0.9) 0%, rgba(220,220,220,1) 50%, rgba(192,192,192,0.9) 100%)'
+        }}
+      />
+    </div>
     <div 
-      className="absolute w-3 h-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full border-2 border-white shadow-lg pointer-events-none"
-      style={{
-        left: `calc(${volume * 100}% - 6px)`,
-        transition: 'left 0.1s'
+      className="absolute w-3 h-3 rounded-full border-2 border-white shadow-lg"
+      style={{ 
+        left: `${volume * 100}%`,
+        transform: 'translateX(-50%)',
+        transition: 'left 0.1s',
+        background: 'linear-gradient(135deg, #e0e0e0, #ffffff, #a0a0a0)',
+        boxShadow: '0 2px 4px rgba(0,0,0,0.3), inset 0 1px 3px rgba(255,255,255,0.9)'
       }}
     />
   </div>
