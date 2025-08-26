@@ -15,8 +15,12 @@ import LoginScreen from './watch/LoginScreen';
 import DialerScreen from './watch/DialerScreen';
 import MusicScreen from './watch/MusicScreen';
 import WeatherScreen from './watch/WeatherScreen';
+import NotificationsScreen from './watch/NotificationsScreen';
+import CameraScreen from './watch/CameraScreen';
+import MessagesScreen from './watch/MessagesScreen';
+import MapsScreen from './watch/MapsScreen';
 
-export type WatchScreen = 'login' | 'analog' | 'home' | 'features' | 'chat' | 'settings' | 'fitness' | 'health' | 'dialer' | 'music' | 'weather';
+export type WatchScreen = 'login' | 'analog' | 'home' | 'features' | 'chat' | 'settings' | 'fitness' | 'health' | 'dialer' | 'music' | 'weather' | 'notifications' | 'camera' | 'messages' | 'maps';
 
 const SmartWatch = () => {
   const [currentScreen, setCurrentScreen] = useState<WatchScreen>('login');
@@ -25,8 +29,9 @@ const SmartWatch = () => {
   const [isListening, setIsListening] = useState(false);
   const [voiceQuery, setVoiceQuery] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showVoiceQuery, setShowVoiceQuery] = useState(false);
 
-  const screens: WatchScreen[] = ['home', 'analog', 'features', 'fitness', 'health', 'chat', 'settings'];
+  const screens: WatchScreen[] = ['home', 'analog', 'features', 'fitness', 'health', 'chat', 'settings', 'notifications', 'camera', 'messages', 'maps'];
 
   const navigateToScreen = (screen: WatchScreen) => {
     if (screen === currentScreen || !isWatchOn) return;
@@ -88,10 +93,13 @@ const SmartWatch = () => {
     
     const randomQuery = queries[Math.floor(Math.random() * queries.length)];
     setVoiceQuery(randomQuery);
-    
-    setTimeout(() => setVoiceQuery(''), 3000);
+    setShowVoiceQuery(true);
   };
 
+  const handleVoiceQueryClick = () => {
+    setShowVoiceQuery(false);
+    setVoiceQuery('');
+  };
   const renderScreen = () => {
     if (!isWatchOn) {
       return (
@@ -131,6 +139,14 @@ const SmartWatch = () => {
         return <MusicScreen {...screenProps} />;
       case 'weather':
         return <WeatherScreen {...screenProps} />;
+      case 'notifications':
+        return <NotificationsScreen {...screenProps} />;
+      case 'camera':
+        return <CameraScreen {...screenProps} />;
+      case 'messages':
+        return <MessagesScreen {...screenProps} />;
+      case 'maps':
+        return <MapsScreen {...screenProps} />;
       default:
         return <HomeScreen {...screenProps} />;
     }
@@ -149,13 +165,17 @@ const SmartWatch = () => {
         {/* Watch Screen */}
         <div className="watch-screen">
           {/* Voice Query Overlay */}
-          {voiceQuery && (
-            <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/90 rounded-full backdrop-blur-sm">
+          {showVoiceQuery && voiceQuery && (
+            <div 
+              className="absolute inset-0 z-50 flex items-center justify-center bg-black/90 rounded-full backdrop-blur-sm cursor-pointer"
+              onClick={handleVoiceQueryClick}
+            >
               <div className="text-center p-4">
                 <div className="text-accent text-xs mb-2 animate-pulse">Voice Query:</div>
                 <div className="text-foreground text-sm font-medium bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
                   {voiceQuery}
                 </div>
+                <div className="text-white/60 text-xs mt-2">Tap to close</div>
               </div>
             </div>
           )}
