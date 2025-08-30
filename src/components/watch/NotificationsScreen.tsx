@@ -145,15 +145,8 @@ const NotificationsScreen = ({ onNavigate }: NotificationsScreenProps) => {
     <div className="relative w-full h-full flex flex-col">
       {/* Header */}
       <div className="absolute top-0 left-0 right-0 z-10 bg-transparent backdrop-blur-sm">
-        <div className="text-center py-4 watch-slide-up">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => onNavigate('features')}
-            className="absolute left-[78px] top-1/2 -translate-y-1/2 rounded-full w-8 h-8 p-0 glass-bg hover:bg-white/15 z-20"
-          >
-            <ArrowLeft size={14} className="text-white" />
-          </Button>
+        <div className=" text-center py-4 watch-slide-up">
+          
           <div className="flex items-center justify-center space-x-2">
             <Bell size={16} className="text-blue-400" />
             <h2 className="text-lg font-bold text-white">Notifications</h2>
@@ -165,7 +158,14 @@ const NotificationsScreen = ({ onNavigate }: NotificationsScreenProps) => {
           </div>
         </div>
       </div>
-
+<Button
+            variant="ghost"
+            size="sm"
+            onClick={() => onNavigate('features')}
+            className="absolute left-[50px] top-[85px] -translate-y-1/2 rounded-full w-8 h-8 p-0 glass-bg hover:bg-white/15 z-20"
+          >
+            <ArrowLeft size={14} className="text-white" />
+          </Button>
       {/* Filter Tabs */}
       <div className="absolute top-16 left-0 right-0 z-10 flex justify-center mb-4">
         <div className="bg-white/15 backdrop-blur-md rounded-full p-1 flex border border-white/20">

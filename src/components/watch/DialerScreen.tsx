@@ -177,7 +177,7 @@ const DialerScreen = ({ onNavigate }: DialerScreenProps) => {
       <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-pink-500/10" />
       
       {/* Header */}
-      <div className="w-full text-center mt-7 mb-2 relative z-50">
+      <div className="w-full text-center mt-0 mb-2 relative z-50">
         <Button
           variant="ghost"
           size="sm"
@@ -228,11 +228,11 @@ const DialerScreen = ({ onNavigate }: DialerScreenProps) => {
       </div>
 
       {/* Content */}
-      <div className="flex-1 w-full max-w-[140px] relative z-10">
+      <div className="flex-1 w-full max-w-[250px] relative z-10">
         {activeTab === 'dialer' && (
           <div className="flex flex-col h-full">
             {/* Enhanced Number Display */}
-            <div className="bg-white/15 backdrop-blur-md rounded-lg p-1.5 mb-2 text-center border border-white/20">
+            <div className="bg-white/15 backdrop-blur-md rounded-lg p-1.5 mb-1 text-center border border-white/20">
               {currentDisplayName && (
                 <div className="text-[10px] font-bold text-blue-400 mb-0.5">
                   {currentDisplayName}
@@ -244,13 +244,13 @@ const DialerScreen = ({ onNavigate }: DialerScreenProps) => {
             </div>
 
             {/* Static Dialpad */}
-            <div className="grid grid-cols-3 gap-1 mb-2 py-2">
+            <div className="relative left-[0px] grid grid-cols-3 gap-1 mb-2 py-2">
               {dialpadNumbers.flat().map((num) => (
                 <Button
                   key={num}
                   variant="ghost"
                   onClick={() => handleNumberPress(num)}
-                  className="h-8 w-10 bg-white/15 hover:bg-white/25 text-white text-xs font-bold rounded-lg backdrop-blur-md border border-white/20 transition-all"
+                  className="h-8 w-20 bg-white/15 hover:bg-white/25 text-white text-xs font-bold rounded-lg backdrop-blur-md border border-white/20 transition-all"
                 >
                   {num}
                 </Button>
@@ -259,15 +259,15 @@ const DialerScreen = ({ onNavigate }: DialerScreenProps) => {
 
             {/* Repositioned Action Buttons */}
             <div className="flex justify-between items-center px-1 mt-1">
+              
               <Button
                 variant="ghost"
-                onClick={handleClear}
-                className="w-8 h-8 bg-red-500/20 hover:bg-red-500/30 rounded-full backdrop-blur-md border border-white/20 transition-all -mt-3 p-1"
-                disabled={!number}
+                size="sm"
+                onClick={() => onNavigate('home')}
+                className=" relative left-[50px] top-[10px] w-8 h-8 bg-gray-500/20 hover:bg-gray-500/30 rounded-full backdrop-blur-md border border-white/20 transition-all -mt-3 p-2"
               >
-                <span className="text-white font-bold text-sm">⌫</span>
+                <Home size={12} className="text-white" />
               </Button>
-              
               <Button
                 onClick={() => handleCall()}
                 disabled={!number}
@@ -275,23 +275,49 @@ const DialerScreen = ({ onNavigate }: DialerScreenProps) => {
               >
                 <PhoneCall size={14} className="text-white" />
               </Button>
-              
               <Button
                 variant="ghost"
-                size="sm"
-                onClick={() => onNavigate('home')}
-                className="w-8 h-8 bg-gray-500/20 hover:bg-gray-500/30 rounded-full backdrop-blur-md border border-white/20 transition-all -mt-3 p-1"
+                onClick={handleClear}
+                className="relative right-[50px] top-[10px]  w-8 h-8 bg-red-500/20 hover:bg-red-500/30 rounded-full backdrop-blur-md border border-white/20 transition-all -mt-3 p-1"
+                disabled={!number}
               >
-                <Home size={12} className="text-white" />
+                <span className="text-white text-sm">⌫</span>
               </Button>
+              
             </div>
           </div>
         )}
 
         {activeTab === 'contacts' && (
-          <div className="space-y-1.5 h-[250px] overflow-y-auto watch-scroll">
+          <div 
+            className="space-y-2 h-[250px] overflow-y-auto watch-scroll"
+            ref={(el) => {
+              if (el) {
+                // Auto scroll animation on mount
+                const startScroll = () => {
+                  // Initial delay before starting animation
+                  setTimeout(() => {
+                    // Scroll down smoothly
+                    el.scrollTo({
+                      top: el.scrollHeight,
+                      behavior: 'smooth'
+                    });
+                    
+                    // Scroll back up after 500ms
+                    setTimeout(() => {
+                      el.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                      });
+                    }, 500);
+                  }, 100);
+                };
+                startScroll();
+              }
+            }}
+          >
             {contacts.map((contact, index) => (
-              <div key={index} className="bg-white/15 backdrop-blur-md rounded-lg p-2 flex items-center justify-between border border-white/20">
+              <div key={index} className="bg-white/15 backdrop-blur-md rounded-lg p-2 flex items-center mt-5 justify-between border border-white/20">
                 <div className="flex items-center space-x-2 flex-1 min-w-0">
                   <div 
                     className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 border border-white/30"
@@ -299,12 +325,12 @@ const DialerScreen = ({ onNavigate }: DialerScreenProps) => {
                   >
                     <User size={10} className="text-white" />
                   </div>
-                  <div className="min-w-0 flex-1">
+                  <div className="min-w-0 flex-1 ">
                     <div className="text-xs font-bold text-white truncate">{contact.name}</div>
                     <div className="text-[9px] text-white/70 truncate">{contact.number}</div>
                   </div>
                 </div>
-                <div className="flex items-center space-x-1 flex-shrink-0">
+                <div className="flex items-center space-x-1 mb-3 flex-shrink-0">
                   <div className={`w-1.5 h-1.5 rounded-full ${
                     contact.status === 'online' ? 'bg-green-400' :
                     contact.status === 'busy' ? 'bg-yellow-400' : 'bg-gray-400'

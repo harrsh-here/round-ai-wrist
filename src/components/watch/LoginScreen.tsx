@@ -68,7 +68,7 @@ const LoginScreen = ({ onLogin }: LoginScreenProps) => {
 
           {/* Footer */}
           <div className="text-center pb-6">
-            <div className="text-xs text-white/40 transform:scale-80">FuzNex AI SmartWatch v0.1</div>
+            <div className="text-xs text-white/40 transform:scale-80">FuzNex AI SmartWatch v0.7</div>
           </div>
         </div>
       </div>

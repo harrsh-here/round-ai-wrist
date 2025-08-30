@@ -76,21 +76,21 @@ const CameraScreen = ({ onNavigate }: CameraScreenProps) => {
   };
 
   return (
-    <div className="relative w-full h-full flex flex-col bg-gradient-to-br from-gray-900 via-black to-gray-800">
+    <div className="relative w-full h-full flex flex-col bg-gradient-to-br from-blue-900/40 via-black/30 to-blue-800/40 gradient-flow">
       {/* Header */}
-      <div className="absolute top-0 left-0 right-0 z-10 bg-transparent backdrop-blur-sm">
+      <div className="absolute top-0 left-0 right-0 py-2 z-10 bg-transparent backdrop-blur-sm">
         <div className="text-center py-4 watch-slide-up">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => onNavigate('features')}
-            className="absolute left-[78px] top-1/2 -translate-y-1/2 rounded-full w-8 h-8 p-0 glass-bg hover:bg-white/15 z-20"
+            className="absolute left-[16px] top-[175px] -translate-y-1/2 rounded-full w-9 h-9 p-0 glass-bg hover:bg-white/15 z-20"
           >
             <ArrowLeft size={14} className="text-white" />
           </Button>
-          <div className="flex items-center justify-center space-x-2">
-            <Camera size={16} className="text-blue-400" />
-            <h2 className="text-lg font-bold text-white">Remote Camera</h2>
+          <div className="flex items-center justify-center space-x-0.5">
+            <Camera size={12} className="text-blue-400" />
+            <h2 className="text-lg font-semibold text-white">Remote Camera</h2>
           </div>
         </div>
       </div>
@@ -120,7 +120,7 @@ const CameraScreen = ({ onNavigate }: CameraScreenProps) => {
           </div>
 
           {/* Simulated Camera View */}
-          <div className="absolute inset-0 flex items-center justify-center">
+          <div className="absolute left-[75px] flex items-center justify-center">
             <div className="text-center">
               <Camera size={32} className="text-white/40 mx-auto mb-2" />
               <div className="text-xs text-white/60">Live View</div>
@@ -139,7 +139,7 @@ const CameraScreen = ({ onNavigate }: CameraScreenProps) => {
 
           {/* Countdown Overlay */}
           {countdown !== null && countdown > 0 && (
-            <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
+            <div className="absolute inset-0 bg-black/70 flex items-center justify-center translate-y-[-10px] translate-x-[10px]">
               <div className="text-6xl font-bold text-white animate-pulse">
                 {countdown}
               </div>

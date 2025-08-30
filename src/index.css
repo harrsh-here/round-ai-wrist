@@ -627,9 +627,67 @@
   animation: colorChange 10s linear infinite;
   background-size: 200% 200%;
 }
-
+  
+    
+   
     }
+.watch-content-safe {
+      height: 100%;
+      width: 100%;
+      border-radius: 50%;
+      overflow: hidden;
+    }
+.gradient-flow {
+ 
+  
+  background-size: 300% 300%;
+  animation: gradient-flow 8s ease infinite;
+}
 
+.gradient-flow-fast {
+  background: linear-gradient(
+    270deg,
+    hsl(var(--primary)),
+    hsl(var(--secondary)),
+    hsl(var(--accent)),
+    hsl(var(--primary))
+  );
+  background-size: 300% 300%;
+  animation: gradient-flow 4s ease infinite;
+}
+
+.gradient-flow-slow {
+  background: linear-gradient(
+    270deg,
+    hsl(var(--primary)),
+    hsl(var(--secondary)),
+    hsl(var(--accent)),
+    hsl(var(--primary))
+  );
+  background-size: 300% 300%;
+  animation: gradient-flow 12s ease infinite;
+}
+
+@keyframes gradient-flow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+    .animate-gradient {
+      animation: gradient 8s ease infinite;
+    }
+    
+    @keyframes gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
     .animate-pulse-glow {
       animation: pulse-glow 2s ease-in-out infinite;
     }

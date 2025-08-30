@@ -78,7 +78,7 @@ const FitnessScreen = ({ onNavigate }: FitnessScreenProps) => {
   return (
     <div className="watch-content-safe flex flex-col items-center justify-center p-4 select-none mb-[-70px] overflow-hidden">
       {/* Header */}  
-      <div className="relative w-full text-center mb-4 watch-slide-up">
+      <div className="mt-4 relative w-full text-center mb-4 watch-slide-up">
         <Button
           variant="ghost"
           size="sm"
@@ -119,7 +119,7 @@ const FitnessScreen = ({ onNavigate }: FitnessScreenProps) => {
       </div>
 
       {/* Progress Rings - Better positioning */}
-      <div className="flex justify-center space-x-4 mb-8">
+      <div className="flex justify-center space-x-8 mb-8">
         <div className="relative w-12 h-12">
           <svg className="w-12 h-12 transform -rotate-90" viewBox="0 0 36 36">
             <path
@@ -164,8 +164,7 @@ const FitnessScreen = ({ onNavigate }: FitnessScreenProps) => {
           </div>
         </div>
       </div>
-
-      {/* Achievements - Better spacing */}
+      {/* Achievements - Better spacing
       <div className="flex justify-center space-x-3 mb-4">
         {achievements.map((achievement, index) => {
           const Icon = achievement.icon;
@@ -182,7 +181,7 @@ const FitnessScreen = ({ onNavigate }: FitnessScreenProps) => {
             </div>
           );
         })}
-      </div>
+      </div> */}
 
       {/* Back Button */}
       <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { Play, Pause, SkipBack, SkipForward, Volume2, Home, Heart, Shuffle, Repeat } from 'lucide-react';
+import { Play, Pause, SkipBack, SkipForward, Volume2, Home, Heart, Shuffle, Repeat, ChevronDown, ArrowLeft } from 'lucide-react';
 
 interface MusicScreenProps {
   onNavigate: (screen: string) => void;
@@ -56,7 +56,7 @@ const MusicScreen = ({ onNavigate }: MusicScreenProps) => {
     },
   ];
 
-  const formatTime = (seconds) => {
+   const formatTime = (seconds) => {
     if (isNaN(seconds)) return '0:00';
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
@@ -283,7 +283,45 @@ const selectSong = (index) => {
   const currentSongData = playlist[currentSong];
 
   return (
-    <div className="watch-content-safe flex flex-col h-full bg-gradient-to-br from-purple-900/20 to-pink-900/20 watch-scroll overflow-y-auto">
+    <div className="watch-content-safe flex flex-col h-full bg-gradient-to-br from-black-00/20 to-pink-900/20 overflow-y-auto relative" style={{ overflowY: 'scroll', WebkitOverflowScrolling: 'touch', msOverflowStyle: 'none', scrollbarWidth: 'none' }}>
+     
+
+      <style>{`
+        @keyframes fadeInOut {
+          0% { opacity: 0; }
+          20% { opacity: 1; }
+          80% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+        
+        @keyframes scrollDemo {
+          0% { transform: translateY(0); }
+          25% { transform: translateY(20px); }
+          50% { transform: translateY(0); }
+          75% { transform: translateY(20px); }
+          100% { transform: translateY(0); }
+        }
+      `}</style>
+
+      <script dangerouslySetInnerHTML={{
+        __html: `
+          setTimeout(() => {
+            const container = document.querySelector('.watch-content-safe');
+            if (container) {
+              container.animate([
+                { transform: 'translateY(0)' },
+                { transform: 'translateY(20px)' },
+                { transform: 'translateY(0)' },
+                { transform: 'translateY(20px)' },
+                { transform: 'translateY(0)' }
+              ], {
+                duration: 2000,
+                easing: 'ease-in-out'
+              });
+            }
+          }, 100);
+        `
+      }} />
       {/* Hidden Audio Element */}
       <audio
         ref={audioRef}
@@ -295,29 +333,57 @@ const selectSong = (index) => {
       <div className="py-4 flex items-center justify-center mb-3 sticky top-0 z-10 backdrop-blur-xs bg-black/200">
         <h2 className="text-lg font-semibold text-white py-2">Music</h2>
       </div>
+
       {/* Current Song */}
+      {/* This implements a "Morphing Gradient" or "Flowing Background" effect
+          It's a sophisticated animation technique that creates an organic, fluid motion
+          by smoothly transitioning between gradient color stops.
+          This creates a sense of depth and dimensionality while maintaining readability.
+          Commonly used in modern music players to provide visual feedback and enhance UI aesthetics */}
       <div className={`glass-bg rounded-lg p-4 mb-3 text-center w-3/4 mx-auto relative overflow-hidden min-h-[120px] ${
         isPlaying ? `
-          before:absolute before:inset-0
-          before:bg-gradient-to-r before:from-[#4158D0]/30 before:via-[#C850C0]/30 before:to-[#FFCC70]/30
-          before:opacity-70
-          before:blur-sm
-          [&>*]:relative
-          hover:before:opacity-80
+          bg-gradient-to-r from-[#0f2027] via-[#203a43] to-[#2c5364]
           opacity-100
-          transition-opacity duration-500 ease-in-out
+          transition-all duration-500 ease-in-out
           scale-[1.02]
+          shadow-lg shadow-[#2c5364]/30
+          [animation:smoothGradient_15s_ease-in-out_infinite]
         ` : `
-          before:absolute before:inset-0
-          before:bg-gradient-to-r before:from-indigo-900/30 before:via-blue-900/30 before:to-cyan-900/30
-          before:opacity-50
-          before:blur-sm
-          [&>*]:relative
-          opacity-80
-          transition-opacity duration-500 ease-in-out
+          bg-[#0a1a1f]
+          hover:bg-[#0c1e24]
+          opacity-90
+          transition-all duration-500 ease-in-out
           scale-100
+          shadow-md shadow-[#1e3c4a]/20
         `
       }`}>
+
+      <style>{`
+        @keyframes smoothGradient {
+          0% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
+          100% {
+            background-position: 0% 50%;
+          }
+        }
+
+        .glass-bg {
+          background: linear-gradient(
+            270deg,
+            #0f2027,
+            #203a43,
+            #2c5364,
+            #203a43,
+            #0f2027
+          );
+          background-size: 300% 300%;
+          transition: all 0.5s ease-in-out;
+        }
+      `}</style>
         <div className="w-8 h-8 bg-gradient-to-br from-gray-300/30 to-gray-900/30 rounded-lg flex items-center justify-center mx-auto mb-1 relative overflow-hidden">
           <Volume2 size={20} className="text-purple-400" />
           {isPlaying && (
@@ -425,6 +491,7 @@ const selectSong = (index) => {
           />
         </div>
       </div>
+      
 {/* Volume Control */}
 <div className="flex items-center justify-center space-x-2 mb-1 w-3/4 mx-auto">
   <Volume2 size={14} className="text-white/70" />
@@ -489,20 +556,13 @@ const selectSong = (index) => {
           size="sm"
           onClick={() => {
             handlePrevious();
-            if (!isPlaying) {
-              // If not currently playing, just change song without starting playback
-              setIsPlaying(false);
+            // Always play the new song after switching
+            setIsPlaying(true);
+            setTimeout(() => {
               if (audioRef.current) {
-                audioRef.current.pause();
+                audioRef.current.play().catch(console.log);
               }
-            } else {
-              // If currently playing, play the new song
-              setTimeout(() => {
-                if (audioRef.current) {
-                  audioRef.current.play().catch(console.log);
-                }
-              }, 100);
-            }
+            }, 100);
           }}
           disabled={isLoading}
           className="w-10 h-10 glass-bg hover:bg-white/20 rounded-full p-0 transition-all"
@@ -529,20 +589,13 @@ const selectSong = (index) => {
           size="sm"
           onClick={() => {
             handleNext();
-            if (!isPlaying) {
-              // If not currently playing, just change song without starting playback
-              setIsPlaying(false);
+            // Always play the new song after switching
+            setIsPlaying(true);
+            setTimeout(() => {
               if (audioRef.current) {
-                audioRef.current.pause();
+                audioRef.current.play().catch(console.log);
               }
-            } else {
-              // If currently playing, play the new song
-              setTimeout(() => {
-                if (audioRef.current) {
-                  audioRef.current.play().catch(console.log);
-                }
-              }, 100);
-            }
+            }, 100);
           }}
           disabled={isLoading}
           className="w-10 h-10 glass-bg hover:bg-white/20 rounded-full p-0 transition-all"
@@ -550,7 +603,82 @@ const selectSong = (index) => {
           <SkipForward size={16} className="text-white" />
         </Button>
       </div>
+{/* Floating Scroll Indicator with Demo Scroll */}
+<div 
+  className="fixed left-1/2 bottom-[290px] -translate-x-1/2 z-50 pointer-events-none"
+  style={{
+    animation: 'fadeOut 4s forwards',
+    opacity: 0
+  }}
+  onAnimationStart={() => {
+    const container = document.querySelector('.watch-content-safe');
+    if (container) {
+      const initialScroll = container.scrollTop;
+      
+      const performSingleScroll = () => {
+        return new Promise(resolve => {
+          container.scrollTo({
+            top: 100,
+            behavior: 'smooth'
+          });
+          
+          setTimeout(() => {
+            container.scrollTo({
+              top: 0,
+              behavior: 'smooth'
+            });
+            resolve(null);
+          }, 1000); // Complete scroll cycle in 1 second
+        });
+      };
 
+      const demoScroll = async () => {
+        // First scroll animation
+        await performSingleScroll();
+        
+        
+        
+        // Reset to initial position
+        setTimeout(() => {
+          container.scrollTo({
+            top: initialScroll,
+            behavior: 'smooth'
+          });
+        }, 500);
+      };
+      
+      demoScroll();
+    }
+  }}
+>
+  <div className="flex flex-col items-center bg-transparent backdrop-blur-sm rounded-full p-2">
+    <ChevronDown
+      size={24} 
+      className="text-primary/70 glow animate-glow"
+      style={{ 
+        animation: 'bounceAndFade 0.6s ease-in-out infinite'
+      }} 
+    />
+  </div>
+</div>
+
+<style>{`
+  @keyframes fadeOut {
+    0% { opacity: 0; }
+    15% { opacity: 1; }
+    85% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
+  @keyframes bounceAndFade {
+    0%, 100% { 
+      transform: translateY(0);
+    }
+    50% { 
+      transform: translateY(8px);
+    }
+  }
+`}</style>
       {/* Additional Controls */}
       <div className="flex items-center justify-center space-x-6 mb-4">
         <Button
@@ -645,14 +773,14 @@ const selectSong = (index) => {
       </div>
 
       {/* Back Button */}
-      <div className="flex justify-center mt-1 pb-8">
+      <div className="fixed bottom-[327px] left-0 right-[305px] flex justify-center pb-4 bg-transparent">
         <Button
           variant="ghost"
           size="sm"
           onClick={() => onNavigate('features')}
-          className="rounded-full w-10 h-10 p-0 glass-bg hover:bg-white/15 transition-all hover:scale-105"
+          className="rounded-full w-8 h-8 p-0 glass-bg hover:bg-white/10 transition-all hover:scale-105 shadow-lg"
         >
-          <Home size={16} className="text-white" />
+          <ArrowLeft size={10} className="text-white" />
         </Button>
       </div>
 

@@ -29,15 +29,16 @@ const FeaturesScreen = ({ onNavigate }: FeaturesScreenProps) => {
   };
 
   return (
-    <div className="watch-content-safe flex flex-col items-center justify-center p-4">
+   
+    <div className="watch-content-safe flex flex-col items-center justify-center p-4 bg-gradient-to-br from-blue-400/10 via-white/5 to-blue-200/10 backdrop-blur-sm animate-gradient bg-[length:400%_400%]">
       {/* Header */}
       <div className="text-center mb-4 watch-slide-up">
-        <h2 className="text-lg font-bold bg-gradient-to-r from-white via-white/90 to-white/70 bg-clip-text text-transparent">Features</h2>
+        <h2 className="text-lg font-bold bg-gradient-to-r from-white via-white/30 to-white/70 bg-clip-text text-transparent animate-gradient bg-[length:200%_auto]">Features</h2>
         <div className="text-xs text-white/60">App Collection</div>
       </div>
 
       {/* Features Grid - Better spacing and sizing */}
-      <div className="grid grid-cols-3 gap-3 mb-6 max-w-[230px]">
+      <div className="grid grid-cols-3 gap-3 mb-6 max-w-[260px]">
         {features.map((feature, index) => {
           const Icon = feature.icon;
           return (
@@ -45,7 +46,7 @@ const FeaturesScreen = ({ onNavigate }: FeaturesScreenProps) => {
               key={feature.label}
               variant="ghost"
               onClick={() => handleFeatureClick(feature)}
-              className="flex flex-col items-center justify-center w-15 h-15 p-3 rounded-xl glass-bg hover:bg-white/15 watch-glow transition-all duration-300 cursor-pointer"
+              className="flex flex-col items-center justify-center w-25 h-25 p-3 rounded-xl bg-black/20 glass-bg hover:bg-white/15 watch-glow transition-all duration-300 cursor-pointer"
               style={{ animationDelay: `${index * 50}ms` }}
             >
               <Icon size={18} className={`${feature.color} mb-1`} />

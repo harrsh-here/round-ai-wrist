@@ -305,35 +305,34 @@ const MessagesScreen = ({ onNavigate }: MessagesScreenProps) => {
 
   if (activeView === 'chat' && selectedConversation) {
     return (
-      <div className="relative w-full h-full flex flex-col bg-gradient-to-br from-blue-900/20 to-purple-900/20">
+      <div className="relative w-full h-full flex bg-gradient-to-br from-blue-950 to-black gradient-flow">
         {/* Chat Header */}
-        <div className="absolute top-0 left-0 right-0 z-10 bg-black/30 backdrop-blur-sm border-b border-white/10">
+        <div className="absolute left-0 right-0 top-0 z-10 bg-black/20 backdrop-blur-sm">
           <div className="flex items-center justify-between p-4">
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setActiveView('list')}
-              className="rounded-full w-8 h-8 p-0 hover:bg-white/20"
+              className="relative left-[80px] rounded-full w-8 h-8 p-0 hover:bg-white/20"
             >
               <ArrowLeft size={14} className="text-white" />
             </Button>
-            
-            <div className="flex items-center space-x-2">
+           
+            <div className="flex items-center justify-center w-full" style={{ marginLeft: "-40px" }}>
               <div 
                 className="w-8 h-8 rounded-full flex items-center justify-center border border-white/30"
                 style={{ backgroundColor: `${selectedConversation.color}40` }}
               >
                 <span className="text-xs font-bold text-white">{selectedConversation.avatar}</span>
               </div>
-              <div>
+              <div className="ml-3">
                 <div className="text-sm font-semibold text-white">{selectedConversation.name}</div>
                 <div className="text-xs text-white/60">
                   {selectedConversation.isOnline ? 'Online' : 'Offline'}
                 </div>
               </div>
             </div>
-
-            <div className="flex space-x-1">
+            {/* <div className="flex space-x-1">
               <Button
                 variant="ghost"
                 size="sm"
@@ -348,7 +347,7 @@ const MessagesScreen = ({ onNavigate }: MessagesScreenProps) => {
               >
                 <Video size={12} className="text-white" />
               </Button>
-            </div>
+            </div> */}
           </div>
         </div>
 
@@ -382,20 +381,40 @@ const MessagesScreen = ({ onNavigate }: MessagesScreenProps) => {
         </div>
 
         {/* Message Input */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 bg-black/30 backdrop-blur-sm border-t border-white/10">
+        <div className="absolute bottom-0 w-[210px] left-[70px] right-0 p-4 bg-transparent">
           <div className="flex items-center space-x-2">
             <div className="flex-1 bg-white/15 rounded-full px-3 py-2 backdrop-blur-sm">
               <input
                 type="text"
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter') {
+                    sendMessage();
+                    // Auto scroll to latest message
+                    const messagesContainer = document.querySelector('.watch-scroll');
+                    if (messagesContainer) {
+                      setTimeout(() => {
+                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                      }, 100);
+                    }
+                  }
+                }}
                 placeholder="Type a message..."
                 className="w-full bg-transparent text-white text-xs placeholder-white/60 outline-none"
               />
             </div>
             <Button
-              onClick={sendMessage}
+              onClick={() => {
+                sendMessage();
+                // Auto scroll to latest message
+                const messagesContainer = document.querySelector('.watch-scroll');
+                if (messagesContainer) {
+                  setTimeout(() => {
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                  }, 100);
+                }
+              }}
               disabled={!newMessage.trim()}
               className="w-8 h-8 bg-blue-500 hover:bg-blue-600 rounded-full p-0 disabled:opacity-50"
             >
@@ -416,7 +435,7 @@ const MessagesScreen = ({ onNavigate }: MessagesScreenProps) => {
             variant="ghost"
             size="sm"
             onClick={() => onNavigate('features')}
-            className="absolute left-[78px] top-1/2 -translate-y-1/2 rounded-full w-8 h-8 p-0 glass-bg hover:bg-white/15 z-20"
+            className="absolute left-[120px] top-[315px] -translate-y-1/2 rounded-full w-8 h-8 p-0 glass-bg hover:bg-white/15 z-20"
           >
             <ArrowLeft size={14} className="text-white" />
           </Button>

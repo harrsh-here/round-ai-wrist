@@ -65,15 +65,15 @@ const MapsScreen = ({ onNavigate }: MapsScreenProps) => {
   };
 
   return (
-    <div className="relative w-full h-full flex flex-col bg-gradient-to-br from-green-900/20 to-blue-900/20">
+    <div className="relative  w-full h-full flex flex-col bg-gradient-to-br from-green-900/20 to-blue-900/20 ">
       {/* Header */}
-      <div className="absolute top-0 left-0 right-0 z-10 bg-transparent backdrop-blur-sm">
-        <div className="text-center py-4 watch-slide-up">
+      <div className="absolute top-2 left-0 right-0 z-50 bg-transparent">
+        <div className="text-center py-4 watch-slide-up relative">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => onNavigate('features')}
-            className="absolute left-[78px] top-1/2 -translate-y-1/2 rounded-full w-8 h-8 p-0 glass-bg hover:bg-white/15 z-20"
+            className="absolute left-[85px] top-1/2 -translate-y-1/2 rounded-full w-8 h-8 p-0 glass-bg hover:bg-white/15 z-20"
           >
             <ArrowLeft size={14} className="text-white" />
           </Button>
@@ -85,23 +85,23 @@ const MapsScreen = ({ onNavigate }: MapsScreenProps) => {
       </div>
 
       {/* Current Location */}
-      <div className="absolute top-16 left-0 right-0 z-10 px-4">
-        <div className="glass-bg rounded-lg p-3 text-center border border-white/20">
-          <div className="flex items-center justify-center space-x-2 mb-1">
-            <Locate size={12} className="text-green-400" />
-            <span className="text-xs text-white font-medium">Current Location</span>
+      <div className="absolute top-8 mt-3 left-[94px] right-0 translate-y-1/2 z-10 px-3 w-40 h-7 " >
+        <div className="glass-bg rounded-lg p-2 text-center border border-white/20 ">
+          <div className="flex items-center justify-center space-x-1 mb-0.5">
+            <Locate size={10} className="text-green-400" />
+            <span className="text-[10px] text-white font-medium">Current Location</span>
           </div>
-          <div className="text-sm font-bold text-white">{currentLocation.city}</div>
-          <div className="text-xs text-white/70">{currentLocation.state}, {currentLocation.country}</div>
-          <div className="text-xs text-white/50 font-mono mt-1">
+          <div className="text-xs font-bold text-white">{currentLocation.city}</div>
+          <div className="text-[10px] text-white/70">{currentLocation.state}, {currentLocation.country}</div>
+          <div className="text-[10px] text-white/50 font-mono mt-0.5">
             {currentLocation.coordinates.lat.toFixed(4)}, {currentLocation.coordinates.lng.toFixed(4)}
           </div>
         </div>
       </div>
 
       {/* Map Visualization */}
-      <div className="flex-1 flex items-center justify-center px-4 pt-32 pb-20">
-        <div className="relative w-full max-w-[200px] aspect-square bg-gradient-to-br from-green-800/30 to-blue-800/30 rounded-lg border-2 border-white/20 overflow-hidden">
+      <div className="flex-1 flex items-center justify-center px-4 pt-12 pb-20  watch-scroll overflow-y-auto">
+        <div className="absolute w-full bottom-[0px] max-w-[2200px] aspect-square bg-gradient-to-br from-green-800/30 to-blue-800/30 rounded-full border-2 border-white/20 overflow-hidden">
           {/* Map Background Pattern */}
           <div className="absolute inset-0 opacity-20">
             <div className="absolute inset-0" style={{
@@ -109,7 +109,7 @@ const MapsScreen = ({ onNavigate }: MapsScreenProps) => {
                 linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px),
                 linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px)
               `,
-              backgroundSize: '20px 20px'
+              backgroundSize: '50px 50px'
             }} />
           </div>
 
@@ -129,9 +129,9 @@ const MapsScreen = ({ onNavigate }: MapsScreenProps) => {
           {/* Nearby Places Indicators */}
           {nearbyPlaces.slice(0, 3).map((place, index) => {
             const positions = [
-              { top: '25%', left: '70%' },
-              { top: '70%', left: '30%' },
-              { top: '30%', left: '20%' }
+              { top: '15%', left: '60%' },
+              { top: '55%', left: '25%' },
+              { top: '20%', left: '15%' }
             ];
             
             return (
@@ -164,56 +164,57 @@ const MapsScreen = ({ onNavigate }: MapsScreenProps) => {
       </div>
 
       {/* Map Controls */}
-      <div className="absolute bottom-0 left-0 right-0 p-4">
+      <div className="absolute bottom-0 left-0 right-0 p-2">
         {/* Mode Toggle */}
-        <div className="flex justify-center mb-3">
+        <div className="flex justify-center mb-2">
           <Button
             onClick={toggleMapMode}
-            className={`px-4 py-2 rounded-full text-xs font-medium transition-all ${
+            className={`px-2 py-1 rounded-full text-[10px] font-medium transition-all ${
               mapMode === 'traffic' ? 'bg-red-500/30 text-red-400 border border-red-400/50' :
               mapMode === 'satellite' ? 'bg-blue-500/30 text-blue-400 border border-blue-400/50' :
               'bg-green-500/30 text-green-400 border border-green-400/50'
             }`}
           >
-            {mapMode === 'traffic' && <Car size={12} className="mr-1" />}
-            {mapMode === 'satellite' && <Zap size={12} className="mr-1" />}
-            {mapMode === 'normal' && <MapPin size={12} className="mr-1" />}
+            {mapMode === 'traffic' && <Car size={10} className="mr-0.5" />}
+            {mapMode === 'satellite' && <Zap size={10} className="mr-0.5" />}
+            {mapMode === 'normal' && <MapPin size={10} className="mr-0.5" />}
             {mapMode.charAt(0).toUpperCase() + mapMode.slice(1)}
           </Button>
         </div>
-
         {/* Nearby Places */}
-        <div className="max-h-24 overflow-y-auto watch-scroll">
-          <div className="space-y-1">
-            {nearbyPlaces.slice(0, 3).map((place, index) => (
-              <div
-                key={place.name}
-                onClick={() => startNavigation(place)}
-                className="glass-bg rounded-lg p-2 cursor-pointer transition-all hover:bg-white/20 border border-white/10"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex-1 min-w-0">
-                    <div className="text-xs font-semibold text-white truncate">{place.name}</div>
-                    <div className="text-xs text-white/60">{place.city}</div>
-                  </div>
-                  <div className="flex items-center space-x-2 text-xs text-white/70">
-                    <div className="flex items-center space-x-1">
-                      <MapPin size={8} />
-                      <span>{place.distance}</span>
+        <div className="flex justify-center">
+          <div className="max-h-24 w-[200px] overflow-y-auto watch-scroll">
+            <div className="space-y-1">
+              {nearbyPlaces.slice(0, 3).map((place, index) => (
+                <div
+                  key={place.name}
+                  onClick={() => startNavigation(place)}
+                  className="glass-bg rounded-lg p-2 cursor-pointer transition-all hover:bg-white/20 border border-white/10"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1 min-w-0">
+                      <div className="text-xs font-semibold text-white truncate">{place.name}</div>
+                      <div className="text-xs text-white/60">{place.city}</div>
                     </div>
-                    <div className="flex items-center space-x-1">
-                      <Clock size={8} />
-                      <span>{place.time}</span>
+                    <div className="flex items-center space-x-2 text-xs text-white/70">
+                      <div className="flex items-center space-x-1">
+                        <MapPin size={8} />
+                        <span>{place.distance}</span>
+                      </div>
+                      <div className="flex items-center space-x-1">
+                        <Clock size={8} />
+                        <span>{place.time}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Back Button */}
+      {/* Back Button
       <div className="absolute bottom-4 left-4">
         <Button
           variant="ghost"
@@ -223,7 +224,7 @@ const MapsScreen = ({ onNavigate }: MapsScreenProps) => {
         >
           <Home size={16} className="text-white" />
         </Button>
-      </div>
+      </div> */}
     </div>
   );
 };
