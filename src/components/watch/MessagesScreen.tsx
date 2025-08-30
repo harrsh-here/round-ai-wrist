@@ -1,297 +1,173 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Home, MessageSquare, Send, ArrowLeft, User, Phone, Video, MoreVertical } from 'lucide-react';
-import { WatchScreen } from '../SmartWatch';
+import { Home, MessageSquare, Send, Phone, Video, ArrowLeft, Circle } from 'lucide-react';
 
 interface MessagesScreenProps {
-  onNavigate: (screen: WatchScreen) => void;
-  currentScreen: WatchScreen;
+  onNavigate: (screen: string) => void;
 }
 
 interface Message {
   id: string;
-  sender: string;
-  content: string;
-  time: string;
-  isRead: boolean;
-  isFromMe: boolean;
-  avatar: string;
-  color: string;
+  text: string;
+  isUser: boolean;
+  timestamp: Date;
 }
 
 interface Conversation {
   id: string;
   name: string;
   lastMessage: string;
-  time: string;
+  timestamp: Date;
   unreadCount: number;
-  avatar: string;
-  color: string;
   isOnline: boolean;
+  avatar: string;
   messages: Message[];
 }
 
 const MessagesScreen = ({ onNavigate }: MessagesScreenProps) => {
-  const [activeView, setActiveView] = useState<'list' | 'chat'>('list');
-  const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
-  const [newMessage, setNewMessage] = useState('');
-
   const [conversations, setConversations] = useState<Conversation[]>([
     {
       id: '1',
-      name: 'Mom',
-      lastMessage: 'Don\'t forget to take your vitamins!',
-      time: '2m ago',
+      name: 'Sarah Wilson',
+      lastMessage: 'Hey! Are we still on for lunch?',
+      timestamp: new Date(Date.now() - 5 * 60000),
       unreadCount: 2,
-      avatar: 'M',
-      color: '#ff6b6b',
       isOnline: true,
+      avatar: 'SW',
       messages: [
-        {
-          id: '1',
-          sender: 'Mom',
-          content: 'How was your workout today?',
-          time: '10:30 AM',
-          isRead: true,
-          isFromMe: false,
-          avatar: 'M',
-          color: '#ff6b6b'
-        },
-        {
-          id: '2',
-          sender: 'You',
-          content: 'It was great! Did 30 minutes on the treadmill.',
-          time: '10:32 AM',
-          isRead: true,
-          isFromMe: true,
-          avatar: 'Y',
-          color: '#4ecdc4'
-        },
-        {
-          id: '3',
-          sender: 'Mom',
-          content: 'Don\'t forget to take your vitamins!',
-          time: '10:35 AM',
-          isRead: false,
-          isFromMe: false,
-          avatar: 'M',
-          color: '#ff6b6b'
-        }
+        { id: '1', text: 'Hey! How are you?', isUser: false, timestamp: new Date(Date.now() - 30 * 60000) },
+        { id: '2', text: 'I\'m good! How about you?', isUser: true, timestamp: new Date(Date.now() - 25 * 60000) },
+        { id: '3', text: 'Great! Are we still on for lunch?', isUser: false, timestamp: new Date(Date.now() - 5 * 60000) }
       ]
     },
     {
       id: '2',
-      name: 'Sarah',
-      lastMessage: 'See you at the coffee shop!',
-      time: '1h ago',
-      unreadCount: 0,
-      avatar: 'S',
-      color: '#45b7d1',
-      isOnline: true,
+      name: 'Mom',
+      lastMessage: 'Don\'t forget to call me tonight',
+      timestamp: new Date(Date.now() - 15 * 60000),
+      unreadCount: 1,
+      isOnline: false,
+      avatar: 'M',
       messages: [
-        {
-          id: '1',
-          sender: 'Sarah',
-          content: 'Hey! Are we still on for coffee later?',
-          time: '2:15 PM',
-          isRead: true,
-          isFromMe: false,
-          avatar: 'S',
-          color: '#45b7d1'
-        },
-        {
-          id: '2',
-          sender: 'You',
-          content: 'Yes! 4 PM at the usual place?',
-          time: '2:20 PM',
-          isRead: true,
-          isFromMe: true,
-          avatar: 'Y',
-          color: '#4ecdc4'
-        },
-        {
-          id: '3',
-          sender: 'Sarah',
-          content: 'See you at the coffee shop!',
-          time: '2:22 PM',
-          isRead: true,
-          isFromMe: false,
-          avatar: 'S',
-          color: '#45b7d1'
-        }
+        { id: '1', text: 'Hi honey! How was your day?', isUser: false, timestamp: new Date(Date.now() - 60 * 60000) },
+        { id: '2', text: 'It was great mom! Very busy though', isUser: true, timestamp: new Date(Date.now() - 45 * 60000) },
+        { id: '3', text: 'Don\'t forget to call me tonight', isUser: false, timestamp: new Date(Date.now() - 15 * 60000) }
       ]
     },
     {
       id: '3',
-      name: 'Dad',
-      lastMessage: 'How\'s work going?',
-      time: '3h ago',
-      unreadCount: 1,
-      avatar: 'D',
-      color: '#96ceb4',
-      isOnline: false,
+      name: 'Alex Chen',
+      lastMessage: 'Thanks for the help today!',
+      timestamp: new Date(Date.now() - 2 * 60 * 60000),
+      unreadCount: 0,
+      isOnline: true,
+      avatar: 'AC',
       messages: [
-        {
-          id: '1',
-          sender: 'Dad',
-          content: 'How\'s work going?',
-          time: '12:45 PM',
-          isRead: false,
-          isFromMe: false,
-          avatar: 'D',
-          color: '#96ceb4'
-        }
+        { id: '1', text: 'Can you help me with the project?', isUser: false, timestamp: new Date(Date.now() - 3 * 60 * 60000) },
+        { id: '2', text: 'Sure! What do you need?', isUser: true, timestamp: new Date(Date.now() - 2.5 * 60 * 60000) },
+        { id: '3', text: 'Thanks for the help today!', isUser: false, timestamp: new Date(Date.now() - 2 * 60 * 60000) }
       ]
     },
     {
       id: '4',
-      name: 'John',
-      lastMessage: 'Thanks for the help!',
-      time: '1d ago',
-      unreadCount: 0,
-      avatar: 'J',
-      color: '#feca57',
+      name: 'Work Group',
+      lastMessage: 'Meeting moved to 3 PM',
+      timestamp: new Date(Date.now() - 4 * 60 * 60000),
+      unreadCount: 3,
       isOnline: false,
+      avatar: 'WG',
       messages: [
-        {
-          id: '1',
-          sender: 'You',
-          content: 'Here are the files you requested.',
-          time: 'Yesterday',
-          isRead: true,
-          isFromMe: true,
-          avatar: 'Y',
-          color: '#4ecdc4'
-        },
-        {
-          id: '2',
-          sender: 'John',
-          content: 'Thanks for the help!',
-          time: 'Yesterday',
-          isRead: true,
-          isFromMe: false,
-          avatar: 'J',
-          color: '#feca57'
-        }
+        { id: '1', text: 'Team meeting at 2 PM today', isUser: false, timestamp: new Date(Date.now() - 5 * 60 * 60000) },
+        { id: '2', text: 'I\'ll be there', isUser: true, timestamp: new Date(Date.now() - 4.5 * 60 * 60000) },
+        { id: '3', text: 'Meeting moved to 3 PM', isUser: false, timestamp: new Date(Date.now() - 4 * 60 * 60000) }
       ]
     }
   ]);
 
+  const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
+  const [newMessage, setNewMessage] = useState('');
+
   // Simulate new messages
   useEffect(() => {
     const interval = setInterval(() => {
-      const randomMessages = [
-        'Hey there!',
-        'How are you doing?',
-        'Did you see the news?',
-        'Let\'s catch up soon!',
-        'Hope you\'re having a great day!'
-      ];
-
-      const randomSenders = ['Emma', 'Alex', 'Mike', 'Lisa'];
-      const randomSender = randomSenders[Math.floor(Math.random() * randomSenders.length)];
-      const randomMessage = randomMessages[Math.floor(Math.random() * randomMessages.length)];
-
-      // Check if conversation exists, if not create new one
-      setConversations(prev => {
-        const existingConv = prev.find(c => c.name === randomSender);
-        if (existingConv) {
-          return prev.map(conv => 
-            conv.name === randomSender 
-              ? {
-                  ...conv,
-                  lastMessage: randomMessage,
-                  time: 'now',
-                  unreadCount: conv.unreadCount + 1,
-                  messages: [...conv.messages, {
-                    id: Date.now().toString(),
-                    sender: randomSender,
-                    content: randomMessage,
-                    time: 'now',
-                    isRead: false,
-                    isFromMe: false,
-                    avatar: randomSender[0],
-                    color: '#a55eea'
-                  }]
-                }
-              : conv
-          );
-        } else {
-          const newConv: Conversation = {
-            id: Date.now().toString(),
-            name: randomSender,
-            lastMessage: randomMessage,
-            time: 'now',
-            unreadCount: 1,
-            avatar: randomSender[0],
-            color: '#a55eea',
-            isOnline: Math.random() > 0.5,
-            messages: [{
+      if (Math.random() > 0.8) { // 20% chance every 20 seconds
+        const randomMessages = [
+          'How are you doing?',
+          'Can we meet later?',
+          'Check this out!',
+          'Running late, be there soon',
+          'Great job on the presentation!',
+          'What time works for you?'
+        ];
+        
+        const randomConvIndex = Math.floor(Math.random() * conversations.length);
+        const randomMessage = randomMessages[Math.floor(Math.random() * randomMessages.length)];
+        
+        setConversations(prev => prev.map((conv, index) => {
+          if (index === randomConvIndex) {
+            const newMsg: Message = {
               id: Date.now().toString(),
-              sender: randomSender,
-              content: randomMessage,
-              time: 'now',
-              isRead: false,
-              isFromMe: false,
-              avatar: randomSender[0],
-              color: '#a55eea'
-            }]
-          };
-          return [newConv, ...prev];
-        }
-      });
-    }, 20000); // New message every 20 seconds
+              text: randomMessage,
+              isUser: false,
+              timestamp: new Date()
+            };
+            
+            return {
+              ...conv,
+              lastMessage: randomMessage,
+              timestamp: new Date(),
+              unreadCount: selectedConversation?.id === conv.id ? conv.unreadCount : conv.unreadCount + 1,
+              messages: [...conv.messages, newMsg]
+            };
+          }
+          return conv;
+        }));
+      }
+    }, 20000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [conversations, selectedConversation]);
+
+  const formatTimestamp = (timestamp: Date) => {
+    const now = new Date();
+    const diff = now.getTime() - timestamp.getTime();
+    const minutes = Math.floor(diff / 60000);
+    const hours = Math.floor(minutes / 60);
+
+    if (minutes < 1) return 'now';
+    if (minutes < 60) return `${minutes}m`;
+    if (hours < 24) return `${hours}h`;
+    return timestamp.toLocaleDateString();
+  };
 
   const openConversation = (conversation: Conversation) => {
     setSelectedConversation(conversation);
-    setActiveView('chat');
-    
-    // Mark messages as read
-    setConversations(prev => 
-      prev.map(conv => 
-        conv.id === conversation.id 
-          ? { 
-              ...conv, 
-              unreadCount: 0,
-              messages: conv.messages.map(msg => ({ ...msg, isRead: true }))
-            }
-          : conv
-      )
-    );
+    // Mark as read
+    setConversations(prev => prev.map(conv => 
+      conv.id === conversation.id ? { ...conv, unreadCount: 0 } : conv
+    ));
   };
 
   const sendMessage = () => {
     if (!newMessage.trim() || !selectedConversation) return;
-
+    
     const message: Message = {
       id: Date.now().toString(),
-      sender: 'You',
-      content: newMessage,
-      time: new Date().toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit'
-      }),
-      isRead: true,
-      isFromMe: true,
-      avatar: 'Y',
-      color: '#4ecdc4'
+      text: newMessage,
+      isUser: true,
+      timestamp: new Date()
     };
 
-    setConversations(prev => 
-      prev.map(conv => 
-        conv.id === selectedConversation.id 
-          ? {
-              ...conv,
-              lastMessage: newMessage,
-              time: 'now',
-              messages: [...conv.messages, message]
-            }
-          : conv
-      )
-    );
+    setConversations(prev => prev.map(conv => 
+      conv.id === selectedConversation.id 
+        ? {
+            ...conv,
+            lastMessage: newMessage,
+            timestamp: new Date(),
+            messages: [...conv.messages, message]
+          }
+        : conv
+    ));
 
     setSelectedConversation(prev => prev ? {
       ...prev,
@@ -303,120 +179,98 @@ const MessagesScreen = ({ onNavigate }: MessagesScreenProps) => {
 
   const totalUnread = conversations.reduce((sum, conv) => sum + conv.unreadCount, 0);
 
-  if (activeView === 'chat' && selectedConversation) {
+  // Chat View
+  if (selectedConversation) {
     return (
-      <div className="relative w-full h-full flex bg-gradient-to-br from-blue-950 to-black gradient-flow">
+      <div className="watch-content-safe flex flex-col h-full">
         {/* Chat Header */}
-        <div className="absolute left-0 right-0 top-0 z-10 bg-black/20 backdrop-blur-sm">
-          <div className="flex items-center justify-between p-4">
+        <div className="flex items-center justify-between p-4 border-b border-white/10 bg-black/30 backdrop-blur-sm">
+          <div className="flex items-center space-x-3">
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setActiveView('list')}
-              className="relative left-[80px] rounded-full w-8 h-8 p-0 hover:bg-white/20"
+              onClick={() => setSelectedConversation(null)}
+              className="rounded-full w-8 h-8 p-0 bg-white/10 hover:bg-white/20"
             >
               <ArrowLeft size={14} className="text-white" />
             </Button>
-           
-            <div className="flex items-center justify-center w-full" style={{ marginLeft: "-40px" }}>
-              <div 
-                className="w-8 h-8 rounded-full flex items-center justify-center border border-white/30"
-                style={{ backgroundColor: `${selectedConversation.color}40` }}
-              >
-                <span className="text-xs font-bold text-white">{selectedConversation.avatar}</span>
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center">
+                <span className="text-xs text-white font-bold">{selectedConversation.avatar}</span>
               </div>
-              <div className="ml-3">
-                <div className="text-sm font-semibold text-white">{selectedConversation.name}</div>
-                <div className="text-xs text-white/60">
-                  {selectedConversation.isOnline ? 'Online' : 'Offline'}
+              <div>
+                <div className="text-sm font-medium text-white">{selectedConversation.name}</div>
+                <div className="flex items-center space-x-1">
+                  <Circle size={6} className={selectedConversation.isOnline ? 'text-green-400 fill-current' : 'text-gray-400 fill-current'} />
+                  <span className="text-xs text-white/60">
+                    {selectedConversation.isOnline ? 'Online' : 'Offline'}
+                  </span>
                 </div>
               </div>
             </div>
-            {/* <div className="flex space-x-1">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="w-8 h-8 rounded-full p-0 hover:bg-white/20"
-              >
-                <Phone size={12} className="text-white" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="w-8 h-8 rounded-full p-0 hover:bg-white/20"
-              >
-                <Video size={12} className="text-white" />
-              </Button>
-            </div> */}
+          </div>
+          
+          <div className="flex space-x-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-8 h-8 p-0 bg-green-500/20 hover:bg-green-500/30 rounded-full"
+            >
+              <Phone size={12} className="text-green-400" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-8 h-8 p-0 bg-blue-500/20 hover:bg-blue-500/30 rounded-full"
+            >
+              <Video size={12} className="text-blue-400" />
+            </Button>
           </div>
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto watch-scroll pt-20 pb-16 px-4">
-          <div className="space-y-3">
-            {selectedConversation.messages.map((message, index) => (
+        <div className="flex-1 overflow-y-auto watch-scroll p-4 space-y-3">
+          {selectedConversation.messages.map((message) => (
+            <div
+              key={message.id}
+              className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}
+            >
               <div
-                key={message.id}
-                className={`flex ${message.isFromMe ? 'justify-end' : 'justify-start'}`}
+                className={`max-w-[80%] px-3 py-2 rounded-xl text-xs ${
+                  message.isUser
+                    ? 'bg-gradient-to-r from-primary to-secondary text-white rounded-br-sm'
+                    : 'bg-white/10 text-white border border-white/20 rounded-bl-sm'
+                }`}
               >
-                <div className={`max-w-[80%] ${message.isFromMe ? 'order-2' : 'order-1'}`}>
-                  <div
-                    className={`px-3 py-2 rounded-lg text-xs ${
-                      message.isFromMe
-                        ? 'bg-blue-500 text-white rounded-br-sm'
-                        : 'bg-white/15 text-white rounded-bl-sm backdrop-blur-sm'
-                    }`}
-                  >
-                    {message.content}
-                  </div>
-                  <div className={`text-xs text-white/50 mt-1 ${
-                    message.isFromMe ? 'text-right' : 'text-left'
-                  }`}>
-                    {message.time}
-                  </div>
+                <div>{message.text}</div>
+                <div className={`text-xs mt-1 ${
+                  message.isUser ? 'text-white/70' : 'text-white/50'
+                }`}>
+                  {message.timestamp.toLocaleTimeString('en-US', { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                  })}
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
 
         {/* Message Input */}
-        <div className="absolute bottom-0 w-[210px] left-[70px] right-0 p-4 bg-transparent">
-          <div className="flex items-center space-x-2">
-            <div className="flex-1 bg-white/15 rounded-full px-3 py-2 backdrop-blur-sm">
-              <input
-                type="text"
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                onKeyPress={(e) => {
-                  if (e.key === 'Enter') {
-                    sendMessage();
-                    // Auto scroll to latest message
-                    const messagesContainer = document.querySelector('.watch-scroll');
-                    if (messagesContainer) {
-                      setTimeout(() => {
-                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                      }, 100);
-                    }
-                  }
-                }}
-                placeholder="Type a message..."
-                className="w-full bg-transparent text-white text-xs placeholder-white/60 outline-none"
-              />
-            </div>
+        <div className="p-4 border-t border-white/10 bg-black/30 backdrop-blur-sm">
+          <div className="flex space-x-2">
+            <input
+              type="text"
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+              placeholder="Type a message..."
+              className="flex-1 bg-white/10 border border-white/20 rounded-full px-3 py-2 text-white text-xs placeholder-white/50"
+            />
             <Button
-              onClick={() => {
-                sendMessage();
-                // Auto scroll to latest message
-                const messagesContainer = document.querySelector('.watch-scroll');
-                if (messagesContainer) {
-                  setTimeout(() => {
-                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                  }, 100);
-                }
-              }}
+              onClick={sendMessage}
               disabled={!newMessage.trim()}
-              className="w-8 h-8 bg-blue-500 hover:bg-blue-600 rounded-full p-0 disabled:opacity-50"
+              className="w-8 h-8 p-0 bg-gradient-to-r from-primary to-secondary hover:from-primary/80 hover:to-secondary/80 rounded-full"
             >
               <Send size={12} className="text-white" />
             </Button>
@@ -426,85 +280,102 @@ const MessagesScreen = ({ onNavigate }: MessagesScreenProps) => {
     );
   }
 
+  // Conversations List
   return (
-    <div className="relative w-full h-full flex flex-col">
+    <div className="watch-content-safe flex flex-col h-full p-4">
       {/* Header */}
-      <div className="absolute top-0 left-0 right-0 z-10 bg-transparent backdrop-blur-sm">
-        <div className="text-center py-4 watch-slide-up">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center space-x-2">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => onNavigate('features')}
-            className="absolute left-[120px] top-[315px] -translate-y-1/2 rounded-full w-8 h-8 p-0 glass-bg hover:bg-white/15 z-20"
+            className="rounded-full w-8 h-8 p-0 bg-white/10 hover:bg-white/20"
           >
             <ArrowLeft size={14} className="text-white" />
           </Button>
-          <div className="flex items-center justify-center space-x-2">
-            <MessageSquare size={16} className="text-blue-400" />
-            <h2 className="text-lg font-bold text-white">Messages</h2>
-            {totalUnread > 0 && (
-              <div className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
-                <span className="text-xs text-white font-bold">{totalUnread}</span>
-              </div>
-            )}
-          </div>
+          <h2 className="text-lg font-bold text-white">Messages</h2>
+          {totalUnread > 0 && (
+            <div className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
+              <span className="text-xs text-white font-bold">{totalUnread}</span>
+            </div>
+          )}
         </div>
       </div>
 
       {/* Conversations List */}
-      <div className="flex-1 overflow-y-auto watch-scroll pt-20 pb-16 px-4">
-        <div className="space-y-2">
-          {conversations.map((conversation, index) => (
-            <div
-              key={conversation.id}
-              onClick={() => openConversation(conversation)}
-              className="glass-bg rounded-lg p-3 cursor-pointer transition-all hover:bg-white/20 watch-glow"
-              style={{ animationDelay: `${index * 50}ms` }}
-            >
-              <div className="flex items-center space-x-3">
-                <div className="relative">
-                  <div 
-                    className="w-10 h-10 rounded-full flex items-center justify-center border border-white/30"
-                    style={{ backgroundColor: `${conversation.color}40` }}
-                  >
-                    <span className="text-sm font-bold text-white">{conversation.avatar}</span>
+      <div className="flex-1 overflow-y-auto watch-scroll space-y-2">
+        {conversations.map((conversation) => (
+          <div
+            key={conversation.id}
+            onClick={() => openConversation(conversation)}
+            className="glass-bg rounded-lg p-3 cursor-pointer hover:bg-white/15 transition-all border border-white/20"
+          >
+            <div className="flex items-center space-x-3">
+              <div className="relative">
+                <div className="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center">
+                  <span className="text-xs text-white font-bold">{conversation.avatar}</span>
+                </div>
+                <div className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-black ${
+                  conversation.isOnline ? 'bg-green-400' : 'bg-gray-400'
+                }`} />
+              </div>
+              
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between mb-1">
+                  <div className="text-sm font-medium text-white truncate">
+                    {conversation.name}
                   </div>
-                  {conversation.isOnline && (
-                    <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-black" />
-                  )}
+                  <div className="text-xs text-white/50">
+                    {formatTimestamp(conversation.timestamp)}
+                  </div>
                 </div>
                 
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between mb-1">
-                    <div className="text-sm font-semibold text-white truncate">
-                      {conversation.name}
-                    </div>
-                    <div className="text-xs text-white/50 flex-shrink-0 ml-2">
-                      {conversation.time}
-                    </div>
+                <div className="flex items-center justify-between">
+                  <div className={`text-xs truncate ${
+                    conversation.unreadCount > 0 ? 'text-white font-medium' : 'text-white/60'
+                  }`}>
+                    {conversation.lastMessage}
                   </div>
                   
-                  <div className="flex items-center justify-between">
-                    <div className="text-xs text-white/70 truncate flex-1">
-                      {conversation.lastMessage}
+                  {conversation.unreadCount > 0 && (
+                    <div className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center ml-2">
+                      <span className="text-xs text-white font-bold">
+                        {conversation.unreadCount}
+                      </span>
                     </div>
-                    {conversation.unreadCount > 0 && (
-                      <div className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center ml-2 flex-shrink-0">
-                        <span className="text-xs text-white font-bold">
-                          {conversation.unreadCount}
-                        </span>
-                      </div>
-                    )}
-                  </div>
+                  )}
                 </div>
               </div>
             </div>
-          ))}
+          </div>
+        ))}
+      </div>
+
+      {/* Stats */}
+      <div className="flex justify-center space-x-6 py-3 border-t border-white/10 mt-2">
+        <div className="text-center">
+          <div className="text-sm font-bold text-primary">
+            {totalUnread}
+          </div>
+          <div className="text-xs text-white/60">Unread</div>
+        </div>
+        <div className="text-center">
+          <div className="text-sm font-bold text-green-400">
+            {conversations.filter(c => c.isOnline).length}
+          </div>
+          <div className="text-xs text-white/60">Online</div>
+        </div>
+        <div className="text-center">
+          <div className="text-sm font-bold text-white">
+            {conversations.length}
+          </div>
+          <div className="text-xs text-white/60">Total</div>
         </div>
       </div>
 
-      {/* Back Button */}
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
+      {/* Home Button */}
+      <div className="flex justify-center pt-2">
         <Button
           variant="ghost"
           size="sm"

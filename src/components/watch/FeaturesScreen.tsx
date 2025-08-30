@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Phone, Music, Heart, Cloud, Camera, Mail, MapPin, Activity, Home, Bell } from 'lucide-react';
+import { Phone, Music, Heart, Cloud, Camera, Mail, MapPin, Activity, Home, Bell, Clock, CheckSquare } from 'lucide-react';
 import { WatchScreen } from '../SmartWatch';
 
 interface FeaturesScreenProps {
@@ -11,6 +11,7 @@ interface FeaturesScreenProps {
 
 const FeaturesScreen = ({ onNavigate }: FeaturesScreenProps) => {
   const features = [
+    { icon: Bell, label: 'Notifications', color: 'text-red-400', screen: 'notifications' as WatchScreen },
     { icon: Bell, label: 'Notifications', color: 'text-blue-400', screen: 'notifications' as WatchScreen },
     { icon: Phone, label: 'Calls', color: 'text-feature-call', screen: 'dialer' as WatchScreen },
     { icon: Music, label: 'Music', color: 'text-feature-music', screen: 'music' as WatchScreen },
@@ -20,6 +21,8 @@ const FeaturesScreen = ({ onNavigate }: FeaturesScreenProps) => {
     { icon: Camera, label: 'Camera', color: 'text-primary', screen: 'camera' as WatchScreen },
     { icon: Mail, label: 'Messages', color: 'text-accent', screen: 'messages' as WatchScreen },
     { icon: MapPin, label: 'Maps', color: 'text-green-400', screen: 'maps' as WatchScreen },
+    { icon: Clock, label: 'Alarms', color: 'text-blue-400', screen: 'alarms' as WatchScreen },
+    { icon: CheckSquare, label: 'Tasks', color: 'text-purple-400', screen: 'todos' as WatchScreen },
   ];
 
   const handleFeatureClick = (feature: typeof features[0]) => {
@@ -38,7 +41,7 @@ const FeaturesScreen = ({ onNavigate }: FeaturesScreenProps) => {
       </div>
 
       {/* Features Grid - Better spacing and sizing */}
-      <div className="grid grid-cols-3 gap-3 mb-6 max-w-[260px]">
+      <div className="grid grid-cols-3 gap-2 mb-6 max-w-[240px]">
         {features.map((feature, index) => {
           const Icon = feature.icon;
           return (
@@ -46,11 +49,11 @@ const FeaturesScreen = ({ onNavigate }: FeaturesScreenProps) => {
               key={feature.label}
               variant="ghost"
               onClick={() => handleFeatureClick(feature)}
-              className="flex flex-col items-center justify-center w-25 h-25 p-3 rounded-xl bg-black/20 glass-bg hover:bg-white/15 watch-glow transition-all duration-300 cursor-pointer"
+              className="flex flex-col items-center justify-center w-14 h-14 p-2 rounded-xl glass-bg hover:bg-white/15 watch-glow transition-all duration-300 cursor-pointer"
               style={{ animationDelay: `${index * 50}ms` }}
             >
-              <Icon size={18} className={`${feature.color} mb-1`} />
-              <span className="text-xs text-white/80 leading-tight">{feature.label}</span>
+              <Icon size={16} className={`${feature.color} mb-1`} />
+              <span className="text-xs text-white/80 leading-tight text-center">{feature.label}</span>
             </Button>
           );
         })}

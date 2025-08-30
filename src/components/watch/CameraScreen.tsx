@@ -1,26 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Home, Camera, RotateCcw, Zap, Timer, ArrowLeft, Smartphone, Wifi } from 'lucide-react';
-import { WatchScreen } from '../SmartWatch';
+import { Home, Camera, Zap, Timer, RotateCcw, ArrowLeft, Smartphone, Wifi } from 'lucide-react';
 
 interface CameraScreenProps {
-  onNavigate: (screen: WatchScreen) => void;
-  currentScreen: WatchScreen;
+  onNavigate: (screen: string) => void;
 }
 
 const CameraScreen = ({ onNavigate }: CameraScreenProps) => {
   const [isConnected, setIsConnected] = useState(true);
-  const [flashMode, setFlashMode] = useState<'off' | 'on' | 'auto'>('auto');
+  const [flashMode, setFlashMode] = useState<'off' | 'on' | 'auto'>('off');
   const [timerMode, setTimerMode] = useState<0 | 3 | 10>(0);
   const [isCapturing, setIsCapturing] = useState(false);
-  const [lastPhotoTime, setLastPhotoTime] = useState<string | null>(null);
-  const [photoCount, setPhotoCount] = useState(0);
-  const [countdown, setCountdown] = useState<number | null>(null);
+  const [countdown, setCountdown] = useState(0);
+  const [photoCount, setPhotoCount] = useState(247);
+  const [lastPhotoTime, setLastPhotoTime] = useState<Date | null>(null);
 
-  // Simulate connection status
+  // Simulate connection status changes
   useEffect(() => {
     const interval = setInterval(() => {
-      setIsConnected(prev => Math.random() > 0.1 ? true : prev); // 90% chance to stay connected
+      if (Math.random() > 0.9) { // 10% chance every 5 seconds
+        setIsConnected(prev => !prev);
+      }
     }, 5000);
 
     return () => clearInterval(interval);
@@ -29,13 +29,16 @@ const CameraScreen = ({ onNavigate }: CameraScreenProps) => {
   // Handle countdown timer
   useEffect(() => {
     let interval: NodeJS.Timeout;
-    if (countdown !== null && countdown > 0) {
+    if (countdown > 0) {
       interval = setInterval(() => {
-        setCountdown(prev => prev! - 1);
+        setCountdown(prev => {
+          if (prev <= 1) {
+            capturePhoto();
+            return 0;
+          }
+          return prev - 1;
+        });
       }, 1000);
-    } else if (countdown === 0) {
-      capturePhoto();
-      setCountdown(null);
     }
     return () => clearInterval(interval);
   }, [countdown]);
@@ -43,18 +46,16 @@ const CameraScreen = ({ onNavigate }: CameraScreenProps) => {
   const capturePhoto = () => {
     setIsCapturing(true);
     setPhotoCount(prev => prev + 1);
+    setLastPhotoTime(new Date());
     
+    // Simulate capture flash
     setTimeout(() => {
       setIsCapturing(false);
-      setLastPhotoTime(new Date().toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit'
-      }));
-    }, 500);
+    }, 200);
   };
 
   const handleShutterPress = () => {
-    if (!isConnected || isCapturing) return;
+    if (!isConnected || isCapturing || countdown > 0) return;
     
     if (timerMode > 0) {
       setCountdown(timerMode);
@@ -75,173 +76,190 @@ const CameraScreen = ({ onNavigate }: CameraScreenProps) => {
     setTimerMode(modes[(currentIndex + 1) % modes.length]);
   };
 
+  const getFlashIcon = () => {
+    switch (flashMode) {
+      case 'on': return <Zap size={16} className="text-yellow-400" />;
+      case 'auto': return <Zap size={16} className="text-blue-400" />;
+      default: return <Zap size={16} className="text-white/40" />;
+    }
+  };
+
+  const getTimerIcon = () => {
+    if (timerMode === 0) return <Timer size={16} className="text-white/40" />;
+    return <Timer size={16} className="text-primary" />;
+  };
+
   return (
-    <div className="relative w-full h-full flex flex-col bg-gradient-to-br from-blue-900/40 via-black/30 to-blue-800/40 gradient-flow">
+    <div className="watch-content-safe flex flex-col h-full relative">
+      {/* Capture Flash Overlay */}
+      {isCapturing && (
+        <div className="absolute inset-0 bg-white rounded-full z-50 animate-pulse" />
+      )}
+      
+      {/* Countdown Overlay */}
+      {countdown > 0 && (
+        <div className="absolute inset-0 bg-black/80 backdrop-blur-sm rounded-full z-40 flex items-center justify-center">
+          <div className="text-6xl font-bold text-white animate-pulse">
+            {countdown}
+          </div>
+        </div>
+      )}
+
       {/* Header */}
-      <div className="absolute top-0 left-0 right-0 py-2 z-10 bg-transparent backdrop-blur-sm">
-        <div className="text-center py-4 watch-slide-up">
+      <div className="flex items-center justify-between p-4 pb-2">
+        <div className="flex items-center space-x-2">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => onNavigate('features')}
-            className="absolute left-[16px] top-[175px] -translate-y-1/2 rounded-full w-9 h-9 p-0 glass-bg hover:bg-white/15 z-20"
+            className="rounded-full w-8 h-8 p-0 bg-white/10 hover:bg-white/20"
           >
             <ArrowLeft size={14} className="text-white" />
           </Button>
-          <div className="flex items-center justify-center space-x-0.5">
-            <Camera size={12} className="text-blue-400" />
-            <h2 className="text-lg font-semibold text-white">Remote Camera</h2>
-          </div>
+          <h2 className="text-lg font-bold text-white">Camera</h2>
         </div>
-      </div>
-
-      {/* Connection Status */}
-      <div className="absolute top-16 left-0 right-0 z-10 flex justify-center">
-        <div className={`px-3 py-1 rounded-full text-xs font-medium flex items-center space-x-2 ${
-          isConnected 
-            ? 'bg-green-500/20 text-green-400 border border-green-400/30' 
-            : 'bg-red-500/20 text-red-400 border border-red-400/30'
+        
+        {/* Connection Status */}
+        <div className={`flex items-center space-x-1 px-2 py-1 rounded-full ${
+          isConnected ? 'bg-green-500/20 border border-green-400/30' : 'bg-red-500/20 border border-red-400/30'
         }`}>
-          <Smartphone size={10} />
-          <span>{isConnected ? 'Connected to Phone' : 'Disconnected'}</span>
-          <Wifi size={10} />
+          <Smartphone size={12} className={isConnected ? 'text-green-400' : 'text-red-400'} />
+          <span className={`text-xs ${isConnected ? 'text-green-400' : 'text-red-400'}`}>
+            {isConnected ? 'Connected' : 'Disconnected'}
+          </span>
         </div>
       </div>
 
       {/* Camera Viewfinder Simulation */}
-      <div className="flex-1 flex items-center justify-center px-4 pt-24 pb-20">
-        <div className="relative w-full max-w-[200px] aspect-[4/3] bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg border-2 border-white/20 overflow-hidden">
-          {/* Viewfinder Grid */}
-          <div className="absolute inset-0 opacity-30">
-            <div className="absolute top-1/3 left-0 right-0 h-px bg-white/50" />
-            <div className="absolute top-2/3 left-0 right-0 h-px bg-white/50" />
-            <div className="absolute left-1/3 top-0 bottom-0 w-px bg-white/50" />
-            <div className="absolute left-2/3 top-0 bottom-0 w-px bg-white/50" />
+      <div className="flex-1 mx-4 mb-4 bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl border border-white/20 relative overflow-hidden">
+        {/* Viewfinder Grid */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute inset-0 grid grid-cols-3 grid-rows-3">
+            {[...Array(9)].map((_, i) => (
+              <div key={i} className="border border-white/10" />
+            ))}
           </div>
-
-          {/* Simulated Camera View */}
-          <div className="absolute left-[75px] flex items-center justify-center">
-            <div className="text-center">
-              <Camera size={32} className="text-white/40 mx-auto mb-2" />
-              <div className="text-xs text-white/60">Live View</div>
-              {lastPhotoTime && (
-                <div className="text-xs text-green-400 mt-1">
-                  Last: {lastPhotoTime}
-                </div>
-              )}
-            </div>
+        </div>
+        
+        {/* Remote Camera Indicator */}
+        <div className="absolute top-4 left-4 right-4 flex justify-between items-center">
+          <div className="bg-black/50 backdrop-blur-sm rounded-full px-3 py-1 flex items-center space-x-2">
+            <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+            <span className="text-xs text-white">Remote</span>
           </div>
-
-          {/* Flash Effect */}
-          {isCapturing && (
-            <div className="absolute inset-0 bg-white animate-pulse" />
-          )}
-
-          {/* Countdown Overlay */}
-          {countdown !== null && countdown > 0 && (
-            <div className="absolute inset-0 bg-black/70 flex items-center justify-center translate-y-[-10px] translate-x-[10px]">
-              <div className="text-6xl font-bold text-white animate-pulse">
-                {countdown}
-              </div>
+          
+          {isConnected && (
+            <div className="bg-black/50 backdrop-blur-sm rounded-full px-3 py-1">
+              <Wifi size={12} className="text-green-400" />
             </div>
           )}
+        </div>
 
-          {/* Photo Count */}
-          <div className="absolute top-2 right-2 bg-black/50 rounded-full px-2 py-1">
-            <div className="text-xs text-white font-mono">{photoCount.toString().padStart(3, '0')}</div>
+        {/* Photo Info */}
+        <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center">
+          <div className="bg-black/50 backdrop-blur-sm rounded-full px-3 py-1">
+            <span className="text-xs text-white">Photos: {photoCount}</span>
           </div>
+          
+          {lastPhotoTime && (
+            <div className="bg-black/50 backdrop-blur-sm rounded-full px-3 py-1">
+              <span className="text-xs text-white">
+                Last: {lastPhotoTime.toLocaleTimeString('en-US', { 
+                  hour: '2-digit', 
+                  minute: '2-digit' 
+                })}
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* Center Focus Point */}
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          <div className="w-8 h-8 border-2 border-white/60 rounded-full" />
         </div>
       </div>
 
-      {/* Camera Controls */}
-      <div className="absolute bottom-0 left-0 right-0 p-4">
+      {/* Controls */}
+      <div className="px-4 pb-4">
         {/* Settings Row */}
         <div className="flex justify-center space-x-6 mb-4">
-          {/* Flash Control */}
           <Button
-            variant="ghost"
-            size="sm"
             onClick={toggleFlash}
-            className={`w-10 h-10 rounded-full p-0 transition-all ${
-              flashMode === 'on' ? 'bg-yellow-500/30 border border-yellow-400/50' :
-              flashMode === 'auto' ? 'bg-blue-500/30 border border-blue-400/50' :
-              'bg-white/10 hover:bg-white/20'
-            }`}
-          >
-            <Zap size={16} className={
-              flashMode === 'on' ? 'text-yellow-400' :
-              flashMode === 'auto' ? 'text-blue-400' :
-              'text-white/70'
-            } />
-          </Button>
-
-          {/* Timer Control */}
-          <Button
             variant="ghost"
             size="sm"
+            className={`flex flex-col items-center space-y-1 p-2 rounded-lg ${
+              flashMode !== 'off' ? 'bg-white/20' : 'bg-white/10 hover:bg-white/20'
+            }`}
+          >
+            {getFlashIcon()}
+            <span className="text-xs text-white/70 capitalize">{flashMode}</span>
+          </Button>
+          
+          <Button
             onClick={toggleTimer}
-            className={`w-10 h-10 rounded-full p-0 transition-all ${
-              timerMode > 0 ? 'bg-green-500/30 border border-green-400/50' : 'bg-white/10 hover:bg-white/20'
-            }`}
-          >
-            <div className="flex flex-col items-center">
-              <Timer size={12} className={timerMode > 0 ? 'text-green-400' : 'text-white/70'} />
-              {timerMode > 0 && (
-                <span className="text-xs font-bold text-green-400">{timerMode}</span>
-              )}
-            </div>
-          </Button>
-
-          {/* Flip Camera */}
-          <Button
             variant="ghost"
             size="sm"
-            className="w-10 h-10 rounded-full p-0 bg-white/10 hover:bg-white/20"
-            disabled={!isConnected}
+            className={`flex flex-col items-center space-y-1 p-2 rounded-lg ${
+              timerMode > 0 ? 'bg-white/20' : 'bg-white/10 hover:bg-white/20'
+            }`}
+          >
+            {getTimerIcon()}
+            <span className="text-xs text-white/70">
+              {timerMode === 0 ? 'Off' : `${timerMode}s`}
+            </span>
+          </Button>
+          
+          <Button
+            onClick={() => setIsConnected(!isConnected)}
+            variant="ghost"
+            size="sm"
+            className="flex flex-col items-center space-y-1 p-2 rounded-lg bg-white/10 hover:bg-white/20"
           >
             <RotateCcw size={16} className="text-white/70" />
+            <span className="text-xs text-white/70">Reconnect</span>
           </Button>
         </div>
 
         {/* Shutter Button */}
-        <div className="flex justify-center">
+        <div className="flex justify-center items-center space-x-6">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => onNavigate('home')}
+            className="rounded-full w-10 h-10 p-0 glass-bg hover:bg-white/15"
+          >
+            <Home size={16} className="text-white" />
+          </Button>
+          
           <Button
             onClick={handleShutterPress}
-            disabled={!isConnected || isCapturing}
-            className={`w-20 h-20 rounded-full border-4 border-white/30 transition-all duration-200 ${
-              isCapturing 
-                ? 'bg-red-500 scale-95' 
-                : 'bg-white hover:bg-white/90 hover:scale-105 active:scale-95'
+            disabled={!isConnected || isCapturing || countdown > 0}
+            className={`w-16 h-16 rounded-full border-4 border-white transition-all ${
+              isConnected 
+                ? 'bg-white hover:bg-gray-200 active:scale-95' 
+                : 'bg-gray-500 opacity-50 cursor-not-allowed'
             }`}
           >
-            <div className={`w-16 h-16 rounded-full ${
-              isCapturing ? 'bg-red-600' : 'bg-white border-2 border-gray-300'
+            <div className={`w-12 h-12 rounded-full ${
+              isConnected ? 'bg-gray-800' : 'bg-gray-600'
             }`} />
           </Button>
+          
+          <div className="w-10 h-10" /> {/* Spacer for symmetry */}
         </div>
 
         {/* Status Text */}
         <div className="text-center mt-3">
-          <div className="text-xs text-white/60">
-            {!isConnected ? 'Connect your phone to take photos' :
-             countdown !== null ? 'Get ready...' :
-             isCapturing ? 'Capturing...' :
-             timerMode > 0 ? `Timer: ${timerMode}s` :
-             'Tap to capture'}
-          </div>
+          {!isConnected ? (
+            <div className="text-xs text-red-400">Phone not connected</div>
+          ) : countdown > 0 ? (
+            <div className="text-xs text-primary">Taking photo in {countdown}s</div>
+          ) : isCapturing ? (
+            <div className="text-xs text-white">Capturing...</div>
+          ) : (
+            <div className="text-xs text-white/60">Tap to capture photo</div>
+          )}
         </div>
-      </div>
-
-      {/* Back Button */}
-      <div className="absolute bottom-4 left-4">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => onNavigate('home')}
-          className="rounded-full w-10 h-10 p-0 glass-bg hover:bg-white/15"
-        >
-          <Home size={16} className="text-white" />
-        </Button>
       </div>
     </div>
   );
