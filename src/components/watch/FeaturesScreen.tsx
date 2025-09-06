@@ -11,8 +11,8 @@ interface FeaturesScreenProps {
 
 const FeaturesScreen = ({ onNavigate }: FeaturesScreenProps) => {
   const features = [
-    { icon: Bell, label: 'Notifications', color: 'text-red-400', screen: 'notifications' as WatchScreen },
-    { icon: Bell, label: 'Notifications', color: 'text-blue-400', screen: 'notifications' as WatchScreen },
+    // { icon: Bell, label: 'Notifications', color: 'text-red-400', screen: 'notifications' as WatchScreen },
+    // { icon: Bell, label: 'Notifications', color: 'text-blue-400', screen: 'notifications' as WatchScreen },
     { icon: Phone, label: 'Calls', color: 'text-feature-call', screen: 'dialer' as WatchScreen },
     { icon: Music, label: 'Music', color: 'text-feature-music', screen: 'music' as WatchScreen },
     { icon: Activity, label: 'Fitness', color: 'text-feature-fitness', screen: 'fitness' as WatchScreen },
@@ -49,7 +49,7 @@ const FeaturesScreen = ({ onNavigate }: FeaturesScreenProps) => {
               key={feature.label}
               variant="ghost"
               onClick={() => handleFeatureClick(feature)}
-              className="flex flex-col items-center justify-center w-14 h-14 p-2 rounded-xl glass-bg hover:bg-white/15 watch-glow transition-all duration-300 cursor-pointer"
+              className="flex flex-col items-center justify-center w-18 h-14 p-2 rounded-xl glass-bg hover:bg-white/15 watch-glow transition-all duration-300 cursor-pointer"
               style={{ animationDelay: `${index * 50}ms` }}
             >
               <Icon size={16} className={`${feature.color} mb-1`} />

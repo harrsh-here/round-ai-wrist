@@ -180,37 +180,27 @@ const NotificationsScreen = ({ onNavigate }: NotificationsScreenProps) => {
   return (
     <div className="watch-content-safe flex flex-col h-full p-4">
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex flex-col items-center justify-center mb-4">
         <div className="flex items-center space-x-2">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => onNavigate('features')}
-            className="rounded-full w-8 h-8 p-0 bg-white/10 hover:bg-white/20"
+            className="rounded-full w-6 h-6 p-0 bg-white/10 hover:bg-white/20"
           >
-            <ArrowLeft size={14} className="text-white" />
+            <ArrowLeft size={12} className="text-white" />
           </Button>
-          <h2 className="text-lg font-bold text-white">Notifications</h2>
+          <h2 className="text-base font-bold text-white">Notifications</h2>
           {unreadCount > 0 && (
-            <div className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
+            <div className="w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
               <span className="text-xs text-white font-bold">{unreadCount}</span>
             </div>
           )}
         </div>
-        {unreadCount > 0 && (
-          <Button
-            onClick={markAllAsRead}
-            variant="ghost"
-            size="sm"
-            className="text-xs bg-white/10 hover:bg-white/20 text-white px-2 py-1 rounded"
-          >
-            Mark All Read
-          </Button>
-        )}
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex space-x-2 mb-4">
+      <div className="relative flex space-x-2 mb-4">
         <Button
           onClick={() => setFilter('all')}
           variant="ghost"
@@ -235,6 +225,17 @@ const NotificationsScreen = ({ onNavigate }: NotificationsScreenProps) => {
         >
           Unread ({unreadCount})
         </Button>
+        
+        {unreadCount > 0 && (
+          <Button
+            onClick={markAllAsRead}
+            variant="ghost"
+            size="sm"
+            className="absolute -right-2 top-full mt-1 rounded-full w-6 h-6 p-0 bg-white/10 hover:bg-white/20"
+          >
+            <Check size={12} className="text-white" />
+          </Button>
+        )}
       </div>
 
       {/* Notifications List */}

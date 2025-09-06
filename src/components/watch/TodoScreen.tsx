@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
-import { Home, Plus, Trash, CheckCircle, Circle, Calendar, Clock, AlertTriangle, ArrowLeft, Edit3 } from 'lucide-react';
+import { Home, Plus, Trash, CheckCircle, Circle, Calendar, Clock, AlertTriangle, ArrowLeft, Edit3, X } from 'lucide-react';
 
 interface TodoScreenProps {
   onNavigate: (screen: string) => void;
