@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Home, MapPin, Navigation, Compass, ArrowLeft, Map, Satellite, Car } from 'lucide-react';
+import { Home, MapPin, Navigation, Compass, ArrowLeft, Map, Satellite, Car, X } from 'lucide-react';
 
 interface MapsScreenProps {
   onNavigate: (screen: string) => void;
