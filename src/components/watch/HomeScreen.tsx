@@ -7,12 +7,9 @@ import { WatchScreen } from '../SmartWatch';
 interface HomeScreenProps {
   onNavigate: (screen: WatchScreen) => void;
   currentScreen: WatchScreen;
-  onShowStatusBar?: () => void;
-  brightness?: number;
-  soundMode?: 'on' | 'vibrate' | 'off';
 }
 
-const HomeScreen = ({ onNavigate, onShowStatusBar }: HomeScreenProps) => {
+const HomeScreen = ({ onNavigate }: HomeScreenProps) => {
   const [time, setTime] = useState(new Date());
   const [bpm, setBpm] = useState(72);
 
@@ -54,29 +51,17 @@ const HomeScreen = ({ onNavigate, onShowStatusBar }: HomeScreenProps) => {
       {/* Status Bar */}
       <div className="watch-status-bar bg-transparent">
         <div className="flex items-center space-x-3 backdrop-blur-xs rounded-lg px-2 py-1">
-          <div 
-            className="status-icon battery cursor-pointer hover:bg-white/10 rounded px-1 py-0.5 transition-colors"
-            onClick={onShowStatusBar}
-          >
+          <div className="status-icon battery">
             <Battery size={12} />
             <span>85%</span>
           </div>
-          <div 
-            className="status-icon wifi cursor-pointer hover:bg-white/10 rounded px-1 py-0.5 transition-colors"
-            onClick={onShowStatusBar}
-          >
+          <div className="status-icon wifi">
             <Wifi size={10} />
           </div>
-          <div 
-            className="status-icon bluetooth cursor-pointer hover:bg-white/10 rounded px-1 py-0.5 transition-colors"
-            onClick={onShowStatusBar}
-          >
+          <div className="status-icon bluetooth">
             <Bluetooth size={10} />
           </div>
-          <div 
-            className="status-icon cursor-pointer hover:bg-white/10 rounded px-1 py-0.5 transition-colors"
-            onClick={onShowStatusBar}
-          >
+          <div className="status-icon">
             <Phone size={10} className="text-feature-call" />
           </div>
         </div>

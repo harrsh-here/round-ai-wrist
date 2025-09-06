@@ -19,7 +19,6 @@ import NotificationsScreen from './watch/NotificationsScreen';
 import CameraScreen from './watch/CameraScreen';
 import MessagesScreen from './watch/MessagesScreen';
 import MapsScreen from './watch/MapsScreen';
-import StatusBar from './watch/StatusBar';
 
 export type WatchScreen = 'login' | 'analog' | 'home' | 'features' | 'chat' | 'settings' | 'fitness' | 'health' | 'dialer' | 'music' | 'weather' | 'notifications' | 'camera' | 'messages' | 'maps';
 
@@ -31,9 +30,6 @@ const SmartWatch = () => {
   const [voiceQuery, setVoiceQuery] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showVoiceQuery, setShowVoiceQuery] = useState(false);
-  const [brightness, setBrightness] = useState(75);
-  const [soundMode, setSoundMode] = useState<'on' | 'vibrate' | 'off'>('on');
-  const [showStatusBar, setShowStatusBar] = useState(false);
 
   const screens: WatchScreen[] = ['home', 'analog', 'features', 'fitness', 'health', 'chat', 'settings', 'notifications', 'camera', 'messages', 'maps'];
 
@@ -120,9 +116,6 @@ const SmartWatch = () => {
     const screenProps = {
       onNavigate: navigateToScreen,
       currentScreen,
-      onShowStatusBar: () => setShowStatusBar(true),
-      brightness,
-      soundMode,
     };
 
     switch (currentScreen) {
@@ -205,17 +198,6 @@ const SmartWatch = () => {
             }`}
           >
             {renderScreen()}
-            
-            {/* Status Bar - Only show when logged in and watch is on */}
-            {isWatchOn && isLoggedIn && (
-              <StatusBar
-                onNavigate={navigateToScreen}
-                brightness={brightness}
-                onBrightnessChange={setBrightness}
-                soundMode={soundMode}
-                onSoundModeChange={setSoundMode}
-              />
-            )}
           </div>
         </div>
 
