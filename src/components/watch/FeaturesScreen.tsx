@@ -14,15 +14,17 @@ const FeaturesScreen = ({ onNavigate }: FeaturesScreenProps) => {
     // { icon: Bell, label: 'Notifications', color: 'text-red-400', screen: 'notifications' as WatchScreen },
     // { icon: Bell, label: 'Notifications', color: 'text-blue-400', screen: 'notifications' as WatchScreen },
     { icon: Phone, label: 'Calls', color: 'text-feature-call', screen: 'dialer' as WatchScreen },
+     { icon: Clock, label: 'Alarms', color: 'text-blue-400', screen: 'alarms' as WatchScreen },
+    { icon: CheckSquare, label: 'Tasks', color: 'text-purple-400', screen: 'todos' as WatchScreen },
     { icon: Music, label: 'Music', color: 'text-feature-music', screen: 'music' as WatchScreen },
     { icon: Activity, label: 'Fitness', color: 'text-feature-fitness', screen: 'fitness' as WatchScreen },
     { icon: Heart, label: 'Health', color: 'text-feature-health', screen: 'health' as WatchScreen },
     { icon: Cloud, label: 'Weather', color: 'text-feature-weather', screen: 'weather' as WatchScreen },
     { icon: Camera, label: 'Camera', color: 'text-primary', screen: 'camera' as WatchScreen },
     { icon: Mail, label: 'Messages', color: 'text-accent', screen: 'messages' as WatchScreen },
-    { icon: MapPin, label: 'Maps', color: 'text-green-400', screen: 'maps' as WatchScreen },
-    { icon: Clock, label: 'Alarms', color: 'text-blue-400', screen: 'alarms' as WatchScreen },
-    { icon: CheckSquare, label: 'Tasks', color: 'text-purple-400', screen: 'todos' as WatchScreen },
+    
+   
+    //{ icon: Bell, label: 'Notifications', color: 'text-orange-400', screen: 'todos' as WatchScreen },
   ];
 
   const handleFeatureClick = (feature: typeof features[0]) => {

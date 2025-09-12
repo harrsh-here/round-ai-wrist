@@ -20,8 +20,10 @@ import CameraScreen from './watch/CameraScreen';
 import MessagesScreen from './watch/MessagesScreen';
 import MapsScreen from './watch/MapsScreen';
 import StatusBar from './watch/StatusBar';
+import TodoScreen from './watch/TodoScreen';
+import AlarmScreen from './watch/AlarmScreen';
 
-export type WatchScreen = 'login' | 'analog' | 'home' | 'features' | 'chat' | 'settings' | 'fitness' | 'health' | 'dialer' | 'music' | 'weather' | 'notifications' | 'camera' | 'messages' | 'maps';
+export type WatchScreen = 'login' | 'analog' | 'home' | 'features' | 'chat' | 'settings' | 'fitness' | 'health' | 'dialer' | 'music' | 'weather' | 'notifications' | 'camera' | 'messages' | 'maps' |'todos'|'alarms';
 
 const SmartWatch = () => {
   const [currentScreen, setCurrentScreen] = useState<WatchScreen>('login');
@@ -34,8 +36,10 @@ const SmartWatch = () => {
   const [brightness, setBrightness] = useState(75);
   const [soundMode, setSoundMode] = useState<'on' | 'vibrate' | 'off'>('on');
   const [showStatusBar, setShowStatusBar] = useState(false);
-
-  const screens: WatchScreen[] = ['home', 'analog', 'features', 'fitness', 'health', 'chat', 'settings', 'notifications', 'camera', 'messages', 'maps'];
+  // Add this state to track unread notifications count
+  const [unreadCount, setUnreadCount] = useState(0);
+  
+  const screens: WatchScreen[] = ['home', 'analog', 'features', 'fitness', 'health', 'chat', 'settings', 'notifications', 'camera', 'messages', 'maps', 'todos', 'alarms'];
 
   const navigateToScreen = (screen: WatchScreen) => {
     if (screen === currentScreen || !isWatchOn) return;
@@ -122,7 +126,7 @@ const SmartWatch = () => {
       currentScreen,
       onShowStatusBar: () => setShowStatusBar(true),
       brightness,
-      soundMode,
+      soundMode
     };
 
     switch (currentScreen) {
@@ -147,13 +151,19 @@ const SmartWatch = () => {
       case 'weather':
         return <WeatherScreen {...screenProps} />;
       case 'notifications':
-        return <NotificationsScreen {...screenProps} />;
+        return <NotificationsScreen {...screenProps} setUnreadCount={setUnreadCount} />;
+      case 'home':
+        return <HomeScreen {...screenProps} unreadCount={unreadCount} />;
       case 'camera':
         return <CameraScreen {...screenProps} />;
       case 'messages':
         return <MessagesScreen {...screenProps} />;
       case 'maps':
         return <MapsScreen {...screenProps} />;
+        case 'alarms':
+        return <AlarmScreen {...screenProps} />;
+      case 'todos':
+        return <TodoScreen {...screenProps} />;
       default:
         return <HomeScreen {...screenProps} />;
     }
@@ -179,7 +189,7 @@ const SmartWatch = () => {
             >
               <div className="text-center p-4">
                 <div className="text-accent text-xs mb-2 animate-pulse">Voice Query:</div>
-                <div className="text-foreground text-sm font-medium bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                <div className="text-foreground text-sm font-medium bg-gradient-to-r from-primary to-secondary bg-clip-text">
                   {voiceQuery}
                 </div>
                 <div className="text-white/60 text-xs mt-2">Tap to close</div>
@@ -210,10 +220,10 @@ const SmartWatch = () => {
             {isWatchOn && isLoggedIn && (
               <StatusBar
                 onNavigate={navigateToScreen}
-                brightness={brightness}
-                onBrightnessChange={setBrightness}
-                soundMode={soundMode}
-                onSoundModeChange={setSoundMode}
+                // brightness={brightness}
+                // onBrightnessChange={setBrightness}
+                // soundMode={soundMode}
+                // onSoundModeChange={setSoundMode}
               />
             )}
           </div>

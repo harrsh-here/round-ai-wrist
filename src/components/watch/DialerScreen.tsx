@@ -174,7 +174,10 @@ const DialerScreen = ({ onNavigate }: DialerScreenProps) => {
   return (
     <div className="  relative w-full h-full flex flex-col items-center justify-center p-3 overflow-hidden">
       {/* Colorful background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-pink-500/10" />
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-black via-[#0A0A2A] to-black gradient-flow" />
+        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-[#0A0A2A]/20 to-transparent animate-pulse" />
+      </div>
       
       {/* Header */}
       <div className="w-full text-center mt-0 mb-2 relative z-50">

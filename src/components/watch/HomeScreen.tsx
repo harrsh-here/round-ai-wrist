@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Clock, Heart, Activity, Settings, MessageSquare, Grid3X3, Footprints, Zap, Battery, Wifi, Bluetooth, Phone } from 'lucide-react';
+import { Clock, Heart, Activity, Settings, MessageSquare, Grid3X3, Footprints, Zap, Battery, Wifi, Bluetooth, Phone, Bell } from 'lucide-react';
 import { WatchScreen } from '../SmartWatch';
 
 interface HomeScreenProps {
@@ -10,6 +10,7 @@ interface HomeScreenProps {
   onShowStatusBar?: () => void;
   brightness?: number;
   soundMode?: 'on' | 'vibrate' | 'off';
+  unreadCount?: number; // Added unreadCount property
 }
 
 const HomeScreen = ({ onNavigate, onShowStatusBar }: HomeScreenProps) => {
@@ -53,34 +54,35 @@ const HomeScreen = ({ onNavigate, onShowStatusBar }: HomeScreenProps) => {
     <div className="watch-content-safe flex flex-col h-full select-none">
       {/* Status Bar */}
       <div className="watch-status-bar bg-transparent">
-        <div className="flex items-center space-x-3 backdrop-blur-xs rounded-lg px-2 py-1">
+        <div className="flex items-center space-x-3  rounded-lg px-2 py-1">
           <div 
-            className="status-icon battery cursor-pointer hover:bg-white/10 rounded px-1 py-0.5 transition-colors"
+            className="status-icon battery rounded px-1 py-0.5 transition-colors"
             onClick={onShowStatusBar}
           >
             <Battery size={12} />
             <span>85%</span>
           </div>
           <div 
-            className="status-icon wifi cursor-pointer hover:bg-white/10 rounded px-1 py-0.5 transition-colors"
+            className="status-icon wifi  rounded px-1 py-0.5 transition-colors"
             onClick={onShowStatusBar}
           >
             <Wifi size={10} />
           </div>
           <div 
-            className="status-icon bluetooth cursor-pointer hover:bg-white/10 rounded px-1 py-0.5 transition-colors"
+            className="status-icon bluetooth rounded px-1 py-0.5 transition-colors"
             onClick={onShowStatusBar}
           >
             <Bluetooth size={10} />
           </div>
           <div 
-            className="status-icon cursor-pointer hover:bg-white/10 rounded px-1 py-0.5 transition-colors"
+            className="status-icon  rounded px-1 py-0.5 transition-colors"
             onClick={onShowStatusBar}
           >
             <Phone size={10} className="text-feature-call" />
           </div>
         </div>
       </div>
+
 
       {/* Scrollable Content */}
       <div className="flex-1 overflow-y-auto watch-scroll px-4 pb-4">
@@ -94,7 +96,7 @@ const HomeScreen = ({ onNavigate, onShowStatusBar }: HomeScreenProps) => {
           </div>
         </div>
 {/* Analog Watch Access */}
-        <div className="flex justify-center mb-2">
+        <div className="flex justify-center space-x-4 mb-2">
           <Button
             variant="ghost"
             size="sm"
@@ -103,8 +105,19 @@ const HomeScreen = ({ onNavigate, onShowStatusBar }: HomeScreenProps) => {
           >
             <Clock size={18} className="text-primary" />
           </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => onNavigate('notifications')}
+            className="rounded-full w-12 h-12 p-0 dark-glass-bg hover:bg-white/15 relative"
+          >
+            <Bell size={18} className="text-primary" />
+            
+            {/* { (
+              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
+            )} */}
+          </Button>
         </div>
-
         {/* Quick Stats
         <div className="flex justify-center space-x-3 mb-6">
           <div className="dark-glass-bg p-3 rounded-xl text-center min-w-[60px] watch-glow">

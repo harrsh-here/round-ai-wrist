@@ -70,7 +70,7 @@ const HealthScreen = ({ onNavigate }: HealthScreenProps) => {
   const circumference = 2 * Math.PI * 45;
 
   return (
-    <div className="mt-4 relative w-full h-full flex flex-col items-center justify-center watch-scroll overflow-y-auto">
+    <div className="mt-0 relative w-full h-full flex flex-col items-center justify-center watch-scroll overflow-y-auto">
       
       {/* Header */}
       <div className="absolute w-full flex items-center justify-center">

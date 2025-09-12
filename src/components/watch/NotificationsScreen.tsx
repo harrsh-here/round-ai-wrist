@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Home, Bell, Mail, Phone, Calendar, Heart, ArrowLeft, X, Check } from 'lucide-react';
 
+// Update the interface
 interface NotificationsScreenProps {
   onNavigate: (screen: string) => void;
+  setUnreadCount?: (count: number) => void; // Add this prop
 }
 
 interface Notification {
@@ -16,7 +18,7 @@ interface Notification {
   priority: 'low' | 'medium' | 'high';
 }
 
-const NotificationsScreen = ({ onNavigate }: NotificationsScreenProps) => {
+const NotificationsScreen = ({ onNavigate, setUnreadCount }: NotificationsScreenProps) => {
   const [notifications, setNotifications] = useState<Notification[]>([
     {
       id: '1',
@@ -175,12 +177,21 @@ const NotificationsScreen = ({ onNavigate }: NotificationsScreenProps) => {
     return `${days}d ago`;
   };
 
+  // Calculate unread count
   const unreadCount = notifications.filter(n => !n.isRead).length;
+  
+  // Inside the component, use useEffect to update the parent component
+  useEffect(() => {
+    // Update the parent component with the unread count
+    if (setUnreadCount) {
+      setUnreadCount(unreadCount);
+    }
+  }, [unreadCount, setUnreadCount]);
 
   return (
     <div className="watch-content-safe flex flex-col h-full p-4">
       {/* Header */}
-      <div className="flex flex-col items-center justify-center mb-4">
+      <div className="flex flex-col items-center justify-center mb-2">
         <div className="flex items-center space-x-2">
           <Button
             variant="ghost"
@@ -191,24 +202,20 @@ const NotificationsScreen = ({ onNavigate }: NotificationsScreenProps) => {
             <ArrowLeft size={12} className="text-white" />
           </Button>
           <h2 className="text-base font-bold text-white">Notifications</h2>
-          {unreadCount > 0 && (
-            <div className="w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
-              <span className="text-xs text-white font-bold">{unreadCount}</span>
-            </div>
-          )}
+            
         </div>
       </div>
 
       {/* Filter Tabs */}
-      <div className="relative flex space-x-2 mb-4">
+      <div className="relative flex space-x-1 mb-2 w-[75%] mx-auto rounded-full  overflow-hidden">
         <Button
           onClick={() => setFilter('all')}
           variant="ghost"
           size="sm"
-          className={`flex-1 text-xs ${
+          className={`flex-1 text-[12px] px-1 ${
             filter === 'all' 
               ? 'bg-primary/20 text-primary border border-primary/30' 
-              : 'bg-white/10 text-white/70 hover:bg-white/20'
+              : 'bg-white/10 text-white/70 hover:bg-white/30'
           }`}
         >
           All ({notifications.length})
@@ -217,7 +224,7 @@ const NotificationsScreen = ({ onNavigate }: NotificationsScreenProps) => {
           onClick={() => setFilter('unread')}
           variant="ghost"
           size="sm"
-          className={`flex-1 text-xs ${
+          className={`flex-1 text-[12px] px-1 ${
             filter === 'unread' 
               ? 'bg-primary/20 text-primary border border-primary/30' 
               : 'bg-white/10 text-white/70 hover:bg-white/20'
@@ -231,7 +238,7 @@ const NotificationsScreen = ({ onNavigate }: NotificationsScreenProps) => {
             onClick={markAllAsRead}
             variant="ghost"
             size="sm"
-            className="absolute -right-2 top-full mt-1 rounded-full w-6 h-6 p-0 bg-white/10 hover:bg-white/20"
+            className="absolute -right-0 z-40 top-full mt-1 rounded-full w-6 h-6 p-0 bg-white/10 hover:bg-white/20"
           >
             <Check size={12} className="text-white" />
           </Button>
@@ -254,7 +261,8 @@ const NotificationsScreen = ({ onNavigate }: NotificationsScreenProps) => {
             return (
               <div
                 key={notification.id}
-                className={`glass-bg rounded-lg p-3 border transition-all ${
+                onClick={() => markAsRead(notification.id)}
+                className={`glass-bg rounded-lg p-3 border transition-all cursor-pointer ${
                   getNotificationColor(notification.type, notification.priority)
                 } ${!notification.isRead ? 'border-l-4 border-l-primary' : ''}`}
               >
@@ -283,17 +291,7 @@ const NotificationsScreen = ({ onNavigate }: NotificationsScreenProps) => {
                     </div>
                   </div>
                   
-                  <div className="flex flex-col space-y-1">
-                    {!notification.isRead && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => markAsRead(notification.id)}
-                        className="w-6 h-6 p-0 bg-green-500/20 hover:bg-green-500/30 rounded"
-                      >
-                        <Check size={10} className="text-green-400" />
-                      </Button>
-                    )}
+                  <div className="flex flex-col space-y-1" onClick={(e) => e.stopPropagation()}>
                     <Button
                       variant="ghost"
                       size="sm"
@@ -310,17 +308,7 @@ const NotificationsScreen = ({ onNavigate }: NotificationsScreenProps) => {
         )}
       </div>
 
-      {/* Home Button */}
-      <div className="flex justify-center pt-4">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => onNavigate('home')}
-          className="rounded-full w-10 h-10 p-0 glass-bg hover:bg-white/15"
-        >
-          <Home size={16} className="text-white" />
-        </Button>
-      </div>
+
     </div>
   );
 };

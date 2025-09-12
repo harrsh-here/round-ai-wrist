@@ -90,7 +90,7 @@ const CameraScreen = ({ onNavigate }: CameraScreenProps) => {
   };
 
   return (
-    <div className="watch-content-safe flex flex-col h-full relative">
+    <div className="watch-content-safe flex flex-col h-full relative bg-gradient-to-br from-blue-400/10 via-white/5 to-blue-200/10 backdrop-blur-sm animate-gradient bg-[length:400%_400%] overflow-hidden">
       {/* Capture Flash Overlay */}
       {isCapturing && (
         <div className="absolute inset-0 bg-white rounded-full z-50 animate-pulse" />
@@ -106,30 +106,19 @@ const CameraScreen = ({ onNavigate }: CameraScreenProps) => {
       )}
 
       {/* Header */}
-      <div className="flex items-center justify-between p-4 pb-2">
-        <div className="flex items-center space-x-2">
+      <div className="flex items-center justify-center p-4 pb-2">
+        <div className="flex items-center justify-center w-full relative right-3">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => onNavigate('features')}
-            className="rounded-full w-8 h-8 p-0 bg-white/10 hover:bg-white/20"
+            className="rounded-full w-8 h-8 p-0 bg-white/10 hover:bg-white/20 relative right-[10px]"
           >
-            <ArrowLeft size={14} className="text-white" />
+            <ArrowLeft size={14} className="text-white " />
           </Button>
           <h2 className="text-lg font-bold text-white">Camera</h2>
         </div>
-        
-        {/* Connection Status */}
-        <div className={`flex items-center space-x-1 px-2 py-1 rounded-full ${
-          isConnected ? 'bg-green-500/20 border border-green-400/30' : 'bg-red-500/20 border border-red-400/30'
-        }`}>
-          <Smartphone size={12} className={isConnected ? 'text-green-400' : 'text-red-400'} />
-          <span className={`text-xs ${isConnected ? 'text-green-400' : 'text-red-400'}`}>
-            {isConnected ? 'Connected' : 'Disconnected'}
-          </span>
-        </div>
       </div>
-
       {/* Camera Viewfinder Simulation */}
       <div className="flex-1 mx-4 mb-4 bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl border border-white/20 relative overflow-hidden">
         {/* Viewfinder Grid */}
@@ -145,7 +134,7 @@ const CameraScreen = ({ onNavigate }: CameraScreenProps) => {
         <div className="absolute top-4 left-4 right-4 flex justify-between items-center">
           <div className="bg-black/50 backdrop-blur-sm rounded-full px-3 py-1 flex items-center space-x-2">
             <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-            <span className="text-xs text-white">Remote</span>
+            <span className="relative bottom-[2px] text-xs text-white">Remote</span>
           </div>
           
           {isConnected && (
@@ -158,12 +147,12 @@ const CameraScreen = ({ onNavigate }: CameraScreenProps) => {
         {/* Photo Info */}
         <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center">
           <div className="bg-black/50 backdrop-blur-sm rounded-full px-3 py-1">
-            <span className="text-xs text-white">Photos: {photoCount}</span>
+            <span className="relative bottom-[2px] text-xs text-white">Photos: {photoCount}</span>
           </div>
           
           {lastPhotoTime && (
             <div className="bg-black/50 backdrop-blur-sm rounded-full px-3 py-1">
-              <span className="text-xs text-white">
+              <span className="relative bottom-[2px] text-xs text-white">
                 Last: {lastPhotoTime.toLocaleTimeString('en-US', { 
                   hour: '2-digit', 
                   minute: '2-digit' 
@@ -182,16 +171,18 @@ const CameraScreen = ({ onNavigate }: CameraScreenProps) => {
       {/* Controls */}
       <div className="px-4 pb-4">
         {/* Settings Row */}
-        <div className="flex justify-center space-x-6 mb-4">
+        <div className="flex relative justify-center space-x-4 mb-4">
           <Button
             onClick={toggleFlash}
             variant="ghost"
             size="sm"
-            className={`flex flex-col items-center space-y-1 p-2 rounded-lg ${
-              flashMode !== 'off' ? 'bg-white/20' : 'bg-white/10 hover:bg-white/20'
-            }`}
+            className="flex flex-col items-center space-y-1 p-2 rounded-lg w-[70px] hover:scale-105 transition-transform duration-200 hover:bg-transparent"
           >
-            {getFlashIcon()}
+            <div className={`${
+              flashMode !== 'off' ? 'bg-white/20' : 'bg-white/10'
+            } p-2 rounded-lg w-full flex justify-center hover:bg-white/30 transition-colors duration-200`}>
+              {getFlashIcon()}
+            </div>
             <span className="text-xs text-white/70 capitalize">{flashMode}</span>
           </Button>
           
@@ -199,11 +190,13 @@ const CameraScreen = ({ onNavigate }: CameraScreenProps) => {
             onClick={toggleTimer}
             variant="ghost"
             size="sm"
-            className={`flex flex-col items-center space-y-1 p-2 rounded-lg ${
-              timerMode > 0 ? 'bg-white/20' : 'bg-white/10 hover:bg-white/20'
-            }`}
+            className="flex flex-col items-center space-y-1 p-2 rounded-lg w-[70px] hover:scale-105 transition-transform duration-200 hover:bg-transparent"
           >
-            {getTimerIcon()}
+            <div className={`${
+              timerMode > 0 ? 'bg-white/20' : 'bg-white/10'
+            } p-2 rounded-lg w-full flex justify-center hover:bg-white/30 transition-colors duration-200`}>
+              {getTimerIcon()}
+            </div>
             <span className="text-xs text-white/70">
               {timerMode === 0 ? 'Off' : `${timerMode}s`}
             </span>
@@ -213,9 +206,11 @@ const CameraScreen = ({ onNavigate }: CameraScreenProps) => {
             onClick={() => setIsConnected(!isConnected)}
             variant="ghost"
             size="sm"
-            className="flex flex-col items-center space-y-1 p-2 rounded-lg bg-white/10 hover:bg-white/20"
+            className="flex flex-col items-center space-y-1 p-2 rounded-lg w-[70px] hover:scale-105 transition-transform duration-200 hover:bg-transparent"
           >
-            <RotateCcw size={16} className="text-white/70" />
+            <div className="bg-white/10 p-2 rounded-lg w-full flex justify-center hover:bg-white/30 transition-colors duration-200">
+              <RotateCcw size={16} className="text-white/70" />
+            </div>
             <span className="text-xs text-white/70">Reconnect</span>
           </Button>
         </div>
