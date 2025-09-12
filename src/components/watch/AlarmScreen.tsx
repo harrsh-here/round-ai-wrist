@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -69,12 +69,29 @@ const AlarmScreen = ({ onNavigate }: AlarmScreenProps) => {
   const [displayedAlarms, setDisplayedAlarms] = useState(7);
   const [hasMore, setHasMore] = useState(true);
 
+  // Audio reference for alarm sound
+  const alarmAudioRef = useRef<HTMLAudioElement | null>(null);
+
   // Form state
   const [formData, setFormData] = useState({
     time: '',
     label: '',
     repeatPattern: 'daily' as 'once' | 'daily' | 'weekly' | 'monthly'
   });
+
+  // Initialize audio
+  useEffect(() => {
+    alarmAudioRef.current = new Audio('/alarm-sound.mp3'); // You can change this path to your sound file
+    alarmAudioRef.current.loop = true;
+    alarmAudioRef.current.volume = 0.8;
+    
+    return () => {
+      if (alarmAudioRef.current) {
+        alarmAudioRef.current.pause();
+        alarmAudioRef.current = null;
+      }
+    };
+  }, []);
 
   // Update current time
   useEffect(() => {
@@ -93,6 +110,11 @@ const AlarmScreen = ({ onNavigate }: AlarmScreenProps) => {
       alarms.forEach(alarm => {
         if (alarm.isActive && alarm.time === currentTimeStr && !ringingAlarm) {
           setRingingAlarm(alarm);
+          // Play alarm sound
+          if (alarmAudioRef.current) {
+            alarmAudioRef.current.currentTime = 0;
+            alarmAudioRef.current.play().catch(console.error);
+          }
         }
       });
     };
@@ -135,8 +157,7 @@ const AlarmScreen = ({ onNavigate }: AlarmScreenProps) => {
     setAlarms(prev => prev.filter(alarm => alarm.id !== alarmId));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = () => {
     if (!formData.time || !formData.label.trim()) return;
 
     if (editingAlarm) {
@@ -165,11 +186,32 @@ const AlarmScreen = ({ onNavigate }: AlarmScreenProps) => {
   };
 
   const dismissAlarm = () => {
+    // Stop alarm sound
+    if (alarmAudioRef.current) {
+      alarmAudioRef.current.pause();
+      alarmAudioRef.current.currentTime = 0;
+    }
+    
+    // If it's a one-time alarm, disable it after dismissing
+    if (ringingAlarm && ringingAlarm.repeatPattern === 'once') {
+      setAlarms(prev => prev.map(alarm => 
+        alarm.id === ringingAlarm.id 
+          ? { ...alarm, isActive: false }
+          : alarm
+      ));
+    }
+    
     setRingingAlarm(null);
   };
 
   const snoozeAlarm = () => {
     if (ringingAlarm) {
+      // Stop alarm sound
+      if (alarmAudioRef.current) {
+        alarmAudioRef.current.pause();
+        alarmAudioRef.current.currentTime = 0;
+      }
+      
       // Add 5 minutes to current time for snooze
       const snoozeTime = new Date(Date.now() + 5 * 60000);
       const snoozeTimeStr = snoozeTime.toTimeString().slice(0, 5);
@@ -231,8 +273,12 @@ const AlarmScreen = ({ onNavigate }: AlarmScreenProps) => {
           <div className="text-lg text-white/90 mb-1">
             {ringingAlarm.label}
           </div>
-          <div className="text-sm text-white/70">
+          <div className="text-sm text-white/70 mb-2">
             {getRepeatText(ringingAlarm.repeatPattern)}
+          </div>
+          <div className="flex items-center justify-center space-x-1 text-white/60">
+            <Volume2 size={16} />
+            <span className="text-sm">Alarm ringing...</span>
           </div>
         </div>
 
@@ -279,7 +325,7 @@ const AlarmScreen = ({ onNavigate }: AlarmScreenProps) => {
           </Button>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex-1 space-y-4">
+        <div className="flex-1 space-y-4">
           <div>
             <label className="block text-sm text-white/80 mb-2">Time *</label>
             <input
@@ -330,30 +376,30 @@ const AlarmScreen = ({ onNavigate }: AlarmScreenProps) => {
               Cancel
             </Button>
             <Button
-              type="submit"
+              onClick={handleSubmit}
               className="flex-1 bg-gradient-to-r from-primary to-secondary hover:from-primary/80 hover:to-secondary/80 text-white"
             >
               {editingAlarm ? 'Update' : 'Create'}
             </Button>
           </div>
-        </form>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="watch-content-safe flex flex-col h-full p-4">
+      <div className="watch-content-safe flex flex-col h-full p-4 bg-gradient-to-br from-blue-400/10 via-white/5 to-blue-200/10 backdrop-blur-sm animate-gradient bg-[length:400%_400%] overflow-x-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between mb-1">
+      <div className="flex items-center justify-center mb-1">
         <Button
           variant="ghost"
           size="sm"
           onClick={() => onNavigate('features')}
-          className="rounded-full w-7 h-7 p-0 bg-white/10 hover:bg-white/20"
+          className="relative left-[90px] rounded-full w-7 h-7 p-0 bg-white/10 hover:bg-white/20 mr-2"
         >
           <ArrowLeft size={12} className="text-white" />
         </Button>
-        <h2 className="text-lg font-semibold text-white">Alarms</h2>
+        <h2 className="text-lg font-semibold text-white flex-1 text-center">Alarms</h2>
         <Button
           onClick={() => setShowAddForm(true)}
           className="rounded-full w-7 h-7 p-0 bg-gradient-to-r from-primary to-secondary hover:from-primary/80 hover:to-secondary/80"
@@ -361,6 +407,7 @@ const AlarmScreen = ({ onNavigate }: AlarmScreenProps) => {
           <Plus size={12} className="text-white" />
         </Button>
       </div>
+      
 
       {/* Stats */}
       <div className="flex justify-center space-x-2 mb-1">

@@ -141,7 +141,7 @@ const SettingsScreen = ({ onNavigate }: SettingsScreenProps) => {
 
             {/* Device Info */}
             <div className="p-4 rounded-xl backdrop-blur-md bg-white/5 border border-white/10 text-center shadow-sm">
-              <div className="text-xs text-primary font-semibold mb-1">FuzNex AI SmartWatch v0.7</div>
+              <div className="text-xs text-primary font-semibold mb-1">FuzNex AI SmartWatch v0.5</div>
               <div className="text-xs text-white/60">Serial: FZ-AI-2024-{user.avatar}</div>
               <div className="text-xs text-green-400 font-medium mt-1">● Online</div>
             </div>

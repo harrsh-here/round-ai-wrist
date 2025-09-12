@@ -39,7 +39,7 @@ const SmartWatch = () => {
   // Add this state to track unread notifications count
   const [unreadCount, setUnreadCount] = useState(0);
   
-  const screens: WatchScreen[] = ['home', 'analog', 'features', 'fitness', 'health', 'chat', 'settings', 'notifications', 'camera', 'messages', 'maps', 'todos', 'alarms'];
+  const screens: WatchScreen[] = ['home', 'analog', 'features', 'fitness', 'health', 'chat', 'settings', 'notifications', 'camera', 'messages', 'todos', 'alarms'];
 
   const navigateToScreen = (screen: WatchScreen) => {
     if (screen === currentScreen || !isWatchOn) return;
@@ -158,8 +158,8 @@ const SmartWatch = () => {
         return <CameraScreen {...screenProps} />;
       case 'messages':
         return <MessagesScreen {...screenProps} />;
-      case 'maps':
-        return <MapsScreen {...screenProps} />;
+      // case 'maps':
+      //   return <MapsScreen {...screenProps} />;
         case 'alarms':
         return <AlarmScreen {...screenProps} />;
       case 'todos':
