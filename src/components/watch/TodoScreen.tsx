@@ -15,10 +15,17 @@ interface Task {
   due_date: string | null;
   is_completed: boolean;
   created_at: string;
+  // Additional fields used throughout the component (camelCase duplicates for UI convenience)
+  id?: string;
+  dueDate: string | null;
+  dueTime: string | null;
+  isCompleted: boolean;
+  createdAt: Date;
 }
 
-const API_BASE_URL = 'http://localhost:3000/api';
-
+//const API_BASE_URL = 'http://localhost:3000/api';
+//ChangeLOCAL TO GLOBAl
+const API_BASE_URL = 'https://fuznex.onrender.com/api';
 const TodoScreen = ({ onNavigate }: TodoScreenProps) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -98,7 +105,7 @@ const TodoScreen = ({ onNavigate }: TodoScreenProps) => {
       setLoading(true);
       const data = await apiCall('/todos');
       // Transform backend format to match frontend
-      const transformedTasks = data.map((task: any) => ({
+      const transformedTasks: Task[] = data.map((task: any): Task => ({
         id: task.task_id,
         task_id: task.task_id,
         title: task.title,
@@ -107,8 +114,8 @@ const TodoScreen = ({ onNavigate }: TodoScreenProps) => {
         dueDate: task.due_date ? task.due_date.split('T')[0] : null,
         dueTime: task.due_date ? new Date(task.due_date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }) : null,
         due_date: task.due_date,
-        isCompleted: task.is_completed,
-        is_completed: task.is_completed,
+        isCompleted: !!task.is_completed,
+        is_completed: !!task.is_completed,
         createdAt: new Date(task.created_at),
         created_at: task.created_at
       }));

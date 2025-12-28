@@ -27,10 +27,12 @@ const LoginScreen = ({ onLogin }: LoginScreenProps) => {
 
   const requestCode = async () => {
     try {
-      const res = await axios.post<CodeResponse>('http://localhost:3000/api/pairing/request');
-      setCode(res.data.code);
-      setExpiresAt(new Date(res.data.expires_at));
-      setCountdown(Math.max(Math.floor((new Date(res.data.expires_at).getTime() - new Date().getTime()) / 1000), 0));
+      //const res = await axios.post<CodeResponse>('http://localhost:3000/api/pairing/request');
+      //ChangeLOCAL TO GLOBAl
+      const response = await axios.post<CodeResponse>('https://fuznex.onrender.com/api/pairing/request');
+      setCode(response.data.code);
+      setExpiresAt(new Date(response.data.expires_at));
+      setCountdown(Math.max(Math.floor((new Date(response.data.expires_at).getTime() - new Date().getTime()) / 1000), 0));
       setLinked(false);
       setRequested(true);
       setError(null);
@@ -44,15 +46,17 @@ const LoginScreen = ({ onLogin }: LoginScreenProps) => {
     if (!code) return;
     const interval = setInterval(async () => {
       try {
-        const res = await axios.get<StatusResponse>(`http://localhost:3000/api/pairing/status/${code}`);
-        if (res.data.linked) {
+        //const res = await axios.get<StatusResponse>(`http://localhost:3000/api/pairing/status/${code}`);
+        //ChangeLOCAL TO GLOBAl
+        const response = await axios.get<StatusResponse>(`https://fuznex.onrender.com/api/pairing/status/${code}`);
+        if (response.data.linked) {
           setLinked(true);
           setLoading(true);
-          localStorage.setItem('watchToken', res.data.token);
+          localStorage.setItem('watchToken', response.data.token);
 
           setTimeout(() => {
             setLoading(false);
-            onLogin();
+           // onLogin();
           }, 1500);
 
           clearInterval(interval);
