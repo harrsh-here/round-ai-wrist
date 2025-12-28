@@ -1,75 +1,137 @@
-
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
+import React, { useEffect, useState } from 'react';
 import { LogIn, Lock, ChevronDown } from 'lucide-react';
+import axios from 'axios';
 
 interface LoginScreenProps {
-  onLogin: () => void;
+ onLogin: (token: string) => void;
+}
+
+interface CodeResponse {
+  code: string;
+  expires_at: string;
+}
+
+interface StatusResponse {
+  linked: boolean;
+  token: string;
 }
 
 const LoginScreen = ({ onLogin }: LoginScreenProps) => {
-  const [code, setCode] = useState('');
-  const [generatedCode] = useState(() => 
-    Math.floor(100000 + Math.random() * 900000).toString()
-  );
+  const [code, setCode] = useState<string>('');
+  const [expiresAt, setExpiresAt] = useState<Date | null>(null);
+  const [linked, setLinked] = useState<boolean>(false);
+  const [countdown, setCountdown] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [requested, setRequested] = useState(false);
+
+  const requestCode = async () => {
+    try {
+      const res = await axios.post<CodeResponse>('http://localhost:3000/api/pairing/request');
+      setCode(res.data.code);
+      setExpiresAt(new Date(res.data.expires_at));
+      setCountdown(Math.max(Math.floor((new Date(res.data.expires_at).getTime() - new Date().getTime()) / 1000), 0));
+      setLinked(false);
+      setRequested(true);
+      setError(null);
+    } catch (err) {
+      setError('Failed to request code. Try again.');
+    }
+  };
+
+  // Poll backend
+  useEffect(() => {
+    if (!code) return;
+    const interval = setInterval(async () => {
+      try {
+        const res = await axios.get<StatusResponse>(`http://localhost:3000/api/pairing/status/${code}`);
+        if (res.data.linked) {
+          setLinked(true);
+          setLoading(true);
+          localStorage.setItem('watchToken', res.data.token);
+
+          setTimeout(() => {
+            setLoading(false);
+            onLogin();
+          }, 1500);
+
+          clearInterval(interval);
+        }
+      } catch (err) {
+        setError('Polling error. Retrying...');
+      }
+    }, 2000);
+    return () => clearInterval(interval);
+  }, [code]);
+
+  // Countdown / auto-request new code
+  useEffect(() => {
+    if (!expiresAt) return;
+    const timer = setInterval(() => {
+      const diff = Math.floor((expiresAt.getTime() - new Date().getTime()) / 1000);
+      setCountdown(diff);
+      if (diff <= 0) {
+        clearInterval(timer);
+        requestCode();
+      }
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [expiresAt]);
+
+  const formatCountdown = (sec: number) => {
+    const m = Math.floor(sec / 60).toString().padStart(2, '0');
+    const s = (sec % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
+  };
 
   return (
     <div className="relative w-full h-full rounded-full overflow-hidden">
-      {/* Scrollable Content */}
       <div className="h-full overflow-y-auto watch-scroll rounded-full" style={{ clipPath: 'circle(50%)' }}>
         <div className="flex flex-col items-center justify-start p-2 pt-3 min-h-full">
-          {/* Login Icon */}
+
+          {/* Header */}
           <div className="mb-3 text-center watch-slide-up">
             <div className="w-16 h-16 rounded-full dark-glass-bg border-2 border-primary/40 flex items-center justify-center mb-2 mx-auto">
               <LogIn size={28} className="text-primary" />
             </div>
-            <h1 className="text-xl font-bold text-white mb-1">
-              FuzNex
-            </h1>
-            <h2 className="text-sm text-white/70 mb-1">
-              Verify authentication code
-            </h2>
+            <h1 className="text-xl font-bold text-white mb-1">FuzNex</h1>
+            <h2 className="text-sm text-white/70 mb-1">Verify authentication code</h2>
           </div>
 
-          {/* Generated Code Display */}
-          <div className="mb-5 text-center watch-slide-up dark-glass-bg rounded-2xl p-6 w-full max-w-[200px]" style={{ animationDelay: '200ms' }}>
+          {/* Auth Code Card */}
+          <div
+            onClick={() => !requested && requestCode()}
+            className={`mb-5 text-center watch-slide-up dark-glass-bg rounded-2xl p-6 w-full max-w-[200px]
+              flex flex-col items-center justify-center
+              cursor-pointer
+              transition-all duration-500
+              ${linked ? 'scale-105 shadow-lg' : 'hover:scale-105 hover:shadow-md'}
+            `}
+          >
             <div className="flex items-center justify-center space-x-2 mb-4">
               <Lock size={16} className="text-accent" />
               <span className="text-sm text-white/80">Auth Code</span>
             </div>
-            <div className="text-2xl font-mono font-bold text-primary tracking-wider mb-3">
-              {generatedCode}
+            <div className="text-1xl font-mono font-bold text-primary mb-3">
+              {requested ? code : 'Click to request code'}
             </div>
             <div className="text-xs text-white/60">
-              Use this code to login
+              {linked
+                ? 'Authenticated'
+                : requested
+                  ? countdown > 0
+                    ? `Waiting for phone… (${formatCountdown(countdown)})`
+                    : 'Expired'
+                  : ''}
             </div>
           </div>
 
-          {/* Scroll Indicator - Animated downward chevron */}
-          <div className="flex flex-col items-center mb-4 watch-slide-up" style={{ animationDelay: '300ms' }}>
-            <ChevronDown 
-              size={24} 
-              className="text-primary/70 animate-bounce" 
-              style={{ 
-                animation: 'bounce 2s infinite, pulse 2s ease-in-out infinite' 
-              }} 
-            />
-          </div>
+          {error && <div className="text-xs text-red-400 mb-2 animate-fade-in">{error}</div>}
 
-          {/* Login Button */}
-          <div className="watch-slide-up mb-3" style={{ animationDelay: '400ms' }}>
-            <Button
-              onClick={onLogin}
-              className="rounded-full px-10 py-4 bg-gradient-to-r from-primary to-secondary hover:from-primary/80 hover:to-secondary/80 text-white text-sm font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
-            >
-              Login to Watch
-            </Button>
-          </div>
-
-          {/* Footer */}
           <div className="text-center pb-6">
-            <div className="text-xs text-white/40 transform:scale-80">FuzNex AI SmartWatch v0.7</div>
+            <div className="text-xs text-white/40">FuzNex AI SmartWatch v0.7</div>
           </div>
+
         </div>
       </div>
     </div>

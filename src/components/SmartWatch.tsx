@@ -1,8 +1,6 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight  ,Home } from 'lucide-react';
-
+import { ChevronLeft, ChevronRight, Home } from 'lucide-react';
 
 import AnalogWatch from './watch/AnalogWatch';
 import HomeScreen from './watch/HomeScreen';
@@ -23,27 +21,60 @@ import StatusBar from './watch/StatusBar';
 import TodoScreen from './watch/TodoScreen';
 import AlarmScreen from './watch/AlarmScreen';
 
-export type WatchScreen = 'login' | 'analog' | 'home' | 'features' | 'chat' | 'settings' | 'fitness' | 'health' | 'dialer' | 'music' | 'weather' | 'notifications' | 'camera' | 'messages' | 'maps' |'todos'|'alarms';
+export type WatchScreen =
+  | 'login'
+  | 'analog'
+  | 'home'
+  | 'features'
+  | 'chat'
+  | 'settings'
+  | 'fitness'
+  | 'health'
+  | 'dialer'
+  | 'music'
+  | 'weather'
+  | 'notifications'
+  | 'camera'
+  | 'messages'
+  | 'maps'
+  | 'todos'
+  | 'alarms';
 
-const SmartWatch = () => {
+interface SmartWatchProps {
+  isLoggedIn: boolean;
+  onLogin: (token: string) => void;
+  onLogout: () => void;
+}
+
+const SmartWatch = ({ isLoggedIn, onLogin, onLogout }: SmartWatchProps) => {
   const [currentScreen, setCurrentScreen] = useState<WatchScreen>('login');
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isWatchOn, setIsWatchOn] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [voiceQuery, setVoiceQuery] = useState('');
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showVoiceQuery, setShowVoiceQuery] = useState(false);
   const [brightness, setBrightness] = useState(75);
   const [soundMode, setSoundMode] = useState<'on' | 'vibrate' | 'off'>('on');
   const [showStatusBar, setShowStatusBar] = useState(false);
-  // Add this state to track unread notifications count
   const [unreadCount, setUnreadCount] = useState(0);
-  
-  const screens: WatchScreen[] = ['home', 'analog', 'features', 'fitness', 'health', 'chat', 'settings', 'notifications', 'camera', 'messages', 'todos', 'alarms'];
+
+  const screens: WatchScreen[] = [
+    'home',
+    'analog',
+    'features',
+    'fitness',
+    'health',
+    'chat',
+    'settings',
+    'notifications',
+    'camera',
+    'messages',
+    'todos',
+    'alarms',
+  ];
 
   const navigateToScreen = (screen: WatchScreen) => {
     if (screen === currentScreen || !isWatchOn) return;
-    
     setIsTransitioning(true);
     setTimeout(() => {
       setCurrentScreen(screen);
@@ -53,16 +84,13 @@ const SmartWatch = () => {
 
   const navigateDirection = (direction: 'left' | 'right') => {
     if (!isWatchOn || !isLoggedIn) return;
-    
     const currentIndex = screens.indexOf(currentScreen);
     let newIndex;
-    
     if (direction === 'left') {
       newIndex = currentIndex > 0 ? currentIndex - 1 : screens.length - 1;
     } else {
       newIndex = currentIndex < screens.length - 1 ? currentIndex + 1 : 0;
     }
-    
     navigateToScreen(screens[newIndex]);
   };
 
@@ -75,12 +103,6 @@ const SmartWatch = () => {
     }
   };
 
-  const handleLogin = () => {
-    setIsLoggedIn(true);
-    setIsWatchOn(true);
-    setCurrentScreen('home');
-  };
-
   const handleVoiceButtonPress = () => {
     if (!isWatchOn || !isLoggedIn) return;
     setIsListening(true);
@@ -89,16 +111,14 @@ const SmartWatch = () => {
   const handleVoiceButtonRelease = () => {
     if (!isWatchOn || !isLoggedIn) return;
     setIsListening(false);
-    
     const queries = [
       "What's my heart rate?",
       "Show me today's steps",
       "What's the weather like?",
-      "Set a timer for 5 minutes",
-      "Call Sarah",
-      "Play my workout playlist"
+      'Set a timer for 5 minutes',
+      'Call Sarah',
+      'Play my workout playlist',
     ];
-    
     const randomQuery = queries[Math.floor(Math.random() * queries.length)];
     setVoiceQuery(randomQuery);
     setShowVoiceQuery(true);
@@ -108,6 +128,7 @@ const SmartWatch = () => {
     setShowVoiceQuery(false);
     setVoiceQuery('');
   };
+
   const renderScreen = () => {
     if (!isWatchOn) {
       return (
@@ -118,7 +139,7 @@ const SmartWatch = () => {
     }
 
     if (!isLoggedIn) {
-      return <LoginScreen onLogin={handleLogin} />;
+      return <LoginScreen onLogin={onLogin} />;
     }
 
     const screenProps = {
@@ -126,20 +147,20 @@ const SmartWatch = () => {
       currentScreen,
       onShowStatusBar: () => setShowStatusBar(true),
       brightness,
-      soundMode
+      soundMode,
     };
 
     switch (currentScreen) {
       case 'analog':
         return <AnalogWatch {...screenProps} />;
       case 'home':
-        return <HomeScreen {...screenProps} />;
+        return <HomeScreen {...screenProps} unreadCount={unreadCount} />;
       case 'features':
         return <FeaturesScreen {...screenProps} />;
       case 'chat':
         return <AIChat {...screenProps} />;
       case 'settings':
-        return <SettingsScreen {...screenProps} />;
+        return <SettingsScreen {...screenProps} onLogout={onLogout} />;
       case 'fitness':
         return <FitnessScreen {...screenProps} />;
       case 'health':
@@ -152,15 +173,11 @@ const SmartWatch = () => {
         return <WeatherScreen {...screenProps} />;
       case 'notifications':
         return <NotificationsScreen {...screenProps} setUnreadCount={setUnreadCount} />;
-      case 'home':
-        return <HomeScreen {...screenProps} unreadCount={unreadCount} />;
       case 'camera':
         return <CameraScreen {...screenProps} />;
       case 'messages':
         return <MessagesScreen {...screenProps} />;
-      // case 'maps':
-      //   return <MapsScreen {...screenProps} />;
-        case 'alarms':
+      case 'alarms':
         return <AlarmScreen {...screenProps} />;
       case 'todos':
         return <TodoScreen {...screenProps} />;
@@ -172,18 +189,12 @@ const SmartWatch = () => {
   return (
     <div className="watch-container select-none">
       <div className="watch-bezel watch-fade-in">
-        {/* Watch Straps */}
         <div className="watch-strap-top" />
         <div className="watch-strap-bottom" />
-        
-        {/* Inner Bezel with glow effect - Limited to bezel area */}
         <div className={`watch-bezel-inner-glow animate-fade-in ${isWatchOn ? 'watch-on' : 'watch-off'}`} />
-        
-        {/* Watch Screen */}
         <div className="watch-screen">
-          {/* Voice Query Overlay */}
           {showVoiceQuery && voiceQuery && (
-            <div 
+            <div
               className="absolute inset-0 z-50 flex items-center justify-center bg-black/90 rounded-full backdrop-blur-sm cursor-pointer"
               onClick={handleVoiceQueryClick}
             >
@@ -196,8 +207,6 @@ const SmartWatch = () => {
               </div>
             </div>
           )}
-          
-          {/* Listening Overlay */}
           {isListening && (
             <div className="absolute inset-0 z-40 flex items-center justify-center bg-black/80 rounded-full voice-listening backdrop-blur-sm">
               <div className="text-center">
@@ -208,61 +217,33 @@ const SmartWatch = () => {
               </div>
             </div>
           )}
-          
-          <div 
+          <div
             className={`relative w-full h-full transition-opacity duration-150 ${
               isTransitioning ? 'opacity-0' : 'opacity-100'
             }`}
           >
             {renderScreen()}
-            
-            {/* Status Bar - Only show when logged in and watch is on */}
             {isWatchOn && isLoggedIn && (
-              <StatusBar
-                onNavigate={navigateToScreen}
-                // brightness={brightness}
-                // onBrightnessChange={setBrightness}
-                // soundMode={soundMode}
-                // onSoundModeChange={setSoundMode}
-              />
+              <StatusBar onNavigate={navigateToScreen} />
             )}
           </div>
         </div>
-
-        {/* Power Button - Now bottom button with blue glow when on */}
         <button
           className={`watch-power-button ${isWatchOn ? 'active' : ''} ${!isWatchOn ? 'opacity-60' : 'opacity-100'}`}
           onClick={handlePowerButton}
           title="Power Button"
         />
-
-        {/* Voice Button - Now top button with yellow glow when active */}
         <button
-          className={`watch-voice-button ${isListening ? 'active' : ''} ${!isWatchOn || !isLoggedIn ? 'opacity-60' : 'opacity-100'}`}
-          
+          className={`watch-voice-button ${isListening ? 'active' : ''} ${
+            !isWatchOn || !isLoggedIn ? 'opacity-60' : 'opacity-100'
+          }`}
           onMouseDown={handleVoiceButtonPress}
           onMouseUp={handleVoiceButtonRelease}
-          // onMouseLeave={handleVoiceButtonRelease}
           onTouchStart={handleVoiceButtonPress}
           onTouchEnd={handleVoiceButtonRelease}
           title="Voice Button (Hold to speak)"
         />
       </div>
-          
-           {/* Back Button
-      <div className="fixed bottom-[110px] left-1/2 transform -translate-x-1/2 pb-8 mb-10 z-50">
-
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => onNavigate('home')}
-          className="rounded-full w-10 h-10 p-0 glass-bg hover:bg-white/15 p-18 shadow-lg hover:shadow-xl transition-all duration-300 animate-bounce-slow"
-        >
-          <Home size={14} className="text-white" />
-        </Button>
-      </div> */}
-      
-      {/* Navigation Controls */}
       {(isWatchOn && isLoggedIn) && (
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-4 animate-fade-in">
           <Button

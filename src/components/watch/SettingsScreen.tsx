@@ -8,10 +8,11 @@ import { WatchScreen } from '../SmartWatch';
 
 interface SettingsScreenProps {
   onNavigate: (screen: WatchScreen) => void;
+  onLogout: () => void; 
   currentScreen: WatchScreen;
 }
 
-const SettingsScreen = ({ onNavigate }: SettingsScreenProps) => {
+const SettingsScreen = ({ onNavigate, onLogout }: SettingsScreenProps) => {
   const [notifications, setNotifications] = useState(true);
   const [wifi, setWifi] = useState(true);
   const [nightMode, setNightMode] = useState(false);
@@ -22,12 +23,17 @@ const SettingsScreen = ({ onNavigate }: SettingsScreenProps) => {
     avatar: 'HP'
   };
 
-  const handleLogout = () => {
-    
-    
-    // Navigate to login screen
-    onNavigate('login');
-  };
+// const handleLogout = () => {
+//   // Remove tokens from localStorage
+//   localStorage.removeItem('watchToken');
+//   localStorage.removeItem('watchRefreshToken');
+
+//   // Optionally, reset any state in parent if you track user login
+//   // e.g., setUser(null);
+// setIsLoggedIn(false);
+//   // Navigate to login screen
+//   onNavigate('login');
+// };
 
   const settingsItems = [
     {
@@ -132,7 +138,7 @@ const SettingsScreen = ({ onNavigate }: SettingsScreenProps) => {
 
             {/* Logout Button */}
             <button
-              onClick={handleLogout}
+              onClick={onLogout}
               className="w-full flex items-center justify-center p-4 rounded-xl backdrop-blur-md bg-red-500/20 border border-red-400/30 hover:bg-red-500/30 transition-all duration-300 group"
             >
               <LogOut size={16} className="text-red-400 mr-2" />
