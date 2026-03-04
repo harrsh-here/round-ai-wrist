@@ -1,42 +1,84 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Home, User, Bell, Wifi, Battery, Moon, CheckCircle, LogOut } from 'lucide-react';
+import { Home, User, Bluetooth, Wifi, Battery, Moon, CheckCircle, LogOut } from 'lucide-react';
 import { WatchScreen } from '../SmartWatch';
+import { fetchUserProfile } from '@/api/api';
 
 interface SettingsScreenProps {
   onNavigate: (screen: WatchScreen) => void;
   currentScreen: WatchScreen;
+  onLogout?: () => void;
 }
 
-const SettingsScreen = ({ onNavigate }: SettingsScreenProps) => {
-  const [notifications, setNotifications] = useState(true);
-  const [wifi, setWifi] = useState(true);
-  const [nightMode, setNightMode] = useState(false);
+const SettingsScreen = ({ onNavigate, onLogout }: SettingsScreenProps) => {
+  const [bluetooth, setBluetooth] = useState(() => {
+    const saved = localStorage.getItem('watch_bluetooth');
+    return saved !== null ? JSON.parse(saved) : true;
+  });
+  const [wifi, setWifi] = useState(() => {
+    const saved = localStorage.getItem('watch_wifi');
+    return saved !== null ? JSON.parse(saved) : true;
+  });
+  const [nightMode, setNightMode] = useState(() => {
+    const saved = localStorage.getItem('watch_nightmode');
+    return saved !== null ? JSON.parse(saved) : false;
+  });
 
-  const user = {
-    name: 'Harsh Patidar',
-    email: 'harsh.patidar@example.com',
-    avatar: 'HP'
-  };
+  // Persist and sync with StatusBar
+  useEffect(() => { localStorage.setItem('watch_bluetooth', JSON.stringify(bluetooth)); }, [bluetooth]);
+  useEffect(() => { localStorage.setItem('watch_wifi', JSON.stringify(wifi)); }, [wifi]);
+  useEffect(() => { localStorage.setItem('watch_nightmode', JSON.stringify(nightMode)); }, [nightMode]);
+
+  const [user, setUser] = useState({
+    name: 'Loading...',
+    email: '',
+    avatar: '...'
+  });
+
+  useEffect(() => {
+    fetchUserProfile()
+      .then(profile => {
+        const initials = profile.name
+          .split(' ')
+          .map(n => n[0])
+          .join('')
+          .toUpperCase()
+          .slice(0, 2);
+        setUser({
+          name: profile.name,
+          email: profile.email,
+          avatar: initials
+        });
+      })
+      .catch(() => {
+        setUser({
+          name: 'Harsh Patidar',
+          email: 'harsh.patidar@example.com',
+          avatar: 'HP'
+        });
+      });
+  }, []);
 
   const handleLogout = () => {
-    
-    
-    // Navigate to login screen
-    onNavigate('login');
+    if (onLogout) {
+      onLogout();
+    } else {
+      // Fallback: navigate to login screen
+      onNavigate('login');
+    }
   };
 
   const settingsItems = [
     {
-      icon: Bell,
-      label: 'Notifications',
+      icon: Bluetooth,
+      label: 'Bluetooth',
       component: (
         <Switch
-          checked={notifications}
-          onCheckedChange={setNotifications}
+          checked={bluetooth}
+          onCheckedChange={setBluetooth}
           className="scale-75"
         />
       ),

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Home, Bell, Mail, Phone, Calendar, Heart, ArrowLeft, X, Check } from 'lucide-react';
+import { fetchNotifications, markNotificationRead, deleteNotificationAPI, type NotificationFromAPI } from '@/api/api';
 
 // Update the interface
 interface NotificationsScreenProps {
@@ -19,106 +20,34 @@ interface Notification {
 }
 
 const NotificationsScreen = ({ onNavigate, setUnreadCount }: NotificationsScreenProps) => {
-  const [notifications, setNotifications] = useState<Notification[]>([
-    {
-      id: '1',
-      title: 'Sarah Wilson',
-      message: 'Hey! Are we still on for lunch today?',
-      type: 'message',
-      timestamp: new Date(Date.now() - 5 * 60000),
-      isRead: false,
-      priority: 'medium'
-    },
-    {
-      id: '2',
-      title: 'Missed Call',
-      message: 'Mom called 2 times',
-      type: 'call',
-      timestamp: new Date(Date.now() - 15 * 60000),
-      isRead: false,
-      priority: 'high'
-    },
-    {
-      id: '3',
-      title: 'Health Alert',
-      message: 'Heart rate elevated: 95 BPM',
-      type: 'health',
-      timestamp: new Date(Date.now() - 30 * 60000),
-      isRead: true,
-      priority: 'high'
-    },
-    {
-      id: '4',
-      title: 'Calendar Reminder',
-      message: 'Meeting with team in 30 minutes',
-      type: 'calendar',
-      timestamp: new Date(Date.now() - 45 * 60000),
-      isRead: false,
-      priority: 'medium'
-    },
-    {
-      id: '5',
-      title: 'Email',
-      message: 'New message from john@company.com',
-      type: 'email',
-      timestamp: new Date(Date.now() - 60 * 60000),
-      isRead: true,
-      priority: 'low'
-    }
-  ]);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
 
   const [filter, setFilter] = useState<'all' | 'unread'>('all');
 
-  // Simulate new notifications
+  // Fetch notifications from backend on mount
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (Math.random() > 0.7) { // 30% chance every 15 seconds
-        const newNotifications = [
-          {
-            title: 'Alex Chen',
-            message: 'Thanks for the help today!',
-            type: 'message' as const,
-            priority: 'medium' as const
-          },
-          {
-            title: 'Workout Reminder',
-            message: 'Time for your evening workout',
-            type: 'system' as const,
-            priority: 'low' as const
-          },
-          {
-            title: 'Dr. Smith',
-            message: 'Appointment confirmed for tomorrow',
-            type: 'message' as const,
-            priority: 'high' as const
-          },
-          {
-            title: 'Battery Low',
-            message: 'Watch battery at 15%',
-            type: 'system' as const,
-            priority: 'medium' as const
-          },
-          {
-            title: 'Step Goal',
-            message: 'You reached 10,000 steps!',
-            type: 'health' as const,
-            priority: 'low' as const
-          }
-        ];
-        
-        const randomNotif = newNotifications[Math.floor(Math.random() * newNotifications.length)];
-        const newNotification: Notification = {
-          id: Date.now().toString(),
-          ...randomNotif,
-          timestamp: new Date(),
-          isRead: false
-        };
-        
-        setNotifications(prev => [newNotification, ...prev]);
-      }
-    }, 15000);
-
-    return () => clearInterval(interval);
+    fetchNotifications()
+      .then(apiNotifs => {
+        const mapped: Notification[] = apiNotifs.map(n => ({
+          id: String(n.notification_id),
+          title: n.title || 'Notification',
+          message: n.message || '',
+          type: 'system' as const,
+          timestamp: new Date(n.reminder_time || n.created_at),
+          isRead: n.is_read,
+          priority: n.is_important ? 'high' as const : 'medium' as const
+        }));
+        setNotifications(mapped);
+      })
+      .catch(() => {
+        // Fallback to demo data
+        setNotifications([
+          { id: '1', title: 'Sarah Wilson', message: 'Hey! Are we still on for lunch today?', type: 'message', timestamp: new Date(Date.now() - 5 * 60000), isRead: false, priority: 'medium' },
+          { id: '2', title: 'Missed Call', message: 'Mom called 2 times', type: 'call', timestamp: new Date(Date.now() - 15 * 60000), isRead: false, priority: 'high' },
+          { id: '3', title: 'Health Alert', message: 'Heart rate elevated: 95 BPM', type: 'health', timestamp: new Date(Date.now() - 30 * 60000), isRead: true, priority: 'high' },
+          { id: '4', title: 'Calendar Reminder', message: 'Meeting with team in 30 minutes', type: 'calendar', timestamp: new Date(Date.now() - 45 * 60000), isRead: false, priority: 'medium' },
+        ]);
+      });
   }, []);
 
   const filteredNotifications = notifications.filter(notif => {
@@ -127,13 +56,21 @@ const NotificationsScreen = ({ onNavigate, setUnreadCount }: NotificationsScreen
   });
 
   const markAsRead = (notifId: string) => {
-    setNotifications(prev => prev.map(notif => 
+    setNotifications(prev => prev.map(notif =>
       notif.id === notifId ? { ...notif, isRead: true } : notif
     ));
+    const numId = parseInt(notifId);
+    if (!isNaN(numId)) {
+      markNotificationRead(numId).catch(() => { });
+    }
   };
 
   const dismissNotification = (notifId: string) => {
     setNotifications(prev => prev.filter(notif => notif.id !== notifId));
+    const numId = parseInt(notifId);
+    if (!isNaN(numId)) {
+      deleteNotificationAPI(numId).catch(() => { });
+    }
   };
 
   const markAllAsRead = () => {
@@ -154,7 +91,7 @@ const NotificationsScreen = ({ onNavigate, setUnreadCount }: NotificationsScreen
   const getNotificationColor = (type: string, priority: string) => {
     if (priority === 'high') return 'border-red-400/30 bg-red-400/5';
     if (priority === 'medium') return 'border-yellow-400/30 bg-yellow-400/5';
-    
+
     switch (type) {
       case 'message': return 'border-blue-400/30 bg-blue-400/5';
       case 'call': return 'border-green-400/30 bg-green-400/5';
@@ -179,7 +116,7 @@ const NotificationsScreen = ({ onNavigate, setUnreadCount }: NotificationsScreen
 
   // Calculate unread count
   const unreadCount = notifications.filter(n => !n.isRead).length;
-  
+
   // Inside the component, use useEffect to update the parent component
   useEffect(() => {
     // Update the parent component with the unread count
@@ -202,7 +139,7 @@ const NotificationsScreen = ({ onNavigate, setUnreadCount }: NotificationsScreen
             <ArrowLeft size={12} className="text-white" />
           </Button>
           <h2 className="text-base font-bold text-white">Notifications</h2>
-            
+
         </div>
       </div>
 
@@ -212,11 +149,10 @@ const NotificationsScreen = ({ onNavigate, setUnreadCount }: NotificationsScreen
           onClick={() => setFilter('all')}
           variant="ghost"
           size="sm"
-          className={`flex-1 text-[12px] px-1 ${
-            filter === 'all' 
-              ? 'bg-primary/20 text-primary border border-primary/30' 
+          className={`flex-1 text-[12px] px-1 ${filter === 'all'
+              ? 'bg-primary/20 text-primary border border-primary/30'
               : 'bg-white/10 text-white/70 hover:bg-white/30'
-          }`}
+            }`}
         >
           All ({notifications.length})
         </Button>
@@ -224,15 +160,14 @@ const NotificationsScreen = ({ onNavigate, setUnreadCount }: NotificationsScreen
           onClick={() => setFilter('unread')}
           variant="ghost"
           size="sm"
-          className={`flex-1 text-[12px] px-1 ${
-            filter === 'unread' 
-              ? 'bg-primary/20 text-primary border border-primary/30' 
+          className={`flex-1 text-[12px] px-1 ${filter === 'unread'
+              ? 'bg-primary/20 text-primary border border-primary/30'
               : 'bg-white/10 text-white/70 hover:bg-white/20'
-          }`}
+            }`}
         >
           Unread ({unreadCount})
         </Button>
-        
+
         {unreadCount > 0 && (
           <Button
             onClick={markAllAsRead}
@@ -257,40 +192,37 @@ const NotificationsScreen = ({ onNavigate, setUnreadCount }: NotificationsScreen
         ) : (
           filteredNotifications.map((notification) => {
             const Icon = getNotificationIcon(notification.type);
-            
+
             return (
               <div
                 key={notification.id}
                 onClick={() => markAsRead(notification.id)}
-                className={`glass-bg rounded-lg p-3 border transition-all cursor-pointer ${
-                  getNotificationColor(notification.type, notification.priority)
-                } ${!notification.isRead ? 'border-l-4 border-l-primary' : ''}`}
+                className={`glass-bg rounded-lg p-3 border transition-all cursor-pointer ${getNotificationColor(notification.type, notification.priority)
+                  } ${!notification.isRead ? 'border-l-4 border-l-primary' : ''}`}
               >
                 <div className="flex items-start space-x-3">
                   <div className="flex-shrink-0 mt-1">
                     <Icon size={14} className={
                       notification.priority === 'high' ? 'text-red-400' :
-                      notification.priority === 'medium' ? 'text-yellow-400' :
-                      'text-primary'
+                        notification.priority === 'medium' ? 'text-yellow-400' :
+                          'text-primary'
                     } />
                   </div>
-                  
+
                   <div className="flex-1 min-w-0">
-                    <div className={`text-sm font-medium ${
-                      notification.isRead ? 'text-white/70' : 'text-white'
-                    }`}>
+                    <div className={`text-sm font-medium ${notification.isRead ? 'text-white/70' : 'text-white'
+                      }`}>
                       {notification.title}
                     </div>
-                    <div className={`text-xs mt-1 ${
-                      notification.isRead ? 'text-white/50' : 'text-white/70'
-                    }`}>
+                    <div className={`text-xs mt-1 ${notification.isRead ? 'text-white/50' : 'text-white/70'
+                      }`}>
                       {notification.message}
                     </div>
                     <div className="text-xs text-white/40 mt-1">
                       {formatTimestamp(notification.timestamp)}
                     </div>
                   </div>
-                  
+
                   <div className="flex flex-col space-y-1" onClick={(e) => e.stopPropagation()}>
                     <Button
                       variant="ghost"

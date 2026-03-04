@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Home, Plus, Trash, Clock, Bell, BellOff, ArrowLeft, Volume2, X, Power, PowerOff, Target } from 'lucide-react';
+import { fetchAlarms, createAlarm, toggleAlarmAPI, deleteAlarmAPI, type AlarmFromAPI } from '@/api/api';
 
 interface AlarmScreenProps {
   onNavigate: (screen: string) => void;
@@ -18,48 +19,7 @@ interface Alarm {
 }
 
 const AlarmScreen = ({ onNavigate }: AlarmScreenProps) => {
-  const [alarms, setAlarms] = useState<Alarm[]>([
-    {
-      id: '1',
-      time: '07:00',
-      label: 'Morning Workout',
-      isActive: true,
-      repeatPattern: 'daily',
-      createdAt: new Date()
-    },
-    {
-      id: '2',
-      time: '14:30',
-      label: '',
-      isActive: true,
-      repeatPattern: 'daily',
-      createdAt: new Date()
-    },
-    {
-      id: '3',
-      time: '22:00',
-      label: 'Sleep Time',
-      isActive: false,
-      repeatPattern: 'daily',
-      createdAt: new Date()
-    },
-    {
-      id: '4',
-      time: '06:30',
-      label: 'Early workout',
-      isActive: true,
-      repeatPattern: 'daily',
-      createdAt: new Date()
-    },
-    {
-      id: '5',
-      time: '12:00',
-      label: '',
-      isActive: false,
-      repeatPattern: 'once',
-      createdAt: new Date()
-    }
-  ]);
+  const [alarms, setAlarms] = useState<Alarm[]>([]);
 
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingAlarm, setEditingAlarm] = useState<Alarm | null>(null);
@@ -81,16 +41,49 @@ const AlarmScreen = ({ onNavigate }: AlarmScreenProps) => {
 
   // Initialize audio
   useEffect(() => {
-    alarmAudioRef.current = new Audio('/alarm-sound.mp3'); // You can change this path to your sound file
+    alarmAudioRef.current = new Audio('/alarm-sound.mp3');
     alarmAudioRef.current.loop = true;
     alarmAudioRef.current.volume = 0.8;
-    
+
     return () => {
       if (alarmAudioRef.current) {
         alarmAudioRef.current.pause();
         alarmAudioRef.current = null;
       }
     };
+  }, []);
+
+  // Fetch alarms from backend on mount
+  useEffect(() => {
+    fetchAlarms()
+      .then(apiAlarms => {
+        const mapped: Alarm[] = apiAlarms.map(a => {
+          // Backend returns alarm_time as '2025-07-11 04:03:00' or 'HH:MM'
+          // Extract just HH:MM
+          let timeStr = a.alarm_time || '';
+          if (timeStr.length > 5) {
+            // Full datetime — extract time part
+            const timePart = timeStr.split(' ')[1] || timeStr;
+            timeStr = timePart.slice(0, 5); // 'HH:MM'
+          }
+          return {
+            id: String(a.alarm_id),
+            time: timeStr,
+            label: a.label || '',
+            isActive: a.is_active,
+            repeatPattern: (a.repeat_pattern || 'once') as Alarm['repeatPattern'],
+            createdAt: new Date()
+          };
+        });
+        setAlarms(mapped);
+      })
+      .catch(() => {
+        setAlarms([
+          { id: '1', time: '07:00', label: 'Morning Workout', isActive: true, repeatPattern: 'daily', createdAt: new Date() },
+          { id: '2', time: '14:30', label: '', isActive: true, repeatPattern: 'daily', createdAt: new Date() },
+          { id: '3', time: '22:00', label: 'Sleep Time', isActive: false, repeatPattern: 'daily', createdAt: new Date() },
+        ]);
+      });
   }, []);
 
   // Update current time
@@ -106,7 +99,7 @@ const AlarmScreen = ({ onNavigate }: AlarmScreenProps) => {
     const checkAlarms = () => {
       const now = new Date();
       const currentTimeStr = now.toTimeString().slice(0, 5);
-      
+
       alarms.forEach(alarm => {
         if (alarm.isActive && alarm.time === currentTimeStr && !ringingAlarm) {
           setRingingAlarm(alarm);
@@ -132,7 +125,7 @@ const AlarmScreen = ({ onNavigate }: AlarmScreenProps) => {
   });
 
   const visibleAlarms = sortedAlarms.slice(0, displayedAlarms);
-  
+
   useEffect(() => {
     setHasMore(sortedAlarms.length > displayedAlarms);
   }, [sortedAlarms.length, displayedAlarms]);
@@ -148,33 +141,52 @@ const AlarmScreen = ({ onNavigate }: AlarmScreenProps) => {
   };
 
   const toggleAlarm = (alarmId: string) => {
-    setAlarms(prev => prev.map(alarm => 
+    setAlarms(prev => prev.map(alarm =>
       alarm.id === alarmId ? { ...alarm, isActive: !alarm.isActive } : alarm
     ));
+    const numId = parseInt(alarmId);
+    if (!isNaN(numId)) {
+      toggleAlarmAPI(numId).catch(() => { });
+    }
   };
 
   const deleteAlarm = (alarmId: string) => {
     setAlarms(prev => prev.filter(alarm => alarm.id !== alarmId));
+    const numId = parseInt(alarmId);
+    if (!isNaN(numId)) {
+      deleteAlarmAPI(numId).catch(() => { });
+    }
   };
 
   const handleSubmit = () => {
     if (!formData.time || !formData.label.trim()) return;
 
     if (editingAlarm) {
-      setAlarms(prev => prev.map(alarm => 
-        alarm.id === editingAlarm.id 
+      setAlarms(prev => prev.map(alarm =>
+        alarm.id === editingAlarm.id
           ? { ...alarm, ...formData }
           : alarm
       ));
       setEditingAlarm(null);
     } else {
-      const newAlarm: Alarm = {
+      const tempAlarm: Alarm = {
         id: Date.now().toString(),
         ...formData,
         isActive: true,
         createdAt: new Date()
       };
-      setAlarms(prev => [newAlarm, ...prev]);
+      setAlarms(prev => [tempAlarm, ...prev]);
+
+      // Create on backend
+      createAlarm({
+        alarm_time: formData.time,
+        label: formData.label,
+        repeat_pattern: formData.repeatPattern,
+      }).then(created => {
+        setAlarms(prev => prev.map(a =>
+          a.id === tempAlarm.id ? { ...a, id: String(created.alarm_id) } : a
+        ));
+      }).catch(() => { });
     }
 
     setFormData({
@@ -191,16 +203,16 @@ const AlarmScreen = ({ onNavigate }: AlarmScreenProps) => {
       alarmAudioRef.current.pause();
       alarmAudioRef.current.currentTime = 0;
     }
-    
+
     // If it's a one-time alarm, disable it after dismissing
     if (ringingAlarm && ringingAlarm.repeatPattern === 'once') {
-      setAlarms(prev => prev.map(alarm => 
-        alarm.id === ringingAlarm.id 
+      setAlarms(prev => prev.map(alarm =>
+        alarm.id === ringingAlarm.id
           ? { ...alarm, isActive: false }
           : alarm
       ));
     }
-    
+
     setRingingAlarm(null);
   };
 
@@ -211,11 +223,11 @@ const AlarmScreen = ({ onNavigate }: AlarmScreenProps) => {
         alarmAudioRef.current.pause();
         alarmAudioRef.current.currentTime = 0;
       }
-      
+
       // Add 5 minutes to current time for snooze
       const snoozeTime = new Date(Date.now() + 5 * 60000);
       const snoozeTimeStr = snoozeTime.toTimeString().slice(0, 5);
-      
+
       const snoozeAlarm: Alarm = {
         ...ringingAlarm,
         id: Date.now().toString(),
@@ -223,7 +235,7 @@ const AlarmScreen = ({ onNavigate }: AlarmScreenProps) => {
         label: `${ringingAlarm.label} (Snoozed)`,
         repeatPattern: 'once'
       };
-      
+
       setAlarms(prev => [snoozeAlarm, ...prev]);
       setRingingAlarm(null);
     }
@@ -241,22 +253,47 @@ const AlarmScreen = ({ onNavigate }: AlarmScreenProps) => {
 
   const getTimeUntilAlarm = (alarmTime: string) => {
     const now = new Date();
-    const [hours, minutes] = alarmTime.split(':').map(Number);
+    let hours: number, minutes: number;
+
+    // Handle both 'HH:MM' and '2025-07-11 04:03:00' formats
+    if (alarmTime.includes(' ')) {
+      const timePart = alarmTime.split(' ')[1] || alarmTime;
+      [hours, minutes] = timePart.split(':').map(Number);
+    } else {
+      [hours, minutes] = alarmTime.split(':').map(Number);
+    }
+
+    if (isNaN(hours) || isNaN(minutes)) return null;
+
     const alarmDate = new Date();
     alarmDate.setHours(hours, minutes, 0, 0);
-    
+
     if (alarmDate <= now) {
       alarmDate.setDate(alarmDate.getDate() + 1);
     }
-    
+
     const diff = alarmDate.getTime() - now.getTime();
     const hoursUntil = Math.floor(diff / (1000 * 60 * 60));
     const minutesUntil = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    
+
     if (hoursUntil > 0) {
       return `${hoursUntil}h ${minutesUntil}m`;
     }
     return `${minutesUntil}m`;
+  };
+
+  const formatAlarmTime = (time: string) => {
+    let h: number, m: number;
+    if (time.includes(' ')) {
+      const timePart = time.split(' ')[1] || time;
+      [h, m] = timePart.split(':').map(Number);
+    } else {
+      [h, m] = time.split(':').map(Number);
+    }
+    if (isNaN(h) || isNaN(m)) return time;
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    const h12 = h % 12 || 12;
+    return `${h12}:${m.toString().padStart(2, '0')} ${ampm}`;
   };
 
   // Ringing Alarm Overlay
@@ -388,7 +425,7 @@ const AlarmScreen = ({ onNavigate }: AlarmScreenProps) => {
   }
 
   return (
-      <div className="watch-content-safe flex flex-col h-full p-4 bg-gradient-to-br from-blue-400/10 via-white/5 to-blue-200/10 backdrop-blur-sm animate-gradient bg-[length:400%_400%] overflow-x-hidden">
+    <div className="watch-content-safe flex flex-col h-full p-4 bg-gradient-to-br from-blue-400/10 via-white/5 to-blue-200/10 backdrop-blur-sm animate-gradient bg-[length:400%_400%] overflow-x-hidden">
       {/* Header */}
       <div className="flex items-center justify-center mb-1">
         <Button
@@ -407,7 +444,7 @@ const AlarmScreen = ({ onNavigate }: AlarmScreenProps) => {
           <Plus size={12} className="text-white" />
         </Button>
       </div>
-      
+
 
       {/* Stats */}
       <div className="flex justify-center space-x-2 mb-1">
@@ -436,16 +473,15 @@ const AlarmScreen = ({ onNavigate }: AlarmScreenProps) => {
           <>
             {visibleAlarms.map((alarm) => {
               const timeUntil = alarm.isActive ? getTimeUntilAlarm(alarm.time) : null;
-              
+
               return (
                 <div
                   key={alarm.id}
                   onClick={() => toggleAlarm(alarm.id)}
-                  className={`glass-bg rounded-lg border transition-all cursor-pointer hover:scale-[0.98] ${
-                    alarm.isActive 
-                      ? 'border-primary/30 bg-primary/5' 
-                      : 'border-white/20 opacity-60'
-                  } ${alarm.label ? 'p-3' : 'p-2'}`}
+                  className={`glass-bg rounded-lg border transition-all cursor-pointer hover:scale-[0.98] ${alarm.isActive
+                    ? 'border-primary/30 bg-primary/5'
+                    : 'border-white/20 opacity-60'
+                    } ${alarm.label ? 'p-3' : 'p-2'}`}
                 >
                   <div className="flex items-start space-x-3">
                     <div className="mt-1 flex-shrink-0">
@@ -455,32 +491,30 @@ const AlarmScreen = ({ onNavigate }: AlarmScreenProps) => {
                         <BellOff size={12} className="text-white/40" />
                       )}
                     </div>
-                    
+
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center space-x-2 mb-1">
-                        <div className="text-lg font-bold text-white">
-                          {alarm.time}
-                        </div>
+                      <div className="text-lg font-bold text-white">
+                        {formatAlarmTime(alarm.time)}
                       </div>
-                      
+
                       {alarm.label && (
-                        <div className="text-sm text-white/80 mb-1">
+                        <div className="text-xs text-white/70 mt-0.5">
                           {alarm.label}
                         </div>
                       )}
-                      
-                      <div className="flex items-center space-x-2">
-                        <div className="text-xs text-white/60 px-1.5 py-0.5 bg-white/10 rounded-full">
+
+                      <div className="flex items-center space-x-2 mt-1">
+                        <div className="text-[10px] text-white/50 px-1.5 py-0.5 bg-white/10 rounded-full">
                           {getRepeatText(alarm.repeatPattern)}
                         </div>
                         {timeUntil && (
-                          <div className="text-xs text-primary">
+                          <div className="text-[10px] text-primary">
                             in {timeUntil}
                           </div>
                         )}
                       </div>
                     </div>
-                    
+
                     <div className="flex flex-col items-end space-y-1" onClick={(e) => e.stopPropagation()}>
                       <div className={`${!alarm.isActive ? 'opacity-100' : ''}`}>
                         <Switch
@@ -502,7 +536,7 @@ const AlarmScreen = ({ onNavigate }: AlarmScreenProps) => {
                 </div>
               );
             })}
-            
+
             {/* Loading shimmer */}
             {loading && (
               <div className="space-y-2">
@@ -526,7 +560,7 @@ const AlarmScreen = ({ onNavigate }: AlarmScreenProps) => {
                 ))}
               </div>
             )}
-            
+
             {/* Load more button */}
             {hasMore && !loading && (
               <Button
@@ -539,15 +573,15 @@ const AlarmScreen = ({ onNavigate }: AlarmScreenProps) => {
             )}
           </>
         )}
-        
+
         <div className="text-center text-xs text-white/60 py-4">
           For more information and changes,
-          <br/>
+          <br />
           please check your phone
         </div>
       </div>
 
-     
+
     </div>
   );
 };

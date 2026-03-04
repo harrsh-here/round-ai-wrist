@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react'; 
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Home, Plus, Trash, CheckCircle, Circle, Calendar, Clock, AlertTriangle, ArrowLeft, Edit3, X, Target, CheckSquare } from 'lucide-react';
+import { fetchTodos, createTodo, updateTodo, deleteTodo as deleteTodoAPI, type TodoFromAPI } from '@/api/api';
 
 interface TodoScreenProps {
   onNavigate: (screen: string) => void;
@@ -20,64 +21,13 @@ interface Task {
 }
 
 const TodoScreen = ({ onNavigate }: TodoScreenProps) => {
-  const [tasks, setTasks] = useState<Task[]>([
-    {
-      id: '1',
-      title: 'Morning workout',
-      description: 'Complete 30-minute cardio session',
-      priority: 'high',
-      dueDate: new Date(Date.now() - 86400000).toISOString().split('T')[0], // Yesterday - overdue
-      dueTime: '07:00',
-      isCompleted: false,
-      createdAt: new Date()
-    },
-    {
-      id: '2',
-      title: 'Team meeting',
-      description: 'Discuss project milestones',
-      priority: 'medium',
-      dueDate: new Date().toISOString().split('T')[0],
-      dueTime: '14:00',
-      isCompleted: true,
-      createdAt: new Date()
-    },
-    {
-      id: '3',
-      title: 'Buy groceries',
-      description: '',
-      priority: 'low',
-      dueDate: null,
-      dueTime: null,
-      isCompleted: false,
-      createdAt: new Date()
-    },
-    {
-      id: '4',
-      title: 'Call dentist',
-      description: 'Schedule yearly checkup',
-      priority: 'high',
-      dueDate: new Date(Date.now() + 86400000).toISOString().split('T')[0], // Tomorrow
-      dueTime: '10:00',
-      isCompleted: false,
-      createdAt: new Date()
-    },
-    {
-      id: '5',
-      title: 'Review documents',
-      description: '',
-      priority: 'medium',
-      dueDate: new Date(Date.now() + 172800000).toISOString().split('T')[0], // Day after tomorrow
-      dueTime: '15:30',
-      isCompleted: false,
-      createdAt: new Date()
-    }
-  ]);
+  const [tasks, setTasks] = useState<Task[]>([]);
 
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [filter, setFilter] = useState<'all' | 'pending' | 'completed'>('all');
   const [priorityFilter, setPriorityFilter] = useState<'all' | 'high' | 'medium' | 'low'>('all');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [displayedTasks, setDisplayedTasks] = useState(7);
   const [hasMore, setHasMore] = useState(true);
   const [completingTask, setCompletingTask] = useState<string | null>(null);
@@ -91,35 +41,32 @@ const TodoScreen = ({ onNavigate }: TodoScreenProps) => {
     dueTime: ''
   });
 
-  // Simulate new tasks being added
+  // Fetch tasks from backend on mount
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (Math.random() > 0.7) { // 30% chance every 30 seconds
-        const newTasks = [
-          'Check emails',
-          'Call dentist',
-          'Review documents',
-          'Plan weekend trip',
-          'Update portfolio'
-        ];
-        
-        const randomTask = newTasks[Math.floor(Math.random() * newTasks.length)];
-        const newTask: Task = {
-          id: Date.now().toString(),
-          title: randomTask,
-          description: 'Auto-generated task',
-          priority: ['low', 'medium', 'high'][Math.floor(Math.random() * 3)] as 'low' | 'medium' | 'high',
-          dueDate: Math.random() > 0.5 ? new Date().toISOString().split('T')[0] : null,
-          dueTime: Math.random() > 0.5 ? `${Math.floor(Math.random() * 12) + 1}:${Math.floor(Math.random() * 60).toString().padStart(2, '0')}` : null,
-          isCompleted: false,
-          createdAt: new Date()
-        };
-        
-        setTasks(prev => [newTask, ...prev]);
-      }
-    }, 30000);
-
-    return () => clearInterval(interval);
+    setLoading(true);
+    fetchTodos()
+      .then(apiTasks => {
+        const mapped: Task[] = apiTasks.map(t => ({
+          id: String(t.task_id),
+          title: t.title,
+          description: t.description || '',
+          priority: t.priority,
+          dueDate: t.due_date || null,
+          dueTime: null,
+          isCompleted: t.is_completed,
+          createdAt: new Date(t.created_at)
+        }));
+        setTasks(mapped);
+      })
+      .catch(() => {
+        // Fallback to demo data if API fails
+        setTasks([
+          { id: '1', title: 'Morning workout', description: 'Complete 30-minute cardio', priority: 'high', dueDate: new Date(Date.now() - 86400000).toISOString().split('T')[0], dueTime: '07:00', isCompleted: false, createdAt: new Date() },
+          { id: '2', title: 'Team meeting', description: 'Discuss milestones', priority: 'medium', dueDate: new Date().toISOString().split('T')[0], dueTime: '14:00', isCompleted: true, createdAt: new Date() },
+          { id: '3', title: 'Buy groceries', description: '', priority: 'low', dueDate: null, dueTime: null, isCompleted: false, createdAt: new Date() },
+        ]);
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   // Sort tasks: overdue -> upcoming -> future -> completed
@@ -128,23 +75,23 @@ const TodoScreen = ({ onNavigate }: TodoScreenProps) => {
     const getTaskPriority = (task: Task) => {
       if (task.isCompleted) return 4; // Completed last
       if (!task.dueDate) return 3; // No due date tasks
-      
+
       const dueDate = new Date(task.dueDate);
       if (dueDate < now) return 1; // Overdue first
       if (dueDate.toDateString() === now.toDateString()) return 2; // Today/upcoming
       return 3; // Future tasks
     };
-    
+
     const priorityA = getTaskPriority(a);
     const priorityB = getTaskPriority(b);
-    
+
     if (priorityA !== priorityB) return priorityA - priorityB;
-    
+
     // Within same category, sort by due date/time
     if (a.dueDate && b.dueDate) {
       return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
     }
-    
+
     return a.createdAt.getTime() - b.createdAt.getTime();
   });
 
@@ -156,7 +103,7 @@ const TodoScreen = ({ onNavigate }: TodoScreenProps) => {
   });
 
   const visibleTasks = filteredTasks.slice(0, displayedTasks);
-  
+
   useEffect(() => {
     setHasMore(filteredTasks.length > displayedTasks);
   }, [filteredTasks.length, displayedTasks]);
@@ -172,25 +119,33 @@ const TodoScreen = ({ onNavigate }: TodoScreenProps) => {
   };
 
   const toggleComplete = (taskId: string) => {
-    if (completingTask) return; // Prevent multiple rapid clicks
-    
+    if (completingTask) return;
+
     setCompletingTask(taskId);
-    
-    // Wait for animation to complete before updating state
+    const task = tasks.find(t => t.id === taskId);
+    const newCompleted = task ? !task.isCompleted : false;
+
+    // Optimistic update
     setTimeout(() => {
-      setTasks(prev => prev.map(task => 
-        task.id === taskId ? { ...task, isCompleted: !task.isCompleted } : task
+      setTasks(prev => prev.map(t =>
+        t.id === taskId ? { ...t, isCompleted: newCompleted } : t
       ));
-      
-      // Reset completing state after a brief delay to allow for visual feedback
-      setTimeout(() => {
-        setCompletingTask(null);
-      }, 300);
+      setTimeout(() => setCompletingTask(null), 300);
     }, 200);
+
+    // Sync to backend
+    const numId = parseInt(taskId);
+    if (!isNaN(numId)) {
+      updateTodo(numId, { is_completed: newCompleted } as any).catch(() => { });
+    }
   };
 
   const deleteTask = (taskId: string) => {
     setTasks(prev => prev.filter(task => task.id !== taskId));
+    const numId = parseInt(taskId);
+    if (!isNaN(numId)) {
+      deleteTodoAPI(numId).catch(() => { });
+    }
   };
 
   const handleSubmit = (e?: React.FormEvent) => {
@@ -198,20 +153,43 @@ const TodoScreen = ({ onNavigate }: TodoScreenProps) => {
     if (!formData.title.trim()) return;
 
     if (editingTask) {
-      setTasks(prev => prev.map(task => 
-        task.id === editingTask.id 
+      setTasks(prev => prev.map(task =>
+        task.id === editingTask.id
           ? { ...task, ...formData }
           : task
       ));
+      const numId = parseInt(editingTask.id);
+      if (!isNaN(numId)) {
+        updateTodo(numId, {
+          title: formData.title,
+          description: formData.description || undefined,
+          priority: formData.priority,
+          due_date: formData.dueDate || undefined,
+        } as any).catch(() => { });
+      }
       setEditingTask(null);
     } else {
-      const newTask: Task = {
+      // Optimistic local add
+      const tempTask: Task = {
         id: Date.now().toString(),
         ...formData,
         isCompleted: false,
         createdAt: new Date()
       };
-      setTasks(prev => [newTask, ...prev]);
+      setTasks(prev => [tempTask, ...prev]);
+
+      // Create on backend
+      createTodo({
+        title: formData.title,
+        description: formData.description || undefined,
+        priority: formData.priority,
+        due_date: formData.dueDate || undefined,
+      }).then(created => {
+        // Replace temp task with real one
+        setTasks(prev => prev.map(t =>
+          t.id === tempTask.id ? { ...t, id: String(created.task_id) } : t
+        ));
+      }).catch(() => { });
     }
 
     setFormData({
@@ -249,12 +227,12 @@ const TodoScreen = ({ onNavigate }: TodoScreenProps) => {
     if (!date) return null;
     const today = new Date().toISOString().split('T')[0];
     const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
-    
+
     let dateStr = '';
     if (date === today) dateStr = 'Today';
     else if (date === tomorrow) dateStr = 'Tomorrow';
     else dateStr = new Date(date).toLocaleDateString();
-    
+
     return time ? `${dateStr} at ${time}` : dateStr;
   };
 
@@ -379,19 +357,19 @@ const TodoScreen = ({ onNavigate }: TodoScreenProps) => {
           <ArrowLeft size={12} className="text-white" />
         </Button>
         <h2 className=" text-lg font-semibold text-white ">Tasks</h2>
-      
-       {/* Home Button */}
-      <div className="relative right-[205px] justify-center pt-2">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => onNavigate('features')}
-          className="rounded-full w-8 h-8 p-0 bg-white/10 hover:bg-white/15"
-        >
-          <ArrowLeft size={14} className="text-white" />
-        </Button>
-      </div>
-        
+
+        {/* Home Button */}
+        <div className="relative right-[205px] justify-center pt-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => onNavigate('features')}
+            className="rounded-full w-8 h-8 p-0 bg-white/10 hover:bg-white/15"
+          >
+            <ArrowLeft size={14} className="text-white" />
+          </Button>
+        </div>
+
       </div>
 
       {/* Stats in corner */}
@@ -410,7 +388,7 @@ const TodoScreen = ({ onNavigate }: TodoScreenProps) => {
         </div>
       </div>
 
-      
+
 
       {/* Tasks List */}
       <div className="flex-1 overflow-y-auto overflow-x-hidden space-y-2" style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(255,255,255,0.3) transparent' }}>
@@ -425,22 +403,20 @@ const TodoScreen = ({ onNavigate }: TodoScreenProps) => {
               const dueInfo = formatDueDate(task.dueDate, task.dueTime);
               const isOverdue = task.dueDate && new Date(task.dueDate) < new Date() && !task.isCompleted;
               const isCompleting = completingTask === task.id;
-              
+
               return (
                 <div
                   key={task.id}
                   onClick={() => toggleComplete(task.id)}
-                  className={`bg-white/10 rounded-lg border transition-all duration-500 cursor-pointer hover:scale-[0.987]   ${
-                    isCompleting 
-                      ? 'animate-pulse scale-105 brightness-110' 
-                      : ''
-                  } ${  
-                    task.isCompleted 
+                  className={`bg-white/10 rounded-lg border transition-all duration-500 cursor-pointer hover:scale-[0.987]   ${isCompleting
+                    ? 'animate-pulse scale-105 brightness-110'
+                    : ''
+                    } ${task.isCompleted
                       ? 'border-cyan-800/30 bg-gray-100/5 opacity-90 backdrop-blur-sm mb-4 '
-                      : isOverdue 
-                      ? 'border-orange-400/30 bg-red-800/5 backdrop-blur-sm mb-3'
-                      : 'border-green-400/30 bg-green-800/5 backdrop-blur-xs mb-3'
-                  } ${task.description ? 'p-3' : 'p-2'}`}
+                      : isOverdue
+                        ? 'border-orange-400/30 bg-red-800/5 backdrop-blur-sm mb-3'
+                        : 'border-green-400/30 bg-green-800/5 backdrop-blur-xs mb-3'
+                    } ${task.description ? 'p-3' : 'p-2'}`}
                 >
                   <div className="flex items-start space-x-3">
                     <div className="mt-1 flex-shrink-0">
@@ -454,25 +430,29 @@ const TodoScreen = ({ onNavigate }: TodoScreenProps) => {
                         <Circle size={14} className="text-white/60" />
                       )}
                     </div>
-                    
+
                     <div className="flex-1 min-w-0">
-                      <div className={`text-sm font-medium ${
-                        task.isCompleted ? 'text-white/60 line-through' : 'text-white'
-                      }`}>
+                      <div className={`text-sm font-medium ${task.isCompleted ? 'text-white/60 line-through' : 'text-white'
+                        }`}>
                         {task.title}
                       </div>
-                      
+
                       {task.description && (
-                        <div className="text-xs text-white/60 mt-1">
-                          {task.description}
+                        <div className="text-xs text-white/50 mt-0.5 leading-tight">
+                          {task.description.length > 60
+                            ? <>
+                              {task.description.slice(0, 60)}…
+                              <div className="text-[10px] text-cyan-400 mt-0.5">View details in phone</div>
+                            </>
+                            : task.description
+                          }
                         </div>
                       )}
-                      
+
                       <div className="flex items-center justify-between">
                         {dueInfo ? (
-                          <div className={`text-[11px] flex items-center space-x-1 ${
-                            isOverdue ? 'text-orange-200' : 'text-white-500'
-                          }`}>
+                          <div className={`text-[11px] flex items-center space-x-1 ${isOverdue ? 'text-orange-200' : 'text-white-500'
+                            }`}>
                             {isOverdue && <AlertTriangle size={8} />}
                             <Calendar size={8} />
                             <span>{dueInfo}</span>
@@ -482,7 +462,7 @@ const TodoScreen = ({ onNavigate }: TodoScreenProps) => {
                             {task.priority.toUpperCase()}
                           </div>
                         )}
-                        
+
                         {dueInfo && (
                           <div className={`text-xs px-1.5 py-0.5 rounded-full border ${getPriorityColor(task.priority)}`}>
                             {task.priority.toUpperCase()}
@@ -490,9 +470,9 @@ const TodoScreen = ({ onNavigate }: TodoScreenProps) => {
                         )}
                       </div>
 
-                      
+
                     </div>
-                    
+
                     <div className="flex flex-col space-y-1" onClick={(e) => e.stopPropagation()}>
                       {/* <Button
                         variant="ghost"
@@ -515,7 +495,7 @@ const TodoScreen = ({ onNavigate }: TodoScreenProps) => {
                 </div>
               );
             })}
-            
+
             {/* Loading shimmer */}
             {loading && (
               <div className="space-y-2">
@@ -536,8 +516,8 @@ const TodoScreen = ({ onNavigate }: TodoScreenProps) => {
                 ))}
               </div>
             )}
-            
-            
+
+
             {/* Load more button */}
             {hasMore && !loading && (
               <Button
@@ -548,22 +528,22 @@ const TodoScreen = ({ onNavigate }: TodoScreenProps) => {
                 Load more ({filteredTasks.length - displayedTasks} remaining)
               </Button>
             )}
-            
+
           </>
-          
+
         )}
 
         <div className="h-16 pb-16 text-center text-xs text-white/50 italic">
-               <div className="text-center text-xs text-white/60 py-4">
-                 For more information and changes,
-                 <br/>
-                 please check your phone
-               </div>
+          <div className="text-center text-xs text-white/60 py-4">
+            For more information and changes,
+            <br />
+            please check your phone
+          </div>
         </div>
       </div>
-    
 
-      
+
+
     </div>
   );
 };
