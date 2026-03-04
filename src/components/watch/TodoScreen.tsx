@@ -199,78 +199,14 @@ const TodoScreen = ({ onNavigate }: TodoScreenProps) => {
       }).catch(() => { });
     }
 
-        await apiCall(`/todos/${editingTask.task_id}`, {
-          method: 'PUT',
-          body: JSON.stringify({
-            title: formData.title,
-            description: formData.description,
-            priority: formData.priority,
-            due_date: dueDatetime
-          })
-        });
-
-        setTasks(prev => prev.map(task => 
-          task.task_id === editingTask.task_id 
-            ? { 
-                ...task, 
-                title: formData.title,
-                description: formData.description,
-                priority: formData.priority,
-                due_date: dueDatetime,
-                dueDate: formData.dueDate || null,
-                dueTime: formData.dueTime || null
-              }
-            : task
-        ));
-        setEditingTask(null);
-      } else {
-        // Create new task
-        let dueDatetime = null;
-        if (formData.dueDate) {
-          const time = formData.dueTime || '12:00';
-          const [hours, minutes] = time.split(':');
-          dueDatetime = `${formData.dueDate} ${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}:00`;
-        }
-
-        const newTask = await apiCall('/todos', {
-          method: 'POST',
-          body: JSON.stringify({
-            title: formData.title,
-            description: formData.description,
-            priority: formData.priority,
-            due_date: dueDatetime
-          })
-        });
-
-        const transformedTask = {
-          id: newTask.task_id,
-          task_id: newTask.task_id,
-          title: newTask.title,
-          description: newTask.description || '',
-          priority: newTask.priority,
-          dueDate: newTask.due_date ? newTask.due_date.split('T')[0] : null,
-          dueTime: newTask.due_date ? new Date(newTask.due_date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }) : null,
-          due_date: newTask.due_date,
-          isCompleted: newTask.is_completed,
-          is_completed: newTask.is_completed,
-          createdAt: new Date(newTask.created_at),
-          created_at: newTask.created_at
-        };
-        
-        setTasks(prev => [transformedTask, ...prev]);
-      }
-
-      setFormData({
-        title: '',
-        description: '',
-        priority: 'medium',
-        dueDate: '',
-        dueTime: ''
-      });
-      setShowAddForm(false);
-    } catch (err) {
-      console.error('Failed to save task:', err);
-    }
+    setFormData({
+      title: '',
+      description: '',
+      priority: 'medium',
+      dueDate: '',
+      dueTime: ''
+    });
+    setShowAddForm(false);
   };
 
   const startEdit = (task: Task) => {
