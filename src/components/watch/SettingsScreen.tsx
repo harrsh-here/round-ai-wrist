@@ -9,6 +9,7 @@ import { fetchUserProfile } from '@/api/api';
 
 interface SettingsScreenProps {
   onNavigate: (screen: WatchScreen) => void;
+  onLogout: () => void; 
   currentScreen: WatchScreen;
   onLogout?: () => void;
 }
@@ -174,7 +175,7 @@ const SettingsScreen = ({ onNavigate, onLogout }: SettingsScreenProps) => {
 
             {/* Logout Button */}
             <button
-              onClick={handleLogout}
+              onClick={onLogout}
               className="w-full flex items-center justify-center p-4 rounded-xl backdrop-blur-md bg-red-500/20 border border-red-400/30 hover:bg-red-500/30 transition-all duration-300 group"
             >
               <LogOut size={16} className="text-red-400 mr-2" />

@@ -41,7 +41,6 @@ const SmartWatch = () => {
   const [brightness, setBrightness] = useState(75);
   const [soundMode, setSoundMode] = useState<'on' | 'vibrate' | 'off'>('on');
   const [showStatusBar, setShowStatusBar] = useState(false);
-  // Add this state to track unread notifications count
   const [unreadCount, setUnreadCount] = useState(0);
   // Global music state
   const [musicPlaying, setMusicPlaying] = useState(false);
@@ -219,9 +218,9 @@ const SmartWatch = () => {
       "What's my heart rate?",
       "Show me today's steps",
       "What's the weather like?",
-      "Set a timer for 5 minutes",
-      "Call Sarah",
-      "Play my workout playlist"
+      'Set a timer for 5 minutes',
+      'Call Sarah',
+      'Play my workout playlist',
     ];
 
     const randomQuery = queries[Math.floor(Math.random() * queries.length)];
@@ -233,6 +232,7 @@ const SmartWatch = () => {
     setShowVoiceQuery(false);
     setVoiceQuery('');
   };
+
   const renderScreen = () => {
     if (!isWatchOn) {
       return (
@@ -243,7 +243,7 @@ const SmartWatch = () => {
     }
 
     if (!isLoggedIn) {
-      return <LoginScreen onLogin={handleLogin} />;
+      return <LoginScreen onLogin={onLogin} />;
     }
 
     const screenProps = {
@@ -299,7 +299,6 @@ const SmartWatch = () => {
   return (
     <div className="watch-container select-none">
       <div className="watch-bezel watch-fade-in">
-        {/* Watch Straps */}
         <div className="watch-strap-top" />
         <div className="watch-strap-bottom" />
 
@@ -308,7 +307,6 @@ const SmartWatch = () => {
 
         {/* Watch Screen */}
         <div className="watch-screen">
-          {/* Voice Query Overlay */}
           {showVoiceQuery && voiceQuery && (
             <div
               className="absolute inset-0 z-50 flex items-center justify-center bg-black/90 rounded-full backdrop-blur-sm cursor-pointer"
@@ -355,21 +353,16 @@ const SmartWatch = () => {
 
           </div>
         </div>
-
-        {/* Power Button - Now bottom button with blue glow when on */}
         <button
           className={`watch-power-button ${isWatchOn ? 'active' : ''} ${!isWatchOn ? 'opacity-60' : 'opacity-100'}`}
           onClick={handlePowerButton}
           title="Power Button"
         />
-
-        {/* Voice Button - Now top button with yellow glow when active */}
         <button
           className={`watch-voice-button ${isListening ? 'active' : ''} ${!isWatchOn || !isLoggedIn ? 'opacity-60' : 'opacity-100'}`}
 
           onMouseDown={handleVoiceButtonPress}
           onMouseUp={handleVoiceButtonRelease}
-          // onMouseLeave={handleVoiceButtonRelease}
           onTouchStart={handleVoiceButtonPress}
           onTouchEnd={handleVoiceButtonRelease}
           title="Voice Button (Hold to speak)"

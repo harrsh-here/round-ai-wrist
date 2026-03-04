@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Home, Plus, Trash, CheckCircle, Circle, Calendar, Clock, AlertTriangle, ArrowLeft, Edit3, X, Target, CheckSquare } from 'lucide-react';
 import { fetchTodos, createTodo, updateTodo, deleteTodo as deleteTodoAPI, type TodoFromAPI } from '@/api/api';
@@ -10,16 +9,24 @@ interface TodoScreenProps {
 }
 
 interface Task {
-  id: string;
+  task_id: string;
   title: string;
   description: string;
   priority: 'low' | 'medium' | 'high';
+  due_date: string | null;
+  is_completed: boolean;
+  created_at: string;
+  // Additional fields used throughout the component (camelCase duplicates for UI convenience)
+  id?: string;
   dueDate: string | null;
   dueTime: string | null;
   isCompleted: boolean;
   createdAt: Date;
 }
 
+//const API_BASE_URL = 'http://localhost:3000/api';
+//ChangeLOCAL TO GLOBAl
+const API_BASE_URL = 'https://fuznex.onrender.com/api';
 const TodoScreen = ({ onNavigate }: TodoScreenProps) => {
   const [tasks, setTasks] = useState<Task[]>([]);
 
@@ -88,8 +95,8 @@ const TodoScreen = ({ onNavigate }: TodoScreenProps) => {
     if (priorityA !== priorityB) return priorityA - priorityB;
 
     // Within same category, sort by due date/time
-    if (a.dueDate && b.dueDate) {
-      return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+    if (a.due_date && b.due_date) {
+      return new Date(a.due_date).getTime() - new Date(b.due_date).getTime();
     }
 
     return a.createdAt.getTime() - b.createdAt.getTime();
@@ -148,7 +155,7 @@ const TodoScreen = ({ onNavigate }: TodoScreenProps) => {
     }
   };
 
-  const handleSubmit = (e?: React.FormEvent) => {
+  const handleSubmit = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (!formData.title.trim()) return;
 
@@ -192,14 +199,78 @@ const TodoScreen = ({ onNavigate }: TodoScreenProps) => {
       }).catch(() => { });
     }
 
-    setFormData({
-      title: '',
-      description: '',
-      priority: 'medium',
-      dueDate: '',
-      dueTime: ''
-    });
-    setShowAddForm(false);
+        await apiCall(`/todos/${editingTask.task_id}`, {
+          method: 'PUT',
+          body: JSON.stringify({
+            title: formData.title,
+            description: formData.description,
+            priority: formData.priority,
+            due_date: dueDatetime
+          })
+        });
+
+        setTasks(prev => prev.map(task => 
+          task.task_id === editingTask.task_id 
+            ? { 
+                ...task, 
+                title: formData.title,
+                description: formData.description,
+                priority: formData.priority,
+                due_date: dueDatetime,
+                dueDate: formData.dueDate || null,
+                dueTime: formData.dueTime || null
+              }
+            : task
+        ));
+        setEditingTask(null);
+      } else {
+        // Create new task
+        let dueDatetime = null;
+        if (formData.dueDate) {
+          const time = formData.dueTime || '12:00';
+          const [hours, minutes] = time.split(':');
+          dueDatetime = `${formData.dueDate} ${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}:00`;
+        }
+
+        const newTask = await apiCall('/todos', {
+          method: 'POST',
+          body: JSON.stringify({
+            title: formData.title,
+            description: formData.description,
+            priority: formData.priority,
+            due_date: dueDatetime
+          })
+        });
+
+        const transformedTask = {
+          id: newTask.task_id,
+          task_id: newTask.task_id,
+          title: newTask.title,
+          description: newTask.description || '',
+          priority: newTask.priority,
+          dueDate: newTask.due_date ? newTask.due_date.split('T')[0] : null,
+          dueTime: newTask.due_date ? new Date(newTask.due_date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }) : null,
+          due_date: newTask.due_date,
+          isCompleted: newTask.is_completed,
+          is_completed: newTask.is_completed,
+          createdAt: new Date(newTask.created_at),
+          created_at: newTask.created_at
+        };
+        
+        setTasks(prev => [transformedTask, ...prev]);
+      }
+
+      setFormData({
+        title: '',
+        description: '',
+        priority: 'medium',
+        dueDate: '',
+        dueTime: ''
+      });
+      setShowAddForm(false);
+    } catch (err) {
+      console.error('Failed to save task:', err);
+    }
   };
 
   const startEdit = (task: Task) => {
@@ -474,18 +545,10 @@ const TodoScreen = ({ onNavigate }: TodoScreenProps) => {
                     </div>
 
                     <div className="flex flex-col space-y-1" onClick={(e) => e.stopPropagation()}>
-                      {/* <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => startEdit(task)}
-                        className="w-5 h-5 p-0 bg-white/10 hover:bg-white/20 rounded"
-                      >
-                        <Edit3 size={8} className="text-white/70" />
-                      </Button> */}
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => deleteTask(task.id)}
+                        onClick={() => deleteTask(task.task_id)}
                         className="w-5 h-5 p-0 bg-red-500/20 hover:bg-red-500/30 rounded"
                       >
                         <Trash size={8} className="text-red-400" />

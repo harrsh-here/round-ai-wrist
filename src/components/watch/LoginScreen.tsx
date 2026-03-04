@@ -5,7 +5,17 @@ import { LogIn, Lock, ChevronDown, RefreshCw, Loader2 } from 'lucide-react';
 import { requestPairingCode, checkPairingStatus, saveWatchToken } from '@/api/api';
 
 interface LoginScreenProps {
-  onLogin: () => void;
+ onLogin: (token: string) => void;
+}
+
+interface CodeResponse {
+  code: string;
+  expires_at: string;
+}
+
+interface StatusResponse {
+  linked: boolean;
+  token: string;
 }
 
 type LoginState = 'loading' | 'showing-code' | 'error';
@@ -92,20 +102,16 @@ const LoginScreen = ({ onLogin }: LoginScreenProps) => {
 
   return (
     <div className="relative w-full h-full rounded-full overflow-hidden">
-      {/* Scrollable Content */}
       <div className="h-full overflow-y-auto watch-scroll rounded-full" style={{ clipPath: 'circle(50%)' }}>
         <div className="flex flex-col items-center justify-start p-2 pt-3 min-h-full">
-          {/* Login Icon */}
+
+          {/* Header */}
           <div className="mb-3 text-center watch-slide-up">
             <div className="w-16 h-16 rounded-full dark-glass-bg border-2 border-primary/40 flex items-center justify-center mb-2 mx-auto">
               <LogIn size={28} className="text-primary" />
             </div>
-            <h1 className="text-xl font-bold text-white mb-1">
-              FuzNex
-            </h1>
-            <h2 className="text-sm text-white/70 mb-1">
-              Verify authentication code
-            </h2>
+            <h1 className="text-xl font-bold text-white mb-1">FuzNex</h1>
+            <h2 className="text-sm text-white/70 mb-1">Verify authentication code</h2>
           </div>
 
           {/* Code Display Area */}
@@ -182,8 +188,9 @@ const LoginScreen = ({ onLogin }: LoginScreenProps) => {
 
           {/* Footer */}
           <div className="text-center pb-6">
-            <div className="text-xs text-white/40 transform:scale-80">FuzNex AI SmartWatch v0.7</div>
+            <div className="text-xs text-white/40">FuzNex AI SmartWatch v0.7</div>
           </div>
+
         </div>
       </div>
     </div>
