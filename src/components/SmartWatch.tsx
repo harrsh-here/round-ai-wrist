@@ -243,7 +243,7 @@ const SmartWatch = () => {
     }
 
     if (!isLoggedIn) {
-      return <LoginScreen onLogin={onLogin} />;
+      return <LoginScreen onLogin={handleLogin} />;
     }
 
     const screenProps = {
