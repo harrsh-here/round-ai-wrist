@@ -1,113 +1,50 @@
-# FuzNex Watch Interface
+# FuzNex AI Assistant — Watch Interface
 
-The **FuzNex Watch Interface** is a web-based smartwatch simulation that acts as the **primary voice interaction device** for the FuzNex AI assistant system.
+🔗 **Live Demo:**  
+https://fuznex-wrist.netlify.app/
 
-The watch captures user voice input and sends it to the **FuzNex Backend Master Router**, which intelligently routes the request to the best AI model.
+📱 **Companion Phone App Repository:**  
+https://github.com/harrsh-here/fuznex-assistant
 
 ---
 
-## 🧠 How the AI System Works
+## 🧠 About FuzNex
 
-The watch records audio and sends it to the backend.
+FuzNex is an experimental project aimed at building a **customized AI assistant ecosystem for smartwatches**. The FuzNex Watch Interface is a web-based smartwatch simulation that acts as the **primary voice interaction device** for the ecosystem.
 
-The backend then performs:
+Inspired by systems like Google Assistant and Alexa, FuzNex explores a **Master Assistant Hub** that can coordinate multiple AI systems through a single interface. The smartwatch captures user voice input and sends it to the **FuzNex Backend Master Router**, which intelligently routes the request to the best AI model.
 
-1. Speech-to-Text
-2. Intent Classification
-3. AI Routing
-
-Example pipeline:
-```text
-User Voice
-       ↓
-MediaRecorder (Watch)
-       ↓
-Backend API
-       ↓
-Groq Whisper (Speech → Text)
-       ↓
-Groq Llama (Intent Classification)
-       ↓
-Routing Decision
-├── Watch Action
-├── Simple Query
-└── Complex Query → Gemini
-       ↓
-ElevenLabs (Voice Response)
-```
+Example interaction:
+User → "Set an alarm for 5 AM"  
+FuzNex Assistant → routes command → Watch Local Action
 
 ---
 
 ## 🚀 Features
 
 - Cross-browser voice recording using **MediaRecorder**
-- AI voice assistant interface
-- Automatic recording timeout (6 seconds)
-- Real-time countdown UI
-- Smart command routing
-- Direct hardware-style actions
+- AI voice assistant interface with native STT/TTS (Groq Whisper / ElevenLabs)
+- Automatic recording timeout (6 seconds) with real-time countdown UI
+- Smart command routing (Groq Llama / Gemini)
+- Direct hardware-style actions (Alarms, Navigation, System Settings)
 - Music control system
-- Offline fallback commands
-
----
-
-## 🎵 Supported Voice Commands
-
-Music controls:
-
-- Play music
-- Pause music
-- Next song
-- Previous song
-- Toggle shuffle
-- Toggle repeat
-
-System queries:
-
-- What time is it
-- Open music
-- Basic app navigation
+- Offline fallback text commands
 
 ---
 
 ## 🛠 Tech Stack
 
-- **React**
+- **React** 
 - **TypeScript**
 - **Vite**
+- **TailwindCSS** (shadcn/ui)
 - **MediaRecorder API**
-- **TailwindCSS**
-- **REST API Integration**
 
 Backend AI stack:
-
 - Groq Whisper
 - Groq Llama
 - Google Gemini
 - ElevenLabs
-
----
-
-## 📂 Project Structure
-
-```text
-watch/
-├── src/
-│   ├── api/
-│   │   └── api.ts
-│   │
-│   ├── components/
-│   │   ├── watch/
-│   │   │   ├── AIChat.tsx
-│   │   │   ├── MusicScreen.tsx
-│   │   │   └── ...
-│   │   │
-│   │   └── SmartWatch.tsx
-│   │
-│   └── App.tsx
-│
-└── package.json
-```
 
 ---
 
@@ -126,48 +63,16 @@ npm run dev
 ```
 
 The watch interface runs on:
-
 ```text
 http://localhost:8080
 ```
-or
-```text
-http://localhost:5174
-```
-(depending on the Vite configuration)
 
 ---
 
 ## 🔗 Backend Requirement
 
 The watch requires the **FuzNex Backend Master Router** to be running.
-
-Default backend:
-
+Production backend:
 ```text
-http://localhost:3000
+https://fuznex.onrender.com/api
 ```
-
----
-
-## 📌 Roadmap
-
-- Improved smartwatch UI
-- Voice animation feedback
-- Device command expansion
-- Watch-to-phone response synchronization
-- Native smartwatch deployment
-
----
-
-## 🧑‍💻 Part of the FuzNex Project
-
-FuzNex is a **multi-assistant AI system** designed to combine multiple AI models into one unified intelligent assistant.
-
-The smartwatch acts as a **minimal voice interface**, while the phone provides **advanced visualization and interaction capabilities**.
-
----
-
-## 📜 License
-
-This project is part of the **FuzNex AI Assistant System** currently under development.
