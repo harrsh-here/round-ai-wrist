@@ -1,5 +1,5 @@
-const API_BASE_URL = "https://fuznex.onrender.com/api";
-// const API_BASE_URL = "http://localhost:3000/api";
+// const API_BASE_URL = "https://fuznex.onrender.com/api";
+const API_BASE_URL = "http://localhost:3000/api";
 
 // --- Watch Token helpers ---
 
@@ -229,9 +229,13 @@ export interface WatchChatResponse {
     reply: string;
     action?: {
         type: string;
+        command?: string;
         screen?: string;
+        query?: string;
         params?: Record<string, any>;
     };
+    audio?: string; // base64 MP3 from ElevenLabs
+    geminiResponse?: string; // Full Gemini response for phone
 }
 
 // Offline fallback for basic commands
@@ -251,7 +255,13 @@ function offlineFallback(message: string): WatchChatResponse | null {
         return { reply: `Playing music for you!`, action: { type: 'navigate', screen: 'music', params: { autoplay: true } } };
     }
     if (msg.includes('pause music') || msg.includes('stop music')) {
-        return { reply: `Pausing music.`, action: { type: 'music_control', params: { command: 'pause' } } };
+        return { reply: `Pausing music.`, action: { type: 'music', command: 'pause' } };
+    }
+    if (msg.includes('next song') || msg.includes('next track') || msg.includes('change song')) {
+        return { reply: `Playing the next song.`, action: { type: 'music', command: 'next' } };
+    }
+    if (msg.includes('previous song') || msg.includes('previous track')) {
+        return { reply: `Going back to the previous song.`, action: { type: 'music', command: 'previous' } };
     }
     if (msg.includes('open music')) {
         return { reply: `Opening music.`, action: { type: 'navigate', screen: 'music' } };
@@ -268,9 +278,27 @@ function offlineFallback(message: string): WatchChatResponse | null {
     if (msg.includes('open alarm') || msg.includes('set alarm')) {
         return { reply: `Opening alarms.`, action: { type: 'navigate', screen: 'alarms' } };
     }
-    return null; // No offline match, needs server
+    return null;
 }
 
+// Transcribe audio blob via Groq Whisper
+export async function watchTranscribeAudio(audioBlob: Blob): Promise<{ transcript: string }> {
+    const token = getWatchToken();
+    const formData = new FormData();
+    formData.append('audio', audioBlob, 'recording.webm');
+
+    const res = await fetch(`${API_BASE_URL}/watch/transcribe`, {
+        method: "POST",
+        headers: {
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: formData,
+    });
+    if (!res.ok) throw new Error(`Transcription failed: ${res.status}`);
+    return res.json();
+}
+
+// Send text to AI and get response (with optional ElevenLabs audio)
 export async function watchChat(message: string, history: any[] = []): Promise<WatchChatResponse> {
     // Try offline first for instant responses
     const offline = offlineFallback(message);
@@ -288,7 +316,6 @@ export async function watchChat(message: string, history: any[] = []): Promise<W
         if (!res.ok) throw new Error(`Watch chat failed: ${res.status}`);
         return res.json();
     } catch (err) {
-        // Server unreachable — give a generic offline response
         return { reply: "I'm offline right now. I can tell you the time, date, or open music/tasks/weather/alarms for you." };
     }
 }

@@ -1,73 +1,173 @@
-# Welcome to your Lovable project
+# FuzNex Watch Interface
 
-## Project info
+The **FuzNex Watch Interface** is a web-based smartwatch simulation that acts as the **primary voice interaction device** for the FuzNex AI assistant system.
 
-**URL**: https://lovable.dev/projects/4a21bcf0-3683-4118-af27-0449ca3d6339
+The watch captures user voice input and sends it to the **FuzNex Backend Master Router**, which intelligently routes the request to the best AI model.
 
-## How can I edit this code?
+---
 
-There are several ways of editing your application.
+## 🧠 How the AI System Works
 
-**Use Lovable**
+The watch records audio and sends it to the backend.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/4a21bcf0-3683-4118-af27-0449ca3d6339) and start prompting.
+The backend then performs:
 
-Changes made via Lovable will be committed automatically to this repo.
+1. Speech-to-Text
+2. Intent Classification
+3. AI Routing
 
-**Use your preferred IDE**
+Example pipeline:
+```text
+User Voice
+       ↓
+MediaRecorder (Watch)
+       ↓
+Backend API
+       ↓
+Groq Whisper (Speech → Text)
+       ↓
+Groq Llama (Intent Classification)
+       ↓
+Routing Decision
+├── Watch Action
+├── Simple Query
+└── Complex Query → Gemini
+       ↓
+ElevenLabs (Voice Response)
+```
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+---
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## 🚀 Features
 
-Follow these steps:
+- Cross-browser voice recording using **MediaRecorder**
+- AI voice assistant interface
+- Automatic recording timeout (6 seconds)
+- Real-time countdown UI
+- Smart command routing
+- Direct hardware-style actions
+- Music control system
+- Offline fallback commands
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+---
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+## 🎵 Supported Voice Commands
 
-# Step 3: Install the necessary dependencies.
-npm i
+Music controls:
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+- Play music
+- Pause music
+- Next song
+- Previous song
+- Toggle shuffle
+- Toggle repeat
+
+System queries:
+
+- What time is it
+- Open music
+- Basic app navigation
+
+---
+
+## 🛠 Tech Stack
+
+- **React**
+- **TypeScript**
+- **Vite**
+- **MediaRecorder API**
+- **TailwindCSS**
+- **REST API Integration**
+
+Backend AI stack:
+
+- Groq Whisper
+- Groq Llama
+- Google Gemini
+- ElevenLabs
+
+---
+
+## 📂 Project Structure
+
+```text
+watch/
+├── src/
+│   ├── api/
+│   │   └── api.ts
+│   │
+│   ├── components/
+│   │   ├── watch/
+│   │   │   ├── AIChat.tsx
+│   │   │   ├── MusicScreen.tsx
+│   │   │   └── ...
+│   │   │
+│   │   └── SmartWatch.tsx
+│   │
+│   └── App.tsx
+│
+└── package.json
+```
+
+---
+
+## ⚙️ Local Development
+
+### 1️⃣ Install dependencies
+
+```bash
+npm install
+```
+
+### 2️⃣ Run development server
+
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The watch interface runs on:
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```text
+http://localhost:8080
+```
+or
+```text
+http://localhost:5174
+```
+(depending on the Vite configuration)
 
-**Use GitHub Codespaces**
+---
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 🔗 Backend Requirement
 
-## What technologies are used for this project?
+The watch requires the **FuzNex Backend Master Router** to be running.
 
-This project is built with:
+Default backend:
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+```text
+http://localhost:3000
+```
 
-## How can I deploy this project?
+---
 
-Simply open [Lovable](https://lovable.dev/projects/4a21bcf0-3683-4118-af27-0449ca3d6339) and click on Share -> Publish.
+## 📌 Roadmap
 
-## Can I connect a custom domain to my Lovable project?
+- Improved smartwatch UI
+- Voice animation feedback
+- Device command expansion
+- Watch-to-phone response synchronization
+- Native smartwatch deployment
 
-Yes, you can!
+---
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## 🧑‍💻 Part of the FuzNex Project
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+FuzNex is a **multi-assistant AI system** designed to combine multiple AI models into one unified intelligent assistant.
+
+The smartwatch acts as a **minimal voice interface**, while the phone provides **advanced visualization and interaction capabilities**.
+
+---
+
+## 📜 License
+
+This project is part of the **FuzNex AI Assistant System** currently under development.
