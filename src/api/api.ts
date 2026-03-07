@@ -1,5 +1,6 @@
-// const API_BASE_URL = "https://fuznex.onrender.com/api";
-const API_BASE_URL = "http://localhost:3000/api";
+//ChangeLOCAL TO GLOBAl
+const API_BASE_URL = "https://fuznex.onrender.com/api";
+// const API_BASE_URL = "http://localhost:3000/api";
 
 // --- Watch Token helpers ---
 
