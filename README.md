@@ -1,73 +1,108 @@
-# Welcome to your Lovable project
+# FuzNex AI Assistant — Watch Interface
 
-## Project info
+🔗 **Live Demo:**  
+https://fuznex-wrist.netlify.app/
 
-**URL**: https://lovable.dev/projects/4a21bcf0-3683-4118-af27-0449ca3d6339
+📱 **Companion Phone App Repository:**  
+https://github.com/YOUR-USERNAME/YOUR-PHONE-REPO
 
-## How can I edit this code?
+---
 
-There are several ways of editing your application.
+## About FuzNex
 
-**Use Lovable**
+FuzNex is an experimental project aimed at building a **customized AI assistant ecosystem for smartwatches**.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/4a21bcf0-3683-4118-af27-0449ca3d6339) and start prompting.
+Inspired by systems like Google Assistant, Alexa, and fictional assistants like Iron Man’s J.A.R.V.I.S., FuzNex explores the idea of a **personal assistant hub** that can coordinate multiple AI systems through a single interface.
 
-Changes made via Lovable will be committed automatically to this repo.
+The vision is to create an **always-available AI companion** that lives on a smartwatch and can:
 
-**Use your preferred IDE**
+- Perform quick device operations
+- Route commands to other AI assistants
+- Offload complex interactions to a companion smartphone
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+The smartwatch acts as the **primary interaction point**, enabling fast voice commands and lightweight actions while remaining efficient for wearable devices.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+---
 
-Follow these steps:
+## Core Idea
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+The central idea behind FuzNex is a **Master Assistant Hub**.
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+Instead of relying on a single AI assistant, FuzNex aims to act as a **router between multiple assistants**.
 
-# Step 3: Install the necessary dependencies.
-npm i
+Example interaction:
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+User → "Tell Alexa to turn off the lights"  
+FuzNex Assistant → routes command → Alexa
 
-**Edit a file directly in GitHub**
+Similarly, the system may integrate assistants such as:
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+- Alexa  
+- Google Assistant  
+- GPT-based systems (Gemini / GPT)  
+- Other AI services in the future  
 
-**Use GitHub Codespaces**
+The goal is to provide **one unified voice interface** capable of coordinating multiple AI systems.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+---
 
-## What technologies are used for this project?
+## Role of the Watch Interface
 
-This project is built with:
+This repository contains the **smartwatch interface for FuzNex**.
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+The watch is designed to be the **primary voice interaction device** where users can:
 
-## How can I deploy this project?
+- Issue voice commands
+- Trigger device operations
+- Route requests to external AI assistants
+- Initiate conversations that may continue on the phone
 
-Simply open [Lovable](https://lovable.dev/projects/4a21bcf0-3683-4118-af27-0449ca3d6339) and click on Share -> Publish.
+Because smartwatches have limited screen space and processing power, the watch focuses on:
 
-## Can I connect a custom domain to my Lovable project?
+- **Quick commands**
+- **Short responses**
+- **Lightweight UI interactions**
 
-Yes, you can!
+More complex tasks may be handled by the companion phone application.
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+---
+
+## Companion Phone Application
+
+Certain features — particularly conversation-heavy interactions or information-rich responses — are designed to be handled by the **FuzNex phone companion app**.
+
+The phone acts as:
+
+- A processing hub
+- A data storage layer
+- A visual interface for detailed AI responses
+
+---
+
+## Project Goals
+
+The long-term goals of FuzNex include:
+
+- Creating a multi-assistant routing system
+- Providing seamless voice interaction from wearable devices
+- Integrating multiple AI assistants into a single platform
+- Designing an efficient smartwatch interface for AI interaction
+
+---
+
+## Project Status
+
+This repository contains the **experimental watch interface prototype** used to explore how the FuzNex concept could work in practice.
+
+The implementation is an **early demonstration of the system architecture** and will continue evolving as the project develops.
+
+---
+
+## Part of the FuzNex Ecosystem
+
+FuzNex consists of multiple components:
+
+- Watch Interface (this repository)
+- Phone Companion Application
+- Backend routing and processing system
